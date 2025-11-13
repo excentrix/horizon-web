@@ -1,34 +1,128 @@
-import { getCachedGlobal } from '@/utilities/getGlobals'
+'use client'
+
+import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import React from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Twitter, Linkedin, Github, Mail } from 'lucide-react'
 
-import type { Footer } from '@/payload-types'
+gsap.registerPlugin(ScrollTrigger)
 
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
-import { CMSLink } from '@/components/Link'
-import { Logo } from '@/components/Logo/Logo'
+export function Footer() {
+  const footerRef = useRef<HTMLElement>(null)
 
-export async function Footer() {
-  const footerData: Footer = await getCachedGlobal('footer', 1)()
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(footerRef.current, {
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: 'top 95%',
+          toggleActions: 'play none none reverse',
+        },
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+      })
+    }, footerRef)
 
-  const navItems = footerData?.navItems || []
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <footer className="mt-auto border-t border-border bg-black dark:bg-card text-white">
-      <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
-        <Link className="flex items-center" href="/">
-          <Logo />
-        </Link>
+    <footer ref={footerRef} className="bg-foreground text-background py-16 px-4">
+      <div className="container mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+          {/* Brand */}
+          <div className="lg:col-span-2">
+            <div className="border-4 border-background bg-accent px-4 py-2 rotate-[-2deg] shadow-harsh inline-block mb-4">
+              <span className="text-2xl font-black text-foreground">HORIZON</span>
+            </div>
+            <p className="font-mono text-sm mb-4 max-w-sm">
+              Breaking the barriers of traditional education. Building the future of personalized
+              learning.
+            </p>
+            <div className="flex gap-4">
+              <SocialLink href="#" icon={<Twitter size={20} />} label="Twitter" />
+              <SocialLink href="#" icon={<Linkedin size={20} />} label="LinkedIn" />
+              <SocialLink href="#" icon={<Github size={20} />} label="GitHub" />
+              <SocialLink href="#" icon={<Mail size={20} />} label="Email" />
+            </div>
+          </div>
 
-        <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
-          <ThemeSelector />
-          <nav className="flex flex-col md:flex-row gap-4">
-            {navItems.map(({ link }, i) => {
-              return <CMSLink className="text-white" key={i} {...link} />
-            })}
-          </nav>
+          {/* Solutions */}
+          <div>
+            <h3 className="font-black text-lg mb-4">SOLUTIONS</h3>
+            <ul className="space-y-2 font-mono text-sm">
+              <FooterLink href="/solutions/students">For Students</FooterLink>
+              <FooterLink href="/solutions/educators">For Educators</FooterLink>
+              <FooterLink href="/solutions/institutions">For Institutions</FooterLink>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="font-black text-lg mb-4">RESOURCES</h3>
+            <ul className="space-y-2 font-mono text-sm">
+              <FooterLink href="/blog">Blog</FooterLink>
+              <FooterLink href="/case-studies">Case Studies</FooterLink>
+              <FooterLink href="/resources/guides">Guides</FooterLink>
+              <FooterLink href="/resources/videos">Videos</FooterLink>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 className="font-black text-lg mb-4">COMPANY</h3>
+            <ul className="space-y-2 font-mono text-sm">
+              <FooterLink href="/about">About Us</FooterLink>
+              <FooterLink href="/pricing">Pricing</FooterLink>
+              <FooterLink href="/contact">Contact</FooterLink>
+              <FooterLink href="/careers">Careers</FooterLink>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t-2 border-background pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-mono text-sm opacity-70">
+            © 2025 Horizon by Excentrix. Built different.
+          </p>
+          <div className="flex gap-6 font-mono text-sm">
+            <Link href="/privacy" className="hover:text-accent transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-accent transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/cookies" className="hover:text-accent transition-colors">
+              Cookie Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
+  )
+}
+
+function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      className="w-10 h-10 border-2 border-background flex items-center justify-center hover:bg-accent hover:text-foreground hover:border-accent transition-all"
+    >
+      {icon}
+    </a>
+  )
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <li>
+      <Link href={href} className="hover:text-accent transition-colors">
+        {children}
+      </Link>
+    </li>
   )
 }
