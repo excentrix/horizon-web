@@ -32,7 +32,11 @@ export default async function Page() {
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+          <h1>Knowledge Hub</h1>
+          <p className="text-xl text-muted-foreground">
+            Insights, guides, and research on engineering education, AI learning, and career growth.
+            Optimized for students and AI alike.
+          </p>
         </div>
       </div>
 
@@ -58,6 +62,7 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Posts`,
+    title: `Knowledge Hub | Excentrix`,
+    description: 'Insights and guides for engineering students. Optimized for the AI era.',
   }
 }

@@ -14,12 +14,17 @@ interface FeaturedResourcesProps {
   resources: Resource[]
 }
 
-const resourceTypeIcons = {
+const resourceTypeIcons: Record<string, React.ReactNode> = {
   ebook: <BookOpen className="w-6 h-6" />,
   video: <Video className="w-6 h-6" />,
   template: <FileText className="w-6 h-6" />,
-  guide: <FileText className="w-6 h-6" />,
+  'study-guide': <FileText className="w-6 h-6" />,
+  'cheat-sheet': <FileText className="w-6 h-6" />,
+  podcast: <Video className="w-6 h-6" />,
+  webinar: <Video className="w-6 h-6" />,
 }
+
+
 
 export function FeaturedResources({ resources }: FeaturedResourcesProps) {
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -130,8 +135,8 @@ function ResourceCard({ resource }: { resource: Resource }) {
       ? resource.thumbnail.url
       : null
 
-  const icon = resource.resourceType ? (
-    resourceTypeIcons[resource.resourceType as keyof typeof resourceTypeIcons]
+  const icon = resource.type ? (
+    resourceTypeIcons[resource.type] || <FileText className="w-6 h-6" />
   ) : (
     <FileText className="w-6 h-6" />
   )
@@ -160,7 +165,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
           <div className="flex items-center gap-2 mb-3">
             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">{icon}</div>
             <span className="text-sm font-medium text-gray-600 capitalize">
-              {resource.resourceType}
+              {resource.type?.replace('-', ' ')}
             </span>
           </div>
 

@@ -30,12 +30,12 @@ export function Footer() {
   }, [])
 
   return (
-    <footer ref={footerRef} className="bg-foreground text-background py-16 px-4">
+    <footer ref={footerRef} className="bg-background text-foreground py-16 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="border-4 border-background bg-accent px-4 py-2 rotate-[-2deg] shadow-harsh inline-block mb-4">
+            <div className="border-4 border-foreground bg-accent px-4 py-2 rotate-[-2deg] shadow-harsh inline-block mb-4">
               <span className="text-2xl font-black text-foreground">HORIZON</span>
             </div>
             <p className="font-mono text-sm mb-4 max-w-sm">

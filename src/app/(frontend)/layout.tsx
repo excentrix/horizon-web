@@ -16,8 +16,29 @@ import { draftMode } from 'next/headers'
 import "./globals.css"
 import { getServerSideURL } from '@/utilities/getURL'
 
+import Script from 'next/script'
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Excentrix',
+    url: getServerSideURL(),
+    logo: `${getServerSideURL()}/logo.png`, // Update with actual logo path
+    sameAs: [
+      'https://twitter.com/excentrix',
+      'https://linkedin.com/company/excentrix',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+91-0000000000', // Update with actual
+      contactType: 'customer service',
+      areaServed: 'IN',
+      availableLanguage: 'en',
+    },
+  }
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -25,6 +46,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <Script
+          id="json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body>
         <Providers>
