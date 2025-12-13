@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CollegeCombobox } from "@/components/ui/CollegeCombobox";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +18,7 @@ const Waitlist = () => {
   const [copied, setCopied] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
+  const [college, setCollege] = useState("");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -61,7 +64,7 @@ const Waitlist = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, college }),
       });
 
       const data = await res.json();
@@ -126,7 +129,7 @@ const Waitlist = () => {
               </p>
 
               <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <div className="w-full flex flex-col gap-4 mb-8">
                   <input
                     type="email"
                     value={email}
@@ -134,8 +137,15 @@ const Waitlist = () => {
                     placeholder="your.email@example.com"
                     required
                     disabled={isLoading}
-                    className="flex-1 h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
+                    className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
                   />
+                  
+                  <CollegeCombobox
+                    value={college}
+                    onChange={setCollege}
+                    placeholder="Select your college"
+                  />
+                  
                   <button
                     type="submit"
                     disabled={isLoading}

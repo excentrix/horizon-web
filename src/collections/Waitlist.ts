@@ -22,6 +22,13 @@ export const Waitlist: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'college',
+      type: 'text',
+      admin: {
+        description: 'College or University name',
+      },
+    },
+    {
       name: 'referralCode',
       type: 'text',
       unique: true,

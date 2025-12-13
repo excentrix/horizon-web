@@ -75,6 +75,7 @@ export interface Config {
     'case-studies': CaseStudy;
     resources: Resource;
     waitlist: Waitlist;
+    colleges: College;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -100,6 +101,7 @@ export interface Config {
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
     waitlist: WaitlistSelect<false> | WaitlistSelect<true>;
+    colleges: CollegesSelect<false> | CollegesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -924,9 +926,23 @@ export interface Waitlist {
   id: number;
   email: string;
   name?: string | null;
+  /**
+   * College or University name
+   */
+  college?: string | null;
   referralCode?: string | null;
   referredBy?: (number | null) | Waitlist;
   referralCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "colleges".
+ */
+export interface College {
+  id: number;
+  name: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1151,6 +1167,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'waitlist';
         value: number | Waitlist;
+      } | null)
+    | ({
+        relationTo: 'colleges';
+        value: number | College;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1610,9 +1630,19 @@ export interface ResourcesSelect<T extends boolean = true> {
 export interface WaitlistSelect<T extends boolean = true> {
   email?: T;
   name?: T;
+  college?: T;
   referralCode?: T;
   referredBy?: T;
   referralCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "colleges_select".
+ */
+export interface CollegesSelect<T extends boolean = true> {
+  name?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -89,15 +89,15 @@ export function Footer() {
             © 2025 Horizon by Excentrix. Built different.
           </p>
           <div className="flex gap-6 font-mono text-sm">
-            <Link href="/privacy" className="hover:text-accent transition-colors">
+            <Link href="/legal/privacy" className="hover:text-accent transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-accent transition-colors">
+            <Link href="/legal/terms" className="hover:text-accent transition-colors">
               Terms of Service
             </Link>
-            <Link href="/cookies" className="hover:text-accent transition-colors">
+            {/* <Link href="/legal/cookies" className="hover:text-accent transition-colors">
               Cookie Policy
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

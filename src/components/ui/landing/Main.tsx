@@ -23,7 +23,7 @@ function HomePage() {
       <Problem />
       <Solutions />
       <HowItWorks />
-      <SocialProof />
+      {/* <SocialProof /> */}
       <Waitlist />
       {/* <Footer /> */}
     </div>
