@@ -51,8 +51,28 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    image: post.meta?.image && typeof post.meta.image === 'object' && post.meta.image.url ? [post.meta.image.url] : [],
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    author: post.populatedAuthors?.map((author) => ({
+      '@type': 'Person',
+      name: author.name,
+    })) || [{
+      '@type': 'Organization',
+      name: 'Excentrix',
+    }],
+  }
+
   return (
     <article className="pt-16 pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <PageClient />
 
       {/* Allows redirects for valid pages too */}

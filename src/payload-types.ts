@@ -74,6 +74,8 @@ export interface Config {
     users: User;
     'case-studies': CaseStudy;
     resources: Resource;
+    waitlist: Waitlist;
+    colleges: College;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -98,6 +100,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    waitlist: WaitlistSelect<false> | WaitlistSelect<true>;
+    colleges: CollegesSelect<false> | CollegesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -205,7 +209,7 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | WaitlistBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -786,6 +790,17 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WaitlistBlock".
+ */
+export interface WaitlistBlock {
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'waitlist';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "case-studies".
  */
 export interface CaseStudy {
@@ -902,6 +917,34 @@ export interface Resource {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "waitlist".
+ */
+export interface Waitlist {
+  id: number;
+  email: string;
+  name?: string | null;
+  /**
+   * College or University name
+   */
+  college?: string | null;
+  referralCode?: string | null;
+  referredBy?: (number | null) | Waitlist;
+  referralCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "colleges".
+ */
+export interface College {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1122,6 +1165,14 @@ export interface PayloadLockedDocument {
         value: number | Resource;
       } | null)
     | ({
+        relationTo: 'waitlist';
+        value: number | Waitlist;
+      } | null)
+    | ({
+        relationTo: 'colleges';
+        value: number | College;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1219,6 +1270,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        waitlist?: T | WaitlistBlockSelect<T>;
       };
   meta?:
     | T
@@ -1315,6 +1367,16 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WaitlistBlock_select".
+ */
+export interface WaitlistBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
   id?: T;
   blockName?: T;
 }
@@ -1560,6 +1622,29 @@ export interface ResourcesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "waitlist_select".
+ */
+export interface WaitlistSelect<T extends boolean = true> {
+  email?: T;
+  name?: T;
+  college?: T;
+  referralCode?: T;
+  referredBy?: T;
+  referralCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "colleges_select".
+ */
+export interface CollegesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

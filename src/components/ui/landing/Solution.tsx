@@ -1,64 +1,70 @@
-'use client'
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-// import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
 // Solutions Section
 const Solutions = () => {
-  const sectionRef = useRef<HTMLElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([])
-  const footerRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   const solutions = [
     {
-      number: '01',
-      title: 'AI MENTOR',
-      subtitle: 'NOT A CHATBOT',
-      description: 'Proactive partner that actually gives a damn about your progress.',
+      number: "01",
+      title: "AI MENTOR",
+      subtitle: "NOT A CHATBOT",
+      description:
+        "Proactive partner that actually gives a damn about your progress.",
       features: [
-        'Simplifies goals → actionable plans',
-        'Tracks progress & kills slip-ups',
-        'Builds lasting habits (no BS)',
+        "Simplifies goals → actionable plans",
+        "Tracks progress & kills slip-ups",
+        "Builds lasting habits (no BS)",
       ],
-      accent: 'secondary',
+      accent: "secondary",
     },
     {
-      number: '02',
-      title: 'PERSONALIZED',
-      subtitle: 'LEARNING PATH',
-      description: 'No content dumps. No fluff. Just what YOU need, when you need it.',
+      number: "02",
+      title: "PERSONALIZED",
+      subtitle: "LEARNING PATH",
+      description:
+        "No content dumps. No fluff. Just what YOU need, when you need it.",
       features: [
-        'Tailored tasks with reasoning',
-        'Adapts after every attempt',
-        'Industry-aligned practices',
+        "Tailored tasks with reasoning",
+        "Adapts after every attempt",
+        "Industry-aligned practices",
       ],
-      accent: 'accent',
+      accent: "accent",
     },
     {
-      number: '03',
-      title: 'HOLISTIC',
-      subtitle: 'GRADING',
-      description: 'Show growth, not just grades. Build a portfolio that proves your worth.',
+      number: "03",
+      title: "HOLISTIC",
+      subtitle: "GRADING",
+      description:
+        "Show growth, not just grades. Build a portfolio that proves your worth.",
       features: [
-        'Timestamped artifacts & reflections',
-        'Insights for mentors & employers',
-        'Shareable outcome snapshot',
+        "Timestamped artifacts & reflections",
+        "Insights for mentors & employers",
+        "Shareable outcome snapshot",
       ],
-      accent: 'secondary',
+      accent: "secondary",
     },
     {
-      number: '04',
-      title: 'REAL',
-      subtitle: 'COMMUNITY',
-      description: 'Peer learning > solo gamification. Connect with people who get it.',
+      number: "04",
+      title: "REAL",
+      subtitle: "COMMUNITY",
+      description:
+        "Peer learning > solo gamification. Connect with people who get it.",
       features: [
-        'Safe circles for challenges',
-        'Connect with alumni & experts',
-        'Support when you need it',
+        "Safe circles for challenges",
+        "Connect with alumni & experts",
+        "Support when you need it",
       ],
-      accent: 'accent',
+      accent: "accent",
     },
-  ]
+  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -66,116 +72,116 @@ const Solutions = () => {
       gsap.from(headerRef.current, {
         scrollTrigger: {
           trigger: headerRef.current,
-          start: 'top 80%',
-          end: 'bottom 60%',
-          toggleActions: 'play none none reverse',
+          start: "top 80%",
+          end: "bottom 60%",
+          toggleActions: "play none none reverse",
         },
         y: 100,
         opacity: 0,
         rotation: -5,
         duration: 1,
-        ease: 'power3.out',
-      })
+        ease: "power3.out",
+      });
 
       // Card animations
       cardsRef.current.forEach((card, index) => {
-        if (!card) return
+        if (!card) return;
 
-        const isEven = index % 2 === 0
+        const isEven = index % 2 === 0;
 
         // Main card reveal
         gsap.from(card, {
           scrollTrigger: {
             trigger: card,
-            start: 'top 85%',
-            end: 'bottom 60%',
-            toggleActions: 'play none none reverse',
+            start: "top 85%",
+            end: "bottom 60%",
+            toggleActions: "play none none reverse",
           },
           x: isEven ? -100 : 100,
           y: 50,
           opacity: 0,
           rotation: isEven ? -8 : 8,
           duration: 1.2,
-          ease: 'power4.out',
-        })
+          ease: "power4.out",
+        });
 
         // Number reveal
-        const number = card.querySelector('.solution-number')
+        const number = card.querySelector(".solution-number");
         gsap.from(number, {
           scrollTrigger: {
             trigger: card,
-            start: 'top 85%',
+            start: "top 85%",
           },
           scale: 0,
           rotation: 180,
           duration: 0.8,
           delay: 0.3,
-          ease: 'back.out(2)',
-        })
+          ease: "back.out(2)",
+        });
 
         // Features stagger
-        const features = card.querySelectorAll('.feature-item')
+        const features = card.querySelectorAll(".feature-item");
         gsap.from(features, {
           scrollTrigger: {
             trigger: card,
-            start: 'top 75%',
+            start: "top 75%",
           },
           x: -30,
           opacity: 0,
           stagger: 0.15,
           duration: 0.6,
           delay: 0.5,
-          ease: 'power2.out',
-        })
+          ease: "power2.out",
+        });
 
         // Accent bar
-        const accentBar = card.querySelector('.accent-bar')
+        const accentBar = card.querySelector(".accent-bar");
         gsap.from(accentBar, {
           scrollTrigger: {
             trigger: card,
-            start: 'top 80%',
+            start: "top 80%",
           },
           scaleX: 0,
-          transformOrigin: 'left center',
+          transformOrigin: "left center",
           duration: 0.8,
           delay: 0.4,
-          ease: 'power3.inOut',
-        })
+          ease: "power3.inOut",
+        });
 
         // Hover micro-interaction
-        card.addEventListener('mouseenter', () => {
+        card.addEventListener("mouseenter", () => {
           gsap.to(card, {
             scale: 1.02,
             duration: 0.3,
-            ease: 'power2.out',
-          })
-        })
+            ease: "power2.out",
+          });
+        });
 
-        card.addEventListener('mouseleave', () => {
+        card.addEventListener("mouseleave", () => {
           gsap.to(card, {
             scale: 1,
             duration: 0.3,
-            ease: 'power2.out',
-          })
-        })
-      })
+            ease: "power2.out",
+          });
+        });
+      });
 
       // Footer animation
       gsap.from(footerRef.current, {
         scrollTrigger: {
           trigger: footerRef.current,
-          start: 'top 90%',
-          toggleActions: 'play none none reverse',
+          start: "top 90%",
+          toggleActions: "play none none reverse",
         },
         y: 50,
         opacity: 0,
         duration: 1,
-        ease: 'power3.out',
-      })
-    }, sectionRef)
+        ease: "power3.out",
+      });
+    }, sectionRef);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
@@ -194,7 +200,9 @@ const Solutions = () => {
           <div className="flex items-start gap-4 mb-6">
             <div className="w-2 h-24 bg-foreground" />
             <div>
-              <p className="font-mono text-sm mb-4 tracking-widest">SECTION_02</p>
+              <p className="font-mono text-sm mb-4 tracking-widest">
+                SECTION_02
+              </p>
               <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none mb-6">
                 HOW WE
                 <br />
@@ -214,8 +222,12 @@ const Solutions = () => {
           {solutions.map((solution, index) => (
             <div
               key={index}
-              ref={(el) => (cardsRef.current[index] = el)}
-              className={`relative ${index % 2 === 0 ? 'md:mr-12' : 'md:ml-12'}`}
+              ref={(el) => {
+                if (el) cardsRef.current[index] = el;
+              }}
+              className={`relative ${
+                index % 2 === 0 ? "md:mr-12" : "md:ml-12"
+              }`}
             >
               <div className="border-4 border-foreground bg-background p-8 md:p-12 shadow-[12px_12px_0px_hsl(var(--foreground))] relative transition-shadow duration-300 hover:shadow-[16px_16px_0px_hsl(var(--foreground))]">
                 {/* Large number - background */}
@@ -242,7 +254,9 @@ const Solutions = () => {
                     </div>
 
                     {/* Accent bar */}
-                    <div className={`accent-bar h-2 bg-${solution.accent} w-32`} />
+                    <div
+                      className={`accent-bar h-2 bg-${solution.accent} w-32`}
+                    />
                   </div>
 
                   {/* Description */}
@@ -253,9 +267,14 @@ const Solutions = () => {
                   {/* Features */}
                   <div className="space-y-4">
                     {solution.features.map((feature, i) => (
-                      <div key={i} className="feature-item flex items-start gap-4">
+                      <div
+                        key={i}
+                        className="feature-item flex items-start gap-4"
+                      >
                         <div className="w-1 h-1 bg-foreground mt-3 flex-shrink-0" />
-                        <p className="text-base md:text-lg font-mono">{feature}</p>
+                        <p className="text-base md:text-lg font-mono">
+                          {feature}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -279,26 +298,34 @@ const Solutions = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               <div>
                 <p className="font-black text-lg mb-1">WEB + WHATSAPP</p>
-                <p className="font-mono text-xs opacity-70">Platform agnostic</p>
+                <p className="font-mono text-xs opacity-70">
+                  Platform agnostic
+                </p>
               </div>
               <div>
                 <p className="font-black text-lg mb-1">MULTILINGUAL</p>
-                <p className="font-mono text-xs opacity-70">Your language, your way</p>
+                <p className="font-mono text-xs opacity-70">
+                  Your language, your way
+                </p>
               </div>
               <div>
                 <p className="font-black text-lg mb-1">PRIVACY-FIRST</p>
-                <p className="font-mono text-xs opacity-70">Your data stays yours</p>
+                <p className="font-mono text-xs opacity-70">
+                  Your data stays yours
+                </p>
               </div>
               <div>
                 <p className="font-black text-lg mb-1">RED-FLAG DETECT</p>
-                <p className="font-mono text-xs opacity-70">Mental health matters</p>
+                <p className="font-mono text-xs opacity-70">
+                  Mental health matters
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Solutions
+export default Solutions;

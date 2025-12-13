@@ -12,6 +12,8 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { CaseStudies } from './collections/CaseStudies'
+import { Waitlist } from './collections/Waitlist'
+import { Colleges } from './collections/Colleges'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -68,7 +70,7 @@ export default buildConfig({
     },
   }),
   cors: [getServerSideURL()].filter(Boolean),
-  collections: [Pages, Posts, Media, Categories, Users, CaseStudies, Resources],
+  collections: [Pages, Posts, Media, Categories, Users, CaseStudies, Resources, Waitlist, Colleges],
   globals: [Header, Footer, Settings],
   plugins: [
     ...plugins,

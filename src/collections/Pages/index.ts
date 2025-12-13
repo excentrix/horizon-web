@@ -21,6 +21,8 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 
+import { Waitlist } from '../../blocks/Waitlist/config'
+
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
   access: {
@@ -72,7 +74,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, Waitlist],
               required: true,
               admin: {
                 initCollapsed: true,
