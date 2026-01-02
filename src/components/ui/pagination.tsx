@@ -1,92 +1,80 @@
-import type { ButtonProps } from '@/components/ui/button'
+import React from 'react'
+import Link from 'next/link'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/utilities/ui'
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
-import * as React from 'react'
+interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  baseUrl: string
+}
 
-const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
-  <nav
-    aria-label="pagination"
-    className={cn('mx-auto flex w-full justify-center', className)}
-    role="navigation"
-    {...props}
-  />
-)
+export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps) {
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
 
-const PaginationContent: React.FC<
-  { ref?: React.Ref<HTMLUListElement> } & React.HTMLAttributes<HTMLUListElement>
-> = ({ className, ref, ...props }) => (
-  <ul className={cn('flex flex-row items-center gap-1', className)} ref={ref} {...props} />
-)
+  // Show only a subset of pages
+  const visiblePages = pages.filter((page) => {
+    if (page === 1 || page === totalPages) return true
+    if (page >= currentPage - 1 && page <= currentPage + 1) return true
+    return false
+  })
 
-const PaginationItem: React.FC<
-  { ref?: React.Ref<HTMLLIElement> } & React.HTMLAttributes<HTMLLIElement>
-> = ({ className, ref, ...props }) => <li className={cn('', className)} ref={ref} {...props} />
+  return (
+    <nav className="flex justify-center items-center gap-2">
+      {/* Previous Button */}
+      {currentPage > 1 ? (
+        <Link
+          href={`${baseUrl}?page=${currentPage - 1}`}
+          className="flex items-center gap-1 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Previous
+        </Link>
+      ) : (
+        <span className="flex items-center gap-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed">
+          <ChevronLeft className="w-4 h-4" />
+          Previous
+        </span>
+      )}
 
-type PaginationLinkProps = {
-  isActive?: boolean
-} & Pick<ButtonProps, 'size'> &
-  React.ComponentProps<'button'>
+      {/* Page Numbers */}
+      <div className="flex gap-2">
+        {visiblePages.map((page, index) => {
+          const prevPage = visiblePages[index - 1]
+          const showEllipsis = prevPage && page - prevPage > 1
 
-const PaginationLink = ({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) => (
-  <button
-    aria-current={isActive ? 'page' : undefined}
-    className={cn(
-      buttonVariants({
-        size,
-        variant: isActive ? 'outline' : 'ghost',
-      }),
-      className,
-    )}
-    {...props}
-  />
-)
+          return (
+            <React.Fragment key={page}>
+              {showEllipsis && <span className="px-4 py-2 text-gray-500">...</span>}
+              <Link
+                href={`${baseUrl}?page=${page}`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  currentPage === page
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {page}
+              </Link>
+            </React.Fragment>
+          )
+        })}
+      </div>
 
-const PaginationPrevious = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to previous page"
-    className={cn('gap-1 pl-2.5', className)}
-    size="default"
-    {...props}
-  >
-    <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
-  </PaginationLink>
-)
-
-const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to next page"
-    className={cn('gap-1 pr-2.5', className)}
-    size="default"
-    {...props}
-  >
-    <span>Next</span>
-    <ChevronRight className="h-4 w-4" />
-  </PaginationLink>
-)
-
-const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
-  <span
-    aria-hidden
-    className={cn('flex h-9 w-9 items-center justify-center', className)}
-    {...props}
-  >
-    <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">More pages</span>
-  </span>
-)
-
-export {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
+      {/* Next Button */}
+      {currentPage < totalPages ? (
+        <Link
+          href={`${baseUrl}?page=${currentPage + 1}`}
+          className="flex items-center gap-1 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+        >
+          Next
+          <ChevronRight className="w-4 h-4" />
+        </Link>
+      ) : (
+        <span className="flex items-center gap-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed">
+          Next
+          <ChevronRight className="w-4 h-4" />
+        </span>
+      )}
+    </nav>
+  )
 }
