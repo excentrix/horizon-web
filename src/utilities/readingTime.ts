@@ -20,9 +20,27 @@ export function calculateReadingTime(content: string): number {
   return seconds
 }
 
-/**
- * Get minimum required reading time (50% of estimated)
- */
 export function getMinimumReadingTime(estimatedSeconds: number): number {
   return Math.floor(estimatedSeconds * 0.5)
+}
+
+/**
+ * Format reading time string
+ */
+export function formatReadingTime(seconds: number): string {
+  const minutes = Math.ceil(seconds / 60)
+  return `${minutes} min read`
+}
+
+/**
+ * Extract plain text from Lexical JSON
+ */
+export function getLexicalText(node: any): string {
+  if (!node) return ''
+  if (typeof node === 'string') return node
+  if (Array.isArray(node)) return node.map(getLexicalText).join(' ')
+  if (node.text) return node.text
+  if (node.children) return getLexicalText(node.children)
+  if (node.root) return getLexicalText(node.root)
+  return ''
 }

@@ -12,6 +12,7 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getServerSideURL } from '@/utilities/getURL'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { ReadingTracker } from '@/components/ReadingTracker'
@@ -55,20 +56,42 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
+  const serverUrl = getServerSideURL()
+  const ogImage = post.meta?.image && typeof post.meta.image === 'object' && post.meta.image.url
+    ? post.meta.image.url
+    : (post.heroImage && typeof post.heroImage === 'object' && post.heroImage.url
+      ? post.heroImage.url
+      : `${serverUrl}/api/og?title=${encodeURIComponent(post.title)}`)
+
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.title,
-    image: post.meta?.image && typeof post.meta.image === 'object' && post.meta.image.url ? [post.meta.image.url] : [],
+    description: post.meta?.description || '',
+    image: [ogImage],
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
     author: post.populatedAuthors?.map((author) => ({
       '@type': 'Person',
-      name: author.name,
+      name: author.name || 'Anonymous',
+      url: author.name ? `${serverUrl}/authors/${author.name.toLowerCase().replace(/\s+/g, '-')}` : serverUrl,
     })) || [{
       '@type': 'Organization',
-      name: 'Excentrix',
+      name: 'Horizon',
+      url: serverUrl,
     }],
+    publisher: {
+      '@type': 'Organization',
+      name: 'Horizon',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${serverUrl}/logo.png`,
+      }
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${serverUrl}/posts/${post.slug}`,
+    }
   }
 
   return (

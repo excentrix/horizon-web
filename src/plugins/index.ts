@@ -6,22 +6,54 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { getLexicalText, calculateReadingTime, formatReadingTime } from '@/utilities/readingTime'
+import type { GenerateDescription, GenerateImage, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  return doc?.title ? `${doc.title} | Horizon` : 'Horizon'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
   const url = getServerSideURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
+}
+
+const generateDescription: GenerateDescription<Post | Page> = ({ doc }) => {
+  if (doc?.meta?.description) return doc.meta.description
+  
+  if ('content' in doc && doc.content) {
+    const text = getLexicalText(doc.content)
+    return text ? `${text.slice(0, 150)}...` : ''
+  }
+  
+  return ''
+}
+
+const generateImage: GenerateImage<Post | Page> = ({ doc }) => {
+  // 1. Return manual meta image if set (return ID for field population)
+  if (doc?.meta?.image) {
+    if (typeof doc.meta.image === 'object' && 'id' in doc.meta.image) {
+      return String(doc.meta.image.id)
+    }
+    return String(doc.meta.image)
+  }
+
+  // 2. Return hero image if available (return ID for field population)
+  if ('heroImage' in doc && doc.heroImage) {
+    if (typeof doc.heroImage === 'object' && 'id' in doc.heroImage) {
+      return String(doc.heroImage.id)
+    }
+    return String(doc.heroImage)
+  }
+
+  return ''
 }
 
 export const plugins: Plugin[] = [
@@ -54,6 +86,8 @@ export const plugins: Plugin[] = [
   seoPlugin({
     generateTitle,
     generateURL,
+    generateDescription,
+    generateImage,
   }),
   formBuilderPlugin({
     fields: {

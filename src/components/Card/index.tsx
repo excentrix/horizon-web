@@ -7,8 +7,10 @@ import React, { Fragment } from 'react'
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { calculateReadingTime, formatReadingTime } from '@/utilities/readingTime'
+import { formatDateTime } from '@/utilities/formatDateTime'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title' | 'populatedAuthors' | 'publishedAt' | 'content'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -21,63 +23,106 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
-  const { slug, categories, meta, title } = doc || {}
+  const { slug, categories, meta, title, populatedAuthors, publishedAt, content } = doc || {}
   const { description, image: metaImage } = meta || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
+  const sanitizedDescription = description?.replace(/\s/g, ' ')
   const href = `/${relationTo}/${slug}`
+
+  // Reading time
+  const readingTimeSeconds = content ? calculateReadingTime(JSON.stringify(content)) : 0
+  const readingTimeString = formatReadingTime(readingTimeSeconds)
+
+  const authorName = populatedAuthors?.[0]?.name || 'Anonymous'
+  const authorInitials = authorName ? authorName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'A'
 
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'group relative flex flex-col md:flex-row gap-6 md:gap-10 py-10 border-b border-border/60 last:border-b-0 transition-all duration-500 hover:bg-muted/[0.03] px-4 -mx-4 rounded-2xl',
         className,
       )}
       ref={card.ref}
     >
-      <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
-      </div>
-      <div className="p-4">
-        {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
+      <div className="flex-1 flex flex-col justify-between order-2 md:order-1">
+        <div>
+          {/* Author Header */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-primary/20 flex items-center justify-center text-[10px] font-bold text-accent-foreground border border-border/50 shadow-sm">
+              {authorInitials}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold hover:text-primary transition-colors cursor-pointer">
+                {authorName}
+              </span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
+                {publishedAt ? formatDateTime(publishedAt) : 'Draft'}
+              </span>
+            </div>
+          </div>
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
-              </div>
+          {/* Title and Description */}
+          <div className="mb-4">
+            <Link className="block group/title" href={href} ref={link.ref}>
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3 group-hover/title:text-primary transition-all duration-300 leading-tight">
+                {titleToUse}
+              </h2>
+            </Link>
+            {description && (
+              <p className="text-base text-muted-foreground/80 line-clamp-2 md:line-clamp-3 leading-relaxed font-normal">
+                {sanitizedDescription}
+              </p>
             )}
           </div>
-        )}
-        {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
+        </div>
+
+        {/* Footer info */}
+        <div className="flex items-center justify-between mt-6">
+          <div className="flex items-center gap-4">
+            {hasCategories && (
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">In</span>
+                <div className="px-3 py-1 rounded-full bg-muted/50 text-[10px] uppercase font-bold tracking-widest text-muted-foreground border border-border/30 hover:bg-muted hover:text-foreground transition-colors cursor-pointer">
+                  {typeof categories[0] === 'object' ? categories[0].title : 'Topic'}
+                </div>
+              </div>
+            )}
+            <div className="h-1 w-1 rounded-full bg-border" />
+            <span className="text-xs text-muted-foreground font-medium italic">
+              {readingTimeString}
+            </span>
           </div>
-        )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+
+          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
+            <span className="text-xs font-bold text-primary uppercase tracking-widest">
+              Read Story
+            </span>
+            <div className="w-8 h-8 rounded-full border border-primary/20 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm">
+              <span className="text-sm">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Image Thumbnail */}
+      <div className="w-full md:w-56 lg:w-64 shrink-0 order-1 md:order-2">
+        <div className="aspect-[4/3] md:aspect-square w-full relative rounded-2xl overflow-hidden bg-muted transition-all duration-700 group-hover:shadow-2xl group-hover:shadow-primary/5 group-hover:-translate-y-1">
+          {metaImage && typeof metaImage !== 'string' ? (
+            <Media
+              resource={metaImage}
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              fill
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/10 font-black italic text-5xl select-none">
+              HORIZON
+            </div>
+          )}
+          {/* Subtle overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        </div>
       </div>
     </article>
   )

@@ -666,9 +666,9 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
       },
     ],
     meta: {
-      description: 'An open-source website built with Payload and Next.js.',
+      description: 'The intelligent learning platform for modern engineering students.',
       image: heroImage.id,
-      title: 'Payload Website Template',
+      title: 'Horizon',
     },
     title: 'Home',
   }

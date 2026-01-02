@@ -13,10 +13,16 @@ export async function GET(req: NextRequest) {
   try {
     const payload = await getPayload({ config: configPromise })
     
+    // Parse postId if needed
+    let whereQuery: any = { post: { equals: postId } }
+    if (/^\d+$/.test(postId)) {
+        whereQuery = { post: { equals: parseInt(postId, 10) } }
+    }
+
     const comments = await payload.find({
       collection: 'comments',
       where: {
-        post: { equals: postId },
+        ...whereQuery,
         approved: { equals: true },
       },
       sort: '-createdAt',
@@ -60,12 +66,39 @@ export async function POST(req: NextRequest) {
     }
 
     const user = userQuery.docs[0]
+    
+    // Parse postId to number (Postgres numeric IDs)
+    let resolvedPostId: number
+    
+    if (typeof postId === 'number') {
+      resolvedPostId = postId
+    } else if (typeof postId === 'string' && /^\d+$/.test(postId)) {
+      resolvedPostId = parseInt(postId, 10)
+    } else {
+       return NextResponse.json({ error: 'Invalid Post ID format' }, { status: 400 })
+    }
+
+    // Verify post exists
+    try {
+      const post = await payload.findByID({
+        collection: 'posts',
+        id: resolvedPostId,
+      })
+
+      if (!post) {
+        console.error(`Post not found with ID: ${resolvedPostId}`)
+        return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+      }
+    } catch (error) {
+       console.error(`Error finding post with ID: ${resolvedPostId}`, error)
+       return NextResponse.json({ error: 'Invalid Post ID' }, { status: 400 })
+    }
 
     // Create comment
     const comment = await payload.create({
       collection: 'comments',
       data: {
-        post: postId,
+        post: resolvedPostId,
         author: user.name || email.split('@')[0],
         authorEmail: email,
         content: content.substring(0, 1000), // Limit length
