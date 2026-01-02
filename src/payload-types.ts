@@ -120,11 +120,13 @@ export interface Config {
     header: Header;
     footer: Footer;
     settings: Setting;
+    'referral-settings': ReferralSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    'referral-settings': ReferralSettingsSelect<false> | ReferralSettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -933,6 +935,14 @@ export interface Waitlist {
   referralCode?: string | null;
   referredBy?: (number | null) | Waitlist;
   referralCount?: number | null;
+  tokens?: number | null;
+  completedTasks?:
+    | {
+        taskSlug: string;
+        completedAt: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1634,6 +1644,14 @@ export interface WaitlistSelect<T extends boolean = true> {
   referralCode?: T;
   referredBy?: T;
   referralCount?: T;
+  tokens?: T;
+  completedTasks?:
+    | T
+    | {
+        taskSlug?: T;
+        completedAt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2021,6 +2039,43 @@ export interface Setting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "referral-settings".
+ */
+export interface ReferralSetting {
+  id: number;
+  tokenValuePerReferral: number;
+  /**
+   * Percentage of tokens the referrer gets when a referee completes a task
+   */
+  referralBonusPercentage: number;
+  milestones: {
+    /**
+     * Number of referrals required to unlock this reward
+     */
+    count: number;
+    reward: string;
+    description?: string | null;
+    image?: (number | null) | Media;
+    id?: string | null;
+  }[];
+  tasks?:
+    | {
+        /**
+         * Unique identifier for the task (e.g., "follow-twitter")
+         */
+        slug: string;
+        title: string;
+        description?: string | null;
+        rewardTokens: number;
+        verificationType?: ('click' | 'input') | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2106,6 +2161,36 @@ export interface SettingsSelect<T extends boolean = true> {
         linkText?: T;
         linkUrl?: T;
         backgroundColor?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "referral-settings_select".
+ */
+export interface ReferralSettingsSelect<T extends boolean = true> {
+  tokenValuePerReferral?: T;
+  referralBonusPercentage?: T;
+  milestones?:
+    | T
+    | {
+        count?: T;
+        reward?: T;
+        description?: T;
+        image?: T;
+        id?: T;
+      };
+  tasks?:
+    | T
+    | {
+        slug?: T;
+        title?: T;
+        description?: T;
+        rewardTokens?: T;
+        verificationType?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

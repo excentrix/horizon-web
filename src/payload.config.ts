@@ -21,6 +21,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { Settings } from './globals/Settings'
 import { Resources } from './collections/Resources'
+import { ReferralSettings } from './globals/ReferralSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -71,7 +72,7 @@ export default buildConfig({
   }),
   cors: [getServerSideURL()].filter(Boolean),
   collections: [Pages, Posts, Media, Categories, Users, CaseStudies, Resources, Waitlist, Colleges],
-  globals: [Header, Footer, Settings],
+  globals: [Header, Footer, Settings, ReferralSettings],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder

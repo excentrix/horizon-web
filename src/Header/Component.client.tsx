@@ -28,9 +28,16 @@ export const HeaderClient: React.FC = () => {
   }, [headerTheme])
 
   const [isOpen, setIsOpen] = useState(false)
+  const [hasJoined, setHasJoined] = useState(false)
   const navRef = useRef<HTMLElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
   const menuItemsRef = useRef<(HTMLAnchorElement | null)[]>([])
+
+  // Check if user has joined waitlist
+  useEffect(() => {
+    const email = localStorage.getItem('waitlist_email')
+    setHasJoined(!!email)
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -85,6 +92,7 @@ export const HeaderClient: React.FC = () => {
     { label: 'COMMUNITY', href: '/features/community' },
     { label: 'ABOUT', href: '/about' },
     { label: 'BLOG', href: '/posts' },
+    ...(hasJoined ? [{ label: 'DASHBOARD', href: '/wishlist' }] : []),
   ]
 
 
@@ -96,61 +104,61 @@ export const HeaderClient: React.FC = () => {
         </Link>
         <HeaderNav data={data} /> */}
         <nav
-      ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 bg-background border-b-4 border-foreground"
-    >
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div ref={logoRef} className="flex items-center gap-2">
-            <Link href="/" className="flex items-center">
-              <div className="border-4 border-foreground bg-secondary px-4 py-2 rotate-[-2deg] shadow-harsh">
-                <span className="text-2xl font-black">HORIZON</span>
+          ref={navRef}
+          className="fixed top-0 left-0 right-0 z-50 bg-background border-b-4 border-foreground"
+        >
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              {/* Logo */}
+              <div ref={logoRef} className="flex items-center gap-2">
+                <Link href="/" className="flex items-center">
+                  <div className="border-4 border-foreground bg-secondary px-4 py-2 rotate-[-2deg] shadow-harsh">
+                    <span className="text-2xl font-black">HORIZON</span>
+                  </div>
+                </Link>
               </div>
-            </Link>
-          </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item, index) => (
-              <Link
-                key={index}
-                href={item.href}
-                className="font-mono text-sm font-bold hover:text-accent transition-colors relative group"
+              {/* Desktop Menu */}
+              <div className="hidden md:flex items-center gap-8">
+                {navItems.map((item, index) => (
+                  <Link
+                    key={index}
+                    href={item.href}
+                    className="font-mono text-sm font-bold hover:text-accent transition-colors relative group"
+                  >
+                    {item.label}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
+                  </Link>
+                ))}
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="md:hidden w-12 h-12 border-4 border-foreground bg-secondary flex items-center justify-center"
               >
-                {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
-              </Link>
-            ))}
-          </div>
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden w-12 h-12 border-4 border-foreground bg-secondary flex items-center justify-center"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden mt-4 border-t-4 border-foreground pt-4">
-            {navItems.map((item, index) => (
-              <Link
-                key={index}
-                ref={(el) => { menuItemsRef.current[index] = el }}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="block py-3 font-mono text-lg font-bold hover:bg-accent hover:text-background transition-colors px-4 border-b-2 border-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {/* Mobile Menu */}
+            {isOpen && (
+              <div className="md:hidden mt-4 border-t-4 border-foreground pt-4">
+                {navItems.map((item, index) => (
+                  <Link
+                    key={index}
+                    ref={(el) => { menuItemsRef.current[index] = el }}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="block py-3 font-mono text-lg font-bold hover:bg-accent hover:text-background transition-colors px-4 border-b-2 border-foreground"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </nav>
+        </nav>
       </div>
     </header>
   )

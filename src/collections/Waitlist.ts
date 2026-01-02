@@ -64,5 +64,34 @@ export const Waitlist: CollectionConfig = {
         readOnly: true,
       },
     },
+    {
+      name: 'tokens',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'completedTasks',
+      type: 'array',
+      fields: [
+        {
+          name: 'taskSlug',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'completedAt',
+          type: 'date',
+          required: true,
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
   ],
 }

@@ -4,21 +4,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CollegeCombobox } from "@/components/ui/CollegeCombobox";
-
+import { joinWaitlist, getReferralSettings } from "@/app/(frontend)/waitlist/actions";
+import confetti from 'canvas-confetti';
+import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Waitlist Section
 const Waitlist = () => {
+  const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
-  const [referralLink, setReferralLink] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
   const [college, setCollege] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [alreadyJoined, setAlreadyJoined] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -35,71 +38,65 @@ const Waitlist = () => {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
-  }, []);
-
-  // Handle success animation when submitted state changes
-  useEffect(() => {
-    if (submitted) {
-      const ctx = gsap.context(() => {
-        gsap.from(".success-message", {
-          scale: 0,
-          rotation: 360,
-          duration: 0.8,
-          ease: "back.out(2)",
-        });
-      }, sectionRef);
-      return () => ctx.revert();
+    // Check if user already signed up
+    const savedEmail = localStorage.getItem('waitlist_email');
+    if (savedEmail) {
+      setAlreadyJoined(true);
     }
-  }, [submitted]);
+
+    // Check URL for referral code
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      if (ref) {
+        setReferralCode(ref);
+      }
+    }
+
+    return () => ctx.revert();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('college', college);
+    formData.append('name', email.split('@')[0]); // Fallback name
+    if (referralCode) {
+      formData.append('referralCode', referralCode);
+    }
+
     try {
-      const res = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, college }),
-      });
+      const result = await joinWaitlist(null, formData);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong');
+      if (result?.error) {
+        throw new Error(result.error);
       }
 
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      setReferralLink(`${origin}?ref=${data.referralCode}`);
+      if (result?.success && result.user) {
+        // Save to localStorage
+        localStorage.setItem('waitlist_email', result.user.email);
 
-      // Success animation
-      gsap.to(formRef.current, {
-        scale: 1.05,
-        duration: 0.2,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.inOut",
-        onComplete: () => {
-          setSubmitted(true);
-        },
-      });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // Fire confetti
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#FFD700', '#FFA500', '#ffffff'],
+        });
+
+        // Redirect to dashboard after brief delay
+        setTimeout(() => {
+          router.push('/wishlist');
+        }, 1500);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const copyToClipboard = () => {
-    if (referralLink) {
-      navigator.clipboard.writeText(referralLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -115,7 +112,29 @@ const Waitlist = () => {
 
       <div className="container mx-auto max-w-4xl relative z-10">
         <div ref={formRef} className="text-center">
-          {!submitted ? (
+          {alreadyJoined ? (
+            // Already joined state
+            <>
+              <div className="w-24 h-24 mx-auto mb-6 border-4 border-background bg-accent flex items-center justify-center text-5xl shadow-[4px_4px_0px_hsl(var(--background))]">
+                ✓
+              </div>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-none">
+                YOU&apos;RE ALREADY IN!
+              </h2>
+              <p className="text-xl md:text-2xl font-mono mb-8 max-w-2xl mx-auto">
+                You&apos;ve already joined the waitlist. Head to your dashboard to track your progress, earn tokens, and invite friends.
+              </p>
+
+              <button
+                onClick={() => router.push('/wishlist')}
+                className="inline-flex items-center gap-3 h-16 px-12 border-4 border-background bg-accent text-foreground font-black text-lg shadow-[8px_8px_0px_hsl(var(--background))] hover:shadow-[4px_4px_0px_hsl(var(--background))] transition-all active:shadow-none active:translate-x-1 active:translate-y-1"
+              >
+                GO TO DASHBOARD
+                <ArrowRight className="w-6 h-6" />
+              </button>
+            </>
+          ) : (
+            // Signup form
             <>
               <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-none">
                 READY TO
@@ -139,13 +158,27 @@ const Waitlist = () => {
                     disabled={isLoading}
                     className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
                   />
-                  
-                  <CollegeCombobox
-                    value={college}
-                    onChange={setCollege}
-                    placeholder="Select your college"
-                  />
-                  
+
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <CollegeCombobox
+                        value={college}
+                        onChange={setCollege}
+                        placeholder="Select your college"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={referralCode}
+                        onChange={(e) => setReferralCode(e.target.value)}
+                        placeholder="Referral Code (Optional)"
+                        disabled={isLoading}
+                        className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
+                      />
+                    </div>
+                  </div>
+
                   <button
                     type="submit"
                     disabled={isLoading}
@@ -162,36 +195,6 @@ const Waitlist = () => {
                 </p>
               </form>
             </>
-          ) : (
-            <div className="success-message">
-              <div className="w-32 h-32 mx-auto mb-8 border-4 border-background bg-accent flex items-center justify-center text-7xl">
-                ✓
-              </div>
-              <h3 className="text-4xl md:text-5xl font-black mb-4">
-                YOU&apos;RE IN!
-              </h3>
-              <p className="text-xl font-mono mb-6">
-                We&apos;ll be in touch soon. Get ready to learn differently.
-              </p>
-              
-              {referralLink && (
-                <div className="max-w-xl mx-auto bg-background/10 p-4 rounded border-2 border-background/20">
-                  <p className="text-sm font-mono mb-2 opacity-80">Share your unique link to bump your spot:</p>
-                  <div className="flex items-center gap-2 bg-background p-2 rounded">
-                    <code className="flex-1 text-foreground font-mono text-sm overflow-hidden text-ellipsis whitespace-nowrap text-left">
-                      {referralLink}
-                    </code>
-                    <button 
-                      onClick={copyToClipboard}
-                      className="p-2 hover:bg-accent/20 rounded transition-colors text-foreground"
-                      title="Copy link"
-                    >
-                      {copied ? "✓" : "Copy"}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           )}
         </div>
       </div>
