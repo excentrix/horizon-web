@@ -133,10 +133,11 @@ export default function WishlistDashboard() {
         )
     }
 
-    const milestones = settings?.milestones?.sort((a: any, b: any) => a.count - b.count) || []
-    const nextMilestone = milestones.find((m: any) => m.count > (user?.referralCount || 0))
+    // Token-based milestones (sorted by tokens required)
+    const milestones = settings?.milestones?.sort((a: any, b: any) => a.tokensRequired - b.tokensRequired) || []
+    const nextMilestone = milestones.find((m: any) => m.tokensRequired > (user?.tokens || 0))
     const progress = nextMilestone
-        ? ((user?.referralCount || 0) / nextMilestone.count) * 100
+        ? ((user?.tokens || 0) / nextMilestone.tokensRequired) * 100
         : 100
 
     const origin = typeof window !== 'undefined' ? window.location.origin : ''
@@ -215,7 +216,7 @@ export default function WishlistDashboard() {
                             </h2>
                             <div className="space-y-4">
                                 {milestones.map((milestone: any, index: number) => {
-                                    const isUnlocked = (user?.referralCount || 0) >= milestone.count
+                                    const isUnlocked = (user?.tokens || 0) >= milestone.tokensRequired
                                     return (
                                         <div
                                             key={index}
@@ -234,7 +235,7 @@ export default function WishlistDashboard() {
                                             </div>
                                             <div className="flex-1">
                                                 <h4 className="font-bold text-lg">{milestone.reward}</h4>
-                                                <p className="text-sm font-mono opacity-70">{milestone.count} Referrals</p>
+                                                <p className="text-sm font-mono opacity-70">{milestone.tokensRequired} Tokens Required</p>
                                             </div>
                                             {milestone.image && typeof milestone.image !== 'string' && (
                                                 <div className="w-16 h-16 border-2 border-foreground overflow-hidden bg-background">

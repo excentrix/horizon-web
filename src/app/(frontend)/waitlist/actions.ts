@@ -215,3 +215,93 @@ export async function getReferralSettings() {
   })
   return settings
 }
+
+export async function awardTokens(
+  email: string, 
+  activity: 'read' | 'like' | 'share' | 'comment',
+  postId: string
+) {
+  const payload = await getPayload({ config: configPromise })
+
+  try {
+    // Find user
+    const userQuery = await payload.find({
+      collection: 'waitlist',
+      where: { email: { equals: email } },
+    })
+
+    if (userQuery.docs.length === 0) {
+      return { error: 'User not found' }
+    }
+
+    const user = userQuery.docs[0]
+
+    // Get reward settings
+    const settings = await payload.findGlobal({ slug: 'referral-settings' })
+    const activityRewards = settings.activityRewards || {}
+
+    // Check if already completed this activity for this post
+    let alreadyRewarded = false
+    let activityField = ''
+    let timestampField = ''
+    let rewardAmount = 0
+
+    switch (activity) {
+      case 'read':
+        activityField = 'readPosts'
+        timestampField = 'readAt'
+        rewardAmount = activityRewards.readBlogPost || 5
+        alreadyRewarded = user.readPosts?.some((p: any) => p.postId === postId) || false
+        break
+      case 'like':
+        activityField = 'likedPosts'
+        timestampField = 'likedAt'
+        rewardAmount = activityRewards.likeBlogPost || 2
+        alreadyRewarded = user.likedPosts?.some((p: any) => p.postId === postId) || false
+        break
+      case 'share':
+        activityField = 'sharedPosts'
+        timestampField = 'sharedAt'
+        rewardAmount = activityRewards.shareBlogPost || 10
+        alreadyRewarded = user.sharedPosts?.some((p: any) => p.postId === postId) || false
+        break
+      case 'comment':
+        rewardAmount = activityRewards.commentOnPost || 15
+        // Comments are tracked separately, always award
+        break
+    }
+
+    if (alreadyRewarded) {
+      return { error: 'Already rewarded for this activity' }
+    }
+
+    // Prepare update data
+    const updateData: any = {
+      tokens: (user.tokens || 0) + rewardAmount,
+    }
+
+    // Add activity tracking (except for comments which are in separate collection)
+    if (activity !== 'comment' && activityField && timestampField) {
+      updateData[activityField] = [
+        ...(user[activityField] || []),
+        { postId, [timestampField]: new Date().toISOString() }
+      ]
+    }
+
+    // Update user
+    await payload.update({
+      collection: 'waitlist',
+      id: user.id,
+      data: updateData,
+    })
+
+    return { 
+      success: true, 
+      tokens: (user.tokens || 0) + rewardAmount,
+      rewarded: rewardAmount
+    }
+  } catch (error) {
+    console.error('Error awarding tokens:', error)
+    return { error: 'Failed to award tokens' }
+  }
+}

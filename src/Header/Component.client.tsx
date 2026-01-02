@@ -10,6 +10,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import { Menu, X } from 'lucide-react'
 
+import { TokenTracker } from '@/components/TokenTracker'
+
 export const HeaderClient: React.FC = () => {
   /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null)
@@ -124,7 +126,7 @@ export const HeaderClient: React.FC = () => {
                   <Link
                     key={index}
                     href={item.href}
-                    className="font-mono text-sm font-bold hover:text-accent transition-colors relative group"
+                    className="font-mono text-sm font-bold text-foreground hover:text-accent transition-colors relative group"
                   >
                     {item.label}
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
@@ -150,7 +152,7 @@ export const HeaderClient: React.FC = () => {
                     ref={(el) => { menuItemsRef.current[index] = el }}
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="block py-3 font-mono text-lg font-bold hover:bg-accent hover:text-background transition-colors px-4 border-b-2 border-foreground"
+                    className="block py-3 font-mono text-lg font-bold text-foreground hover:bg-accent hover:text-background transition-colors px-4 border-b-2 border-foreground"
                   >
                     {item.label}
                   </Link>

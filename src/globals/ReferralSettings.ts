@@ -24,18 +24,56 @@ export const ReferralSettings: GlobalConfig = {
       },
     },
     {
+      name: 'activityRewards',
+      type: 'group',
+      label: 'Activity Rewards',
+      fields: [
+        {
+          name: 'readBlogPost',
+          type: 'number',
+          defaultValue: 5,
+          label: 'Read Blog Post',
+          admin: {
+            description: 'Tokens awarded for reading a blog post (scroll + time)',
+          },
+        },
+        {
+          name: 'likeBlogPost',
+          type: 'number',
+          defaultValue: 2,
+          label: 'Like Blog Post',
+        },
+        {
+          name: 'shareBlogPost',
+          type: 'number',
+          defaultValue: 10,
+          label: 'Share Blog Post',
+        },
+        {
+          name: 'commentOnPost',
+          type: 'number',
+          defaultValue: 15,
+          label: 'Comment on Post',
+        },
+      ],
+    },
+    {
       name: 'milestones',
       type: 'array',
       required: true,
       minRows: 1,
+      label: 'Token Milestones',
+      admin: {
+        description: 'Rewards unlocked at specific token thresholds',
+      },
       fields: [
         {
-          name: 'count',
+          name: 'tokensRequired',
           type: 'number',
           required: true,
-          label: 'Referrals Needed',
+          label: 'Tokens Required',
           admin: {
-            description: 'Number of referrals required to unlock this reward',
+            description: 'Number of tokens required to unlock this reward',
           },
         },
         {

@@ -93,5 +93,68 @@ export const Waitlist: CollectionConfig = {
         readOnly: true,
       },
     },
+    {
+      name: 'readPosts',
+      type: 'array',
+      label: 'Posts Read',
+      fields: [
+        {
+          name: 'postId',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'readAt',
+          type: 'date',
+          required: true,
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'likedPosts',
+      type: 'array',
+      label: 'Posts Liked',
+      fields: [
+        {
+          name: 'postId',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'likedAt',
+          type: 'date',
+          required: true,
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'sharedPosts',
+      type: 'array',
+      label: 'Posts Shared',
+      fields: [
+        {
+          name: 'postId',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'sharedAt',
+          type: 'date',
+          required: true,
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
   ],
 }

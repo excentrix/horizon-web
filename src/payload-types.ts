@@ -76,6 +76,7 @@ export interface Config {
     resources: Resource;
     waitlist: Waitlist;
     colleges: College;
+    comments: Comment;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -102,6 +103,7 @@ export interface Config {
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
     waitlist: WaitlistSelect<false> | WaitlistSelect<true>;
     colleges: CollegesSelect<false> | CollegesSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -943,6 +945,27 @@ export interface Waitlist {
         id?: string | null;
       }[]
     | null;
+  readPosts?:
+    | {
+        postId: string;
+        readAt: string;
+        id?: string | null;
+      }[]
+    | null;
+  likedPosts?:
+    | {
+        postId: string;
+        likedAt: string;
+        id?: string | null;
+      }[]
+    | null;
+  sharedPosts?:
+    | {
+        postId: string;
+        sharedAt: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -953,6 +976,29 @@ export interface Waitlist {
 export interface College {
   id: number;
   name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: number;
+  post: number | Post;
+  /**
+   * Name from waitlist user
+   */
+  author: string;
+  /**
+   * Email from waitlist user
+   */
+  authorEmail: string;
+  content: string;
+  /**
+   * Toggle to moderate comments
+   */
+  approved?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1181,6 +1227,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'colleges';
         value: number | College;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: number | Comment;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1652,6 +1702,27 @@ export interface WaitlistSelect<T extends boolean = true> {
         completedAt?: T;
         id?: T;
       };
+  readPosts?:
+    | T
+    | {
+        postId?: T;
+        readAt?: T;
+        id?: T;
+      };
+  likedPosts?:
+    | T
+    | {
+        postId?: T;
+        likedAt?: T;
+        id?: T;
+      };
+  sharedPosts?:
+    | T
+    | {
+        postId?: T;
+        sharedAt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1661,6 +1732,19 @@ export interface WaitlistSelect<T extends boolean = true> {
  */
 export interface CollegesSelect<T extends boolean = true> {
   name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  post?: T;
+  author?: T;
+  authorEmail?: T;
+  content?: T;
+  approved?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2048,11 +2132,23 @@ export interface ReferralSetting {
    * Percentage of tokens the referrer gets when a referee completes a task
    */
   referralBonusPercentage: number;
+  activityRewards?: {
+    /**
+     * Tokens awarded for reading a blog post (scroll + time)
+     */
+    readBlogPost?: number | null;
+    likeBlogPost?: number | null;
+    shareBlogPost?: number | null;
+    commentOnPost?: number | null;
+  };
+  /**
+   * Rewards unlocked at specific token thresholds
+   */
   milestones: {
     /**
-     * Number of referrals required to unlock this reward
+     * Number of tokens required to unlock this reward
      */
-    count: number;
+    tokensRequired: number;
     reward: string;
     description?: string | null;
     image?: (number | null) | Media;
@@ -2173,10 +2269,18 @@ export interface SettingsSelect<T extends boolean = true> {
 export interface ReferralSettingsSelect<T extends boolean = true> {
   tokenValuePerReferral?: T;
   referralBonusPercentage?: T;
+  activityRewards?:
+    | T
+    | {
+        readBlogPost?: T;
+        likeBlogPost?: T;
+        shareBlogPost?: T;
+        commentOnPost?: T;
+      };
   milestones?:
     | T
     | {
-        count?: T;
+        tokensRequired?: T;
         reward?: T;
         description?: T;
         image?: T;

@@ -14,6 +14,10 @@ import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { ReadingTracker } from '@/components/ReadingTracker'
+import { LikeButton } from '@/components/blog/LikeButton'
+import { ShareButton } from '@/components/blog/ShareButton'
+import { CommentSection } from '@/components/blog/CommentSection'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -80,11 +84,27 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
+      {/* Reading Progress Tracker */}
+      <ReadingTracker
+        postId={post.id.toString()}
+        content={JSON.stringify(post.content)}
+      />
+
       <PostHero post={post} />
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
           <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
+
+          {/* Blog Interactions */}
+          <div className="max-w-[48rem] mx-auto mt-8 flex gap-4 flex-wrap">
+            <LikeButton postId={post.id.toString()} />
+            <ShareButton postId={post.id.toString()} postTitle={post.title} postSlug={post.slug!} />
+          </div>
+
+          {/* Comment Section */}
+          <CommentSection postId={post.id.toString()} />
+
           {post.relatedPosts && post.relatedPosts.length > 0 && (
             <RelatedPosts
               className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
