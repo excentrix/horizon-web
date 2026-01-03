@@ -69,19 +69,27 @@ const Solutions = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Header animation
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: "top 80%",
-          end: "bottom 60%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        headerRef.current,
+        {
+          y: 100,
+          opacity: 0,
+          rotation: -5,
         },
-        y: 100,
-        opacity: 0,
-        rotation: -5,
-        duration: 1,
-        ease: "power3.out",
-      });
+        {
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            end: "bottom 60%",
+            toggleActions: "play none none reverse",
+          },
+          y: 0,
+          opacity: 1,
+          rotation: 0,
+          duration: 1,
+          ease: "power3.out",
+        }
+      );
 
       // Card animations
       cardsRef.current.forEach((card, index) => {
@@ -90,63 +98,97 @@ const Solutions = () => {
         const isEven = index % 2 === 0;
 
         // Main card reveal
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            end: "bottom 60%",
-            toggleActions: "play none none reverse",
+        gsap.fromTo(
+          card,
+          {
+            x: isEven ? -100 : 100,
+            y: 50,
+            opacity: 0,
+            rotation: isEven ? -8 : 8,
           },
-          x: isEven ? -100 : 100,
-          y: 50,
-          opacity: 0,
-          rotation: isEven ? -8 : 8,
-          duration: 1.2,
-          ease: "power4.out",
-        });
+          {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              end: "bottom 60%",
+              toggleActions: "play none none reverse",
+            },
+            x: 0,
+            y: 0,
+            opacity: 1,
+            rotation: 0,
+            duration: 1.2,
+            ease: "power4.out",
+          }
+        );
 
         // Number reveal
         const number = card.querySelector(".solution-number");
-        gsap.from(number, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
+        gsap.fromTo(
+          number,
+          {
+            scale: 0,
+            rotation: 180,
+            opacity: 0,
           },
-          scale: 0,
-          rotation: 180,
-          duration: 0.8,
-          delay: 0.3,
-          ease: "back.out(2)",
-        });
+          {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            scale: 1,
+            rotation: 0,
+            opacity: 0.05,
+            duration: 0.8,
+            delay: 0.3,
+            ease: "back.out(2)",
+          }
+        );
 
         // Features stagger
         const features = card.querySelectorAll(".feature-item");
-        gsap.from(features, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 75%",
+        gsap.fromTo(
+          features,
+          {
+            x: -30,
+            opacity: 0,
           },
-          x: -30,
-          opacity: 0,
-          stagger: 0.15,
-          duration: 0.6,
-          delay: 0.5,
-          ease: "power2.out",
-        });
+          {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 75%",
+              toggleActions: "play none none reverse",
+            },
+            x: 0,
+            opacity: 1,
+            stagger: 0.15,
+            duration: 0.6,
+            delay: 0.5,
+            ease: "power2.out",
+          }
+        );
 
         // Accent bar
         const accentBar = card.querySelector(".accent-bar");
-        gsap.from(accentBar, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
+        gsap.fromTo(
+          accentBar,
+          {
+            scaleX: 0,
           },
-          scaleX: 0,
-          transformOrigin: "left center",
-          duration: 0.8,
-          delay: 0.4,
-          ease: "power3.inOut",
-        });
+          {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+            scaleX: 1,
+            transformOrigin: "left center",
+            duration: 0.8,
+            delay: 0.4,
+            ease: "power3.inOut",
+          }
+        );
 
         // Hover micro-interaction
         card.addEventListener("mouseenter", () => {
@@ -167,17 +209,24 @@ const Solutions = () => {
       });
 
       // Footer animation
-      gsap.from(footerRef.current, {
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 90%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        footerRef.current,
+        {
+          y: 50,
+          opacity: 0,
         },
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-      });
+        {
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 90%",
+            toggleActions: "play none none reverse",
+          },
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -225,9 +274,8 @@ const Solutions = () => {
               ref={(el) => {
                 if (el) cardsRef.current[index] = el;
               }}
-              className={`relative ${
-                index % 2 === 0 ? "md:mr-12" : "md:ml-12"
-              }`}
+              className={`relative ${index % 2 === 0 ? "md:mr-12" : "md:ml-12"
+                }`}
             >
               <div className="border-4 border-foreground bg-background p-8 md:p-12 shadow-[12px_12px_0px_hsl(var(--foreground))] relative transition-shadow duration-300 hover:shadow-[16px_16px_0px_hsl(var(--foreground))]">
                 {/* Large number - background */}

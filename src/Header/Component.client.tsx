@@ -44,13 +44,20 @@ export const HeaderClient: React.FC = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Nav fade in on load
-      gsap.from(navRef.current, {
-        y: -100,
-        opacity: 0,
-        duration: 1,
-        ease: 'power3.out',
-        delay: 0.2,
-      })
+      gsap.fromTo(
+        navRef.current,
+        {
+          y: -100,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          delay: 0.2,
+        }
+      )
 
       // Logo glitch effect
       const glitchTimeline = gsap.timeline({ repeat: -1, repeatDelay: 5 })
@@ -78,13 +85,20 @@ export const HeaderClient: React.FC = () => {
 
   useEffect(() => {
     if (isOpen) {
-      gsap.from(menuItemsRef.current, {
-        x: 50,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.5,
-        ease: 'power3.out',
-      })
+      gsap.fromTo(
+        menuItemsRef.current,
+        {
+          x: 50,
+          opacity: 0,
+        },
+        {
+          x: 0,
+          opacity: 1,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: 'power3.out',
+        }
+      )
     }
   }, [isOpen])
 

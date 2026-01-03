@@ -38,15 +38,20 @@ export const Card: React.FC<{
   const authorName = populatedAuthors?.[0]?.name || 'Anonymous'
   const authorInitials = authorName ? authorName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'A'
 
+  const hasImage = metaImage && typeof metaImage !== 'string'
+
   return (
     <article
       className={cn(
-        'group relative flex flex-col md:flex-row gap-6 md:gap-10 py-10 border-b border-border/60 last:border-b-0 transition-all duration-500 hover:bg-muted/[0.03] px-4 -mx-4 rounded-2xl',
+        'group relative flex flex-col md:flex-row gap-6 md:gap-10 py-10 border-b border-border/60 last:border-b-0 transition-all duration-500 hover:bg-muted/[0.03] px-4 -mx-4 rounded-2xl overflow-hidden',
         className,
       )}
       ref={card.ref}
     >
-      <div className="flex-1 flex flex-col justify-between order-2 md:order-1">
+      {/* Accent Line on Hover */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 z-20" />
+
+      <div className="flex-1 flex flex-col justify-between order-2 md:order-1 relative z-10">
         <div>
           {/* Author Header */}
           <div className="flex items-center gap-3 mb-4">
@@ -71,7 +76,7 @@ export const Card: React.FC<{
               </h2>
             </Link>
             {description && (
-              <p className="text-base text-muted-foreground/80 line-clamp-2 md:line-clamp-3 leading-relaxed font-normal">
+              <p className="text-base text-muted-foreground line-clamp-2 md:line-clamp-3 leading-relaxed font-normal">
                 {sanitizedDescription}
               </p>
             )}
@@ -106,24 +111,20 @@ export const Card: React.FC<{
         </div>
       </div>
 
-      {/* Image Thumbnail */}
-      <div className="w-full md:w-56 lg:w-64 shrink-0 order-1 md:order-2">
-        <div className="aspect-[4/3] md:aspect-square w-full relative rounded-2xl overflow-hidden bg-muted transition-all duration-700 group-hover:shadow-2xl group-hover:shadow-primary/5 group-hover:-translate-y-1">
-          {metaImage && typeof metaImage !== 'string' ? (
+      {/* Image Thumbnail - Only shown if an image exists */}
+      {hasImage && (
+        <div className="w-full md:w-56 lg:w-64 shrink-0 order-1 md:order-2 relative z-10">
+          <div className="aspect-[4/3] md:aspect-square w-full relative rounded-2xl overflow-hidden bg-muted transition-all duration-700 group-hover:shadow-2xl group-hover:shadow-primary/5 group-hover:-translate-y-1">
             <Media
               resource={metaImage}
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               fill
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground/10 font-black italic text-5xl select-none">
-              HORIZON
-            </div>
-          )}
-          {/* Subtle overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Subtle overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
         </div>
-      </div>
+      )}
     </article>
   )
 }

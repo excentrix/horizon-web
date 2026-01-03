@@ -22,45 +22,71 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const chars = titleRef.current?.textContent?.split("") || [];
-      if (titleRef.current) {
-        titleRef.current.innerHTML = chars
-          .map(
-            (char) =>
-              `<span class="inline-block">${char === " " ? "&nbsp;" : char
-              }</span>`
-          )
-          .join("");
+      const lineBlocks = titleRef.current?.querySelectorAll('.line-block');
+
+      if (lineBlocks && lineBlocks.length > 0) {
+        lineBlocks.forEach(line => {
+          const chars = line.textContent?.split("") || [];
+          line.innerHTML = chars
+            .map(
+              (char) =>
+                `<span class="char inline-block">${char === " " ? "&nbsp;" : char}</span>`
+            )
+            .join("");
+        });
       }
 
-      gsap.from(titleRef.current?.children || [], {
-        y: 80,
-        opacity: 0,
-        rotationX: -80,
-        stagger: 0.02,
-        duration: 1,
-        delay: 0.2,
-        ease: "power3.out",
-      });
+      gsap.fromTo(
+        titleRef.current?.querySelectorAll('.char') || [],
+        {
+          y: 80,
+          opacity: 0,
+          rotationX: -80,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          rotationX: 0,
+          stagger: 0.02,
+          duration: 1,
+          delay: 0.2,
+          ease: "power3.out",
+        }
+      );
 
-      gsap.from(metaRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        delay: 0.6,
-        ease: "power3.out",
-      });
+      gsap.fromTo(
+        metaRef.current,
+        {
+          y: 40,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          delay: 0.6,
+          ease: "power3.out",
+        }
+      );
 
       statsRef.current.forEach((stat, index) => {
         if (!stat) return;
-        gsap.from(stat, {
-          scale: 0,
-          rotation: index % 2 === 0 ? -10 : 10,
-          opacity: 0,
-          duration: 0.8,
-          delay: 0.8 + index * 0.1,
-          ease: "back.out(2)",
-        });
+        gsap.fromTo(
+          stat,
+          {
+            scale: 0,
+            rotation: index % 2 === 0 ? -10 : 10,
+            opacity: 0,
+          },
+          {
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            duration: 0.8,
+            delay: 0.8 + index * 0.1,
+            ease: "back.out(2)",
+          }
+        );
       });
     }, sectionRef);
 
@@ -100,9 +126,9 @@ const Hero = () => {
               ref={titleRef}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.95] tracking-tight"
             >
-              <span className="block">Building the most</span>
-              <span className="block">human learning</span>
-              <span className="block">OS on Earth.</span>
+              <span className="line-block block whitespace-nowrap">Building the most</span>
+              <span className="line-block block whitespace-nowrap">human learning</span>
+              <span className="line-block block whitespace-nowrap">OS on Earth.</span>
             </h1>
           </div>
 
@@ -157,17 +183,26 @@ const Story = () => {
     const ctx = gsap.context(() => {
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
+        gsap.fromTo(
+          card,
+          {
+            y: 80,
+            opacity: 0,
+            rotation: index % 2 === 0 ? -4 : 4,
           },
-          y: 80,
-          opacity: 0,
-          rotation: index % 2 === 0 ? -4 : 4,
-          duration: 0.9,
-          ease: "power3.out",
-        });
+          {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+            y: 0,
+            opacity: 1,
+            rotation: 0,
+            duration: 0.9,
+            ease: "power3.out",
+          }
+        );
       });
     }, sectionRef);
 
@@ -254,16 +289,24 @@ const Mission = () => {
     const ctx = gsap.context(() => {
       pillarsRef.current.forEach((pillar) => {
         if (!pillar) return;
-        gsap.from(pillar, {
-          scrollTrigger: {
-            trigger: pillar,
-            start: "top 85%",
+        gsap.fromTo(
+          pillar,
+          {
+            x: -40,
+            opacity: 0,
           },
-          x: -40,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        });
+          {
+            scrollTrigger: {
+              trigger: pillar,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+          }
+        );
       });
     }, sectionRef);
 
@@ -344,17 +387,25 @@ const Founders = () => {
     const ctx = gsap.context(() => {
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
+        gsap.fromTo(
+          card,
+          {
+            y: 60,
+            opacity: 0,
           },
-          y: 60,
-          opacity: 0,
-          duration: 0.8,
-          delay: index * 0.1,
-          ease: "power3.out",
-        });
+          {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            delay: index * 0.1,
+            ease: "power3.out",
+          }
+        );
       });
     }, sectionRef);
 
@@ -465,16 +516,24 @@ const Contact = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".contact-card", {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
+      gsap.fromTo(
+        ".contact-card",
+        {
+          scale: 0.9,
+          opacity: 0,
         },
-        scale: 0.9,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-      });
+        {
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          scale: 1,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();

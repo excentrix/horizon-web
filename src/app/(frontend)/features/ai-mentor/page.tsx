@@ -22,124 +22,192 @@ export default function AIMentorPage() {
     const ctx = gsap.context(() => {
       // Hero content reveal
       if (heroContentRef.current) {
-        gsap.from(heroContentRef.current.children, {
-          y: 60,
-          opacity: 0,
-          duration: 1,
-          stagger: 0.2,
-          ease: 'power3.out',
-          delay: 0.3,
-        })
+        gsap.fromTo(
+          heroContentRef.current.children,
+          {
+            y: 60,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.2,
+            ease: 'power3.out',
+            delay: 0.3,
+          }
+        )
       }
 
       // Problem section
       if (problemRef.current) {
         const painPoints = problemRef.current.querySelectorAll('.pain-point')
-        gsap.from(painPoints, {
-          scrollTrigger: {
-            trigger: problemRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          painPoints,
+          {
+            x: -100,
+            opacity: 0,
           },
-          x: -100,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power3.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: problemRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+          }
+        )
       }
 
       // Solution highlight
       if (solutionRef.current) {
-        gsap.from(solutionRef.current.querySelector('.solution-box'), {
-          scrollTrigger: {
-            trigger: solutionRef.current,
-            start: 'top 70%',
-          },
-          scale: 0.8,
-          opacity: 0,
-          duration: 1,
-          ease: 'back.out(1.7)',
-        })
+        const solutionBox = solutionRef.current.querySelector('.solution-box')
+        if (solutionBox) {
+          gsap.fromTo(
+            solutionBox,
+            {
+              scale: 0.8,
+              opacity: 0,
+            },
+            {
+              scrollTrigger: {
+                trigger: solutionRef.current,
+                start: 'top 70%',
+                toggleActions: 'play none none reverse',
+              },
+              scale: 1,
+              opacity: 1,
+              duration: 1,
+              ease: 'back.out(1.7)',
+            }
+          )
+        }
       }
 
       // Features grid
       if (featuresRef.current) {
         const cards = featuresRef.current.querySelectorAll('.feature-card')
         cards.forEach((card, index) => {
-          gsap.from(card, {
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 80%',
+          gsap.fromTo(
+            card,
+            {
+              y: 80,
+              opacity: 0,
+              rotation: index % 2 === 0 ? -5 : 5,
             },
-            y: 80,
-            opacity: 0,
-            rotation: index % 2 === 0 ? -5 : 5,
-            duration: 0.8,
-            ease: 'power3.out',
-          })
+            {
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 80%',
+                toggleActions: 'play none none reverse',
+              },
+              y: 0,
+              opacity: 1,
+              rotation: 0,
+              duration: 0.8,
+              ease: 'power3.out',
+            }
+          )
         })
       }
 
       // Comparison table
       if (comparisonRef.current) {
         const rows = comparisonRef.current.querySelectorAll('.comparison-row')
-        gsap.from(rows, {
-          scrollTrigger: {
-            trigger: comparisonRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          rows,
+          {
+            x: -50,
+            opacity: 0,
           },
-          x: -50,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: comparisonRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            x: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power2.out',
+          }
+        )
       }
 
       // How it works timeline
       if (howItWorksRef.current) {
         const steps = howItWorksRef.current.querySelectorAll('.workflow-step')
         steps.forEach((step, index) => {
+          const stepNumber = step.querySelector('.step-number')
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: step,
               start: 'top 80%',
+              toggleActions: 'play none none reverse',
             },
           })
 
-          tl.from(step, {
-            x: index % 2 === 0 ? -100 : 100,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power3.out',
-          }).from(
-            step.querySelector('.step-number'),
+          tl.fromTo(
+            step,
             {
-              scale: 0,
-              rotation: 360,
-              duration: 0.6,
-              ease: 'back.out(2)',
+              x: index % 2 === 0 ? -100 : 100,
+              opacity: 0,
             },
-            '-=0.4'
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power3.out',
+            }
           )
+
+          if (stepNumber) {
+            tl.fromTo(
+              stepNumber,
+              {
+                scale: 0,
+                rotation: 360,
+              },
+              {
+                scale: 1,
+                rotation: 0,
+                duration: 0.6,
+                ease: 'back.out(2)',
+              },
+              '-=0.4'
+            )
+          }
         })
       }
 
       // Benefits cards
       if (benefitsRef.current) {
         const benefits = benefitsRef.current.querySelectorAll('.benefit-card')
-        gsap.set(benefits, { opacity: 1, y: 0 })
-        gsap.from(benefits, {
-          scrollTrigger: {
-            trigger: benefitsRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          benefits,
+          {
+            y: 60,
+            opacity: 0,
           },
-          y: 60,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: benefitsRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.15,
+            ease: 'power2.out',
+          }
+        )
       }
     })
 

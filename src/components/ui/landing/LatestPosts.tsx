@@ -22,29 +22,45 @@ export function LatestPosts({ posts }: LatestPostsProps) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Fade in header
-      gsap.from('.posts-header', {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top center+=100',
+      gsap.fromTo(
+        '.posts-header',
+        {
+          y: 50,
+          opacity: 0,
         },
-      })
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top center+=100',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
 
       // Stagger animation for posts
       if (postsRef.current) {
         const postCards = postsRef.current.children
-        gsap.from(postCards, {
-          x: -50,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: postsRef.current,
-            start: 'top center+=100',
+        gsap.fromTo(
+          postCards,
+          {
+            x: -50,
+            opacity: 0,
           },
-        })
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            scrollTrigger: {
+              trigger: postsRef.current,
+              start: 'top center+=100',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
       }
     }, sectionRef)
 

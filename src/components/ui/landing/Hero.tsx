@@ -23,35 +23,49 @@ const Hero = () => {
         titleRef.current.innerHTML = titleChars
           .map(
             (char) =>
-              `<span class="inline-block">${
-                char === " " ? "&nbsp;" : char
-              }</span>`
+              `<span class="inline-block">${char === " " ? "&nbsp;" : char}</span>`
           )
           .join("");
       }
 
-      tl.from(titleRef.current?.children || [], {
-        y: 100,
-        opacity: 0,
-        rotationX: -90,
-        stagger: 0.02,
-        duration: 1,
-        delay: 0.5,
-      })
-        .from(
+      tl.fromTo(
+        titleRef.current?.children || [],
+        {
+          y: 100,
+          opacity: 0,
+          rotationX: -90,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          rotationX: 0,
+          stagger: 0.02,
+          duration: 1,
+          delay: 0.5,
+        }
+      )
+        .fromTo(
           subtitleRef.current,
           {
             y: 50,
             opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
             duration: 1,
           },
           "-=0.5"
         )
-        .from(
+        .fromTo(
           ctaRef.current,
           {
             scale: 0,
             rotation: -180,
+          },
+          {
+            scale: 1,
+            rotation: 0,
             duration: 0.8,
             ease: "back.out(2)",
           },
@@ -94,6 +108,23 @@ const Hero = () => {
     return () => ctx.revert();
   }, []);
 
+  const handleScroll = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const element = document.querySelector(id);
+    if (element) {
+      const offset = 0; // Adjust if header is sticky
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -131,27 +162,42 @@ const Hero = () => {
             ref={ctaRef}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button className="group relative w-64 h-16 border-4 border-foreground bg-accent font-black text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_hsl(var(--foreground))] transition-all active:shadow-none active:translate-x-1 active:translate-y-1">
-              JOIN WAITLIST
-              <ArrowRight
-                className="inline ml-2 group-hover:translate-x-2 transition-transform"
-                size={20}
-              />
-            </button>
+            <a
+              href="#waitlist"
+              onClick={(e) => handleScroll(e, "#waitlist")}
+              className="block w-full sm:w-auto"
+            >
+              <button className="group relative w-full sm:w-64 h-16 border-4 border-foreground bg-accent font-black text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_hsl(var(--foreground))] transition-all active:shadow-none active:translate-x-1 active:translate-y-1">
+                JOIN WAITLIST
+                <ArrowRight
+                  className="inline ml-2 group-hover:translate-x-2 transition-transform"
+                  size={20}
+                />
+              </button>
+            </a>
 
-            <button className="w-64 h-16 border-4 border-foreground bg-background font-bold text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:bg-muted transition-all">
-              LEARN MORE
-            </button>
+            <a
+              href="#problem"
+              onClick={(e) => handleScroll(e, "#problem")}
+              className="block w-full sm:w-auto"
+            >
+              <button className="w-full sm:w-64 h-16 border-4 border-foreground bg-background font-bold text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:bg-muted transition-all">
+                LEARN MORE
+              </button>
+            </a>
           </div>
         </div>
       </div>
 
       <div
         ref={scrollRef}
-        className="absolute bottom-8   left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pt-10"
+        onClick={(e) => handleScroll(e, "#problem")}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pt-10 cursor-pointer group"
       >
-        <span className="font-mono text-xs tracking-widest">SCROLL</span>
-        <ChevronDown size={24} />
+        <span className="font-mono text-xs tracking-widest group-hover:text-accent transition-colors">
+          SCROLL
+        </span>
+        <ChevronDown size={24} className="group-hover:text-accent transition-colors" />
       </div>
     </section>
   );

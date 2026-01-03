@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Twitter, Linkedin, Instagram, Facebook, Youtube, MessageCircle } from 'lucide-react'
-import type { Settings } from '@/payload-types'
+import type { Setting } from '@/payload-types'
 
 gsap.registerPlugin(ScrollTrigger)
 
 interface FooterClientProps {
-    settings: Settings
+    settings: Setting
 }
 
 export function FooterClient({ settings }: FooterClientProps) {
@@ -18,17 +18,24 @@ export function FooterClient({ settings }: FooterClientProps) {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from(footerRef.current, {
-                scrollTrigger: {
-                    trigger: footerRef.current,
-                    start: 'top 95%',
-                    toggleActions: 'play none none reverse',
+            gsap.fromTo(
+                footerRef.current,
+                {
+                    y: 50,
+                    opacity: 0,
                 },
-                y: 50,
-                opacity: 0,
-                duration: 0.8,
-                ease: 'power3.out',
-            })
+                {
+                    scrollTrigger: {
+                        trigger: footerRef.current,
+                        start: 'top 95%',
+                        toggleActions: 'play none none reverse',
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                }
+            )
         }, footerRef)
 
         return () => ctx.revert()

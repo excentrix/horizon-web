@@ -25,17 +25,24 @@ const Waitlist = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(formRef.current, {
-        scrollTrigger: {
-          trigger: formRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        formRef.current,
+        {
+          scale: 0.8,
+          opacity: 0,
         },
-        scale: 0.8,
-        opacity: 0,
-        duration: 1,
-        ease: "back.out(1.7)",
-      });
+        {
+          scrollTrigger: {
+            trigger: formRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          scale: 1,
+          opacity: 1,
+          duration: 1,
+          ease: "back.out(1.7)",
+        }
+      );
     }, sectionRef);
 
     // Check if user already signed up

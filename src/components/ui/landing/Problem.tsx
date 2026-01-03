@@ -51,17 +51,24 @@ const Problem = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Header reveal
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        headerRef.current,
+        {
+          x: -100,
+          opacity: 0,
         },
-        x: -100,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-      });
+        {
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        }
+      );
 
       // Stats counter animation
       statsRef.current.forEach((stat, index) => {
@@ -72,12 +79,12 @@ const Problem = () => {
 
         const endValue = numberEl.textContent || "0";
         const numericValue = parseFloat(endValue.replace(/[^0-9.]/g, ""));
-        
+
         const suffix = endValue.includes("%")
           ? "%"
           : endValue.includes("x")
-          ? "x"
-          : "";
+            ? "x"
+            : "";
 
         // Create timeline for this stat
         const tl = gsap.timeline({
@@ -132,18 +139,25 @@ const Problem = () => {
       painPointsRef.current.forEach((point, index) => {
         if (!point) return;
 
-        gsap.from(point, {
-          scrollTrigger: {
-            trigger: point,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
+        gsap.fromTo(
+          point,
+          {
+            x: index % 2 === 0 ? -100 : 100,
+            opacity: 0,
           },
-          x: index % 2 === 0 ? -100 : 100,
-          opacity: 0,
-          duration: 0.8,
-          delay: index * 0.1,
-          ease: "power3.out",
-        });
+          {
+            scrollTrigger: {
+              trigger: point,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            delay: index * 0.1,
+            ease: "power3.out",
+          }
+        );
 
         // Glitch on hover
         point.addEventListener("mouseenter", () => {

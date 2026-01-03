@@ -14,15 +14,23 @@ export function CTASection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(contentRef.current, {
-        scale: 0.9,
-        opacity: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top center+=100',
+      gsap.fromTo(
+        contentRef.current,
+        {
+          scale: 0.9,
+          opacity: 0,
         },
-      })
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top center+=100',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
 
       // Floating animation for sparkles
       gsap.to('.sparkle', {

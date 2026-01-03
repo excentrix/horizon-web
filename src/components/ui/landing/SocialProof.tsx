@@ -42,31 +42,45 @@ const SocialProof = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Header animation
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        headerRef.current,
+        {
+          y: 50,
+          opacity: 0,
         },
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-      });
+        {
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        }
+      );
 
       // Cards stagger animation
-      gsap.from(cardsRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        cardsRef.current,
+        {
+          y: 100,
+          opacity: 0,
         },
-        y: 100,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: "back.out(1.7)",
-      });
+        {
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          },
+          y: 0,
+          opacity: 1,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: "back.out(1.7)",
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();

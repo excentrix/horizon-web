@@ -18,33 +18,49 @@ export default function CommunityPage() {
       // Why cards
       if (whyRef.current) {
         const cards = whyRef.current.querySelectorAll('.why-card')
-        gsap.from(cards, {
-          scrollTrigger: {
-            trigger: whyRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          cards,
+          {
+            x: -40,
+            opacity: 0,
           },
-          x: -40,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: whyRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            x: 0,
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.15,
+            ease: 'power2.out',
+          }
+        )
       }
 
       // Feature cards
       if (featuresRef.current) {
         const cards = featuresRef.current.querySelectorAll('.feature-card')
-        gsap.from(cards, {
-          scrollTrigger: {
-            trigger: featuresRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          cards,
+          {
+            y: 40,
+            opacity: 0,
           },
-          y: 40,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.12,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: featuresRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.12,
+            ease: 'power2.out',
+          }
+        )
       }
     })
 

@@ -14,18 +14,18 @@ import Hero from '@/components/ui/landing/Hero'
 gsap.registerPlugin(ScrollTrigger)
 import SocialProof from '@/components/ui/landing/SocialProof'
 
+
 // Main App Component
 function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* <Navigation /> */}
       <Hero />
       <Problem />
       <Solutions />
       <HowItWorks />
-      {/* <SocialProof /> */}
+      <SocialProof />
       <Waitlist />
-      {/* <Footer /> */}
+
     </div>
   )
 }

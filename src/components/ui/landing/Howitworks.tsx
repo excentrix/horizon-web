@@ -155,17 +155,24 @@ const HowItWorks = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Header
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
+      gsap.fromTo(
+        headerRef.current,
+        {
+          x: -100,
+          opacity: 0,
         },
-        x: -100,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-      });
+        {
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        }
+      );
 
       // Timeline progress bar
       if (progressRef.current) {
@@ -276,7 +283,7 @@ const HowItWorks = () => {
 
           // CTA reveals with precision
           const ctaTl = gsap.timeline({ delay: 0.4 });
-          
+
           // Corner brackets draw in
           const brackets = ctaRef.current?.querySelectorAll('.bracket');
           if (brackets) {
@@ -509,17 +516,15 @@ const HowItWorks = () => {
                 ref={(el) => {
                   if (el) stepsRef.current[index] = el;
                 }}
-                className={`relative flex flex-col md:flex-row items-center gap-8 ${
-                  index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                }`}
+                className={`relative flex flex-col md:flex-row items-center gap-8 ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  }`}
               >
                 {/* Content box */}
                 <div
-                  className={`flex-1 ${
-                    index % 2 === 0
+                  className={`flex-1 ${index % 2 === 0
                       ? "md:text-right md:pr-12"
                       : "md:text-left md:pl-12"
-                  }`}
+                    }`}
                 >
                   <div className="inline-block bg-background border-4 border-foreground p-8 md:p-10 shadow-[8px_8px_0px_hsl(var(--foreground))] max-w-md">
                     <div className="font-mono text-sm text-accent mb-2 tracking-widest">
@@ -544,14 +549,12 @@ const HowItWorks = () => {
 
                   {/* Connector dots */}
                   <div
-                    className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-12 h-1 bg-foreground ${
-                      index % 2 === 0 ? "right-full" : "left-full"
-                    }`}
+                    className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-12 h-1 bg-foreground ${index % 2 === 0 ? "right-full" : "left-full"
+                      }`}
                   >
                     <div
-                      className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-accent border-2 border-foreground rounded-full ${
-                        index % 2 === 0 ? "-right-1" : "-left-1"
-                      }`}
+                      className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-accent border-2 border-foreground rounded-full ${index % 2 === 0 ? "-right-1" : "-left-1"
+                        }`}
                     />
                   </div>
                 </div>

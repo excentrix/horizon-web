@@ -19,49 +19,73 @@ export default function HolisticGradingPage() {
       // Problem cards
       if (problemRef.current) {
         const cards = problemRef.current.querySelectorAll('.problem-card')
-        gsap.from(cards, {
-          scrollTrigger: {
-            trigger: problemRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          cards,
+          {
+            x: -40,
+            opacity: 0,
           },
-          x: -40,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: problemRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            x: 0,
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.15,
+            ease: 'power2.out',
+          }
+        )
       }
 
       // Comparison columns
       if (comparisonRef.current) {
         const cols = comparisonRef.current.querySelectorAll('.comparison-col')
-        gsap.from(cols, {
-          scrollTrigger: {
-            trigger: comparisonRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          cols,
+          {
+            y: 50,
+            opacity: 0,
           },
-          y: 50,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: comparisonRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: 'power2.out',
+          }
+        )
       }
 
       // Track cards
       if (trackRef.current) {
         const cards = trackRef.current.querySelectorAll('.track-card')
-        gsap.from(cards, {
-          scrollTrigger: {
-            trigger: trackRef.current,
-            start: 'top 75%',
+        gsap.fromTo(
+          cards,
+          {
+            y: 30,
+            opacity: 0,
           },
-          y: 30,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out',
-        })
+          {
+            scrollTrigger: {
+              trigger: trackRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power2.out',
+          }
+        )
       }
     })
 

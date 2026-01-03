@@ -21,35 +21,56 @@ export default function PageHero({ title, subtitle, variant = 'default' }: PageH
     const ctx = gsap.context(() => {
       // Title animation
       if (titleRef.current) {
-        gsap.from(titleRef.current, {
-          y: 50,
-          opacity: 0,
-          duration: 1,
-          ease: 'power3.out',
-        })
+        gsap.fromTo(
+          titleRef.current,
+          {
+            y: 50,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out',
+          }
+        )
       }
 
       // Subtitle animation
       if (subtitleRef.current) {
-        gsap.from(subtitleRef.current, {
-          y: 30,
-          opacity: 0,
-          duration: 1,
-          delay: 0.2,
-          ease: 'power3.out',
-        })
+        gsap.fromTo(
+          subtitleRef.current,
+          {
+            y: 30,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            delay: 0.2,
+            ease: 'power3.out',
+          }
+        )
       }
 
       // Background elements animation
       if (heroRef.current) {
         const bgElements = heroRef.current.querySelectorAll('.bg-element')
-        gsap.from(bgElements, {
-          scale: 0,
-          opacity: 0,
-          duration: 1.5,
-          stagger: 0.1,
-          ease: 'back.out(1.7)',
-        })
+        gsap.fromTo(
+          bgElements,
+          {
+            scale: 0,
+            opacity: 0,
+          },
+          {
+            scale: 1,
+            opacity: 1, // Adjusted from 0 to 1 based on use case, but previous code had opacity: 0 in from, meaning it animated TO current state.
+            duration: 1.5,
+            stagger: 0.1,
+            ease: 'back.out(1.7)',
+          }
+        )
       }
     }, heroRef)
 

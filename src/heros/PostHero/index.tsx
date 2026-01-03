@@ -33,7 +33,7 @@ export const PostHero: React.FC<{
         'text-foreground': !hasImage,
       })}>
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6 opacity-80">
+          <div className="uppercase text-sm mb-6 font-bold tracking-widest text-primary">
             {categories?.map((category, index) => {
               if (typeof category === 'object' && category !== null) {
                 const { title: categoryTitle } = category
@@ -54,26 +54,26 @@ export const PostHero: React.FC<{
           </div>
 
           <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">{title}</h1>
+            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">{title}</h1>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16 mb-8 opacity-90">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-16 mb-8 border-t border-border/20 pt-8">
             {hasAuthors && (
               <div className="flex flex-col gap-1">
-                <p className="text-xs uppercase tracking-wider opacity-70">Author</p>
-                <p className="font-medium">{formatAuthors(populatedAuthors)}</p>
+                <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground overline decoration-accent decoration-2 pt-1">Author</p>
+                <p className="font-bold text-lg">{formatAuthors(populatedAuthors)}</p>
               </div>
             )}
             {publishedAt && (
               <div className="flex flex-col gap-1">
-                <p className="text-xs uppercase tracking-wider opacity-70">Date Published</p>
-                <time className="font-medium" dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
+                <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground overline decoration-primary decoration-2 pt-1">Date Published</p>
+                <time className="font-bold text-lg" dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
               </div>
             )}
             {/* Reading Time */}
             <div className="flex flex-col gap-1">
-              <p className="text-xs uppercase tracking-wider opacity-70">Read Time</p>
-              <p className="font-medium">{readingTimeString}</p>
+              <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground overline decoration-accent decoration-2 pt-1">Read Time</p>
+              <p className="font-bold text-lg">{readingTimeString}</p>
             </div>
           </div>
 

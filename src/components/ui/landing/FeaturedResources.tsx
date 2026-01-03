@@ -33,29 +33,45 @@ export function FeaturedResources({ resources }: FeaturedResourcesProps) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Fade in header
-      gsap.from('.resources-header', {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top center+=100',
+      gsap.fromTo(
+        '.resources-header',
+        {
+          y: 50,
+          opacity: 0,
         },
-      })
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top center+=100',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
 
       // Stagger animation for resource cards
       if (gridRef.current) {
         const cards = gridRef.current.children
-        gsap.from(cards, {
-          y: 80,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.15,
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top center+=100',
+        gsap.fromTo(
+          cards,
+          {
+            y: 80,
+            opacity: 0,
           },
-        })
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: 'top center+=100',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
       }
     }, sectionRef)
 
