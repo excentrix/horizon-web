@@ -21,6 +21,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 import Script from 'next/script'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { Analytics } from '@vercel/analytics/next'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -67,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <Footer />
         </Providers>
+        <Analytics />
       </body>
     </html>
   )
