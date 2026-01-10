@@ -49,8 +49,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
         <Script
           id="json-ld"
           type="application/ld+json"
@@ -69,9 +67,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <Footer />
         </Providers>
-        {settings?.analytics?.googleAnalyticsId && (
-          <GoogleAnalytics gaId={settings.analytics.googleAnalyticsId} />
-        )}
       </body>
     </html>
   )
