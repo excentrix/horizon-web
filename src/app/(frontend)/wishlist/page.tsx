@@ -2,16 +2,17 @@
 
 import React, { useEffect, useState } from 'react'
 import { getReferralSettings, getWaitlistStatus, completeTask } from '@/app/(frontend)/waitlist/actions'
+import { Waitlist, ReferralSetting } from '@/payload-types'
 import { useRouter } from 'next/navigation'
-import { Loader2, Copy, Check, Trophy, Zap, Users, Star } from 'lucide-react'
+import { Loader2, Check, Trophy, Zap, Users, Star } from 'lucide-react'
 import { Media } from '@/components/Media'
 import confetti from 'canvas-confetti'
 import { cn } from '@/utilities/ui'
 
 export default function WishlistDashboard() {
     const router = useRouter()
-    const [user, setUser] = useState<any>(null)
-    const [settings, setSettings] = useState<any>(null)
+    const [user, setUser] = useState<Waitlist | null>(null)
+    const [settings, setSettings] = useState<ReferralSetting | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [copied, setCopied] = useState(false)
     const [completingTask, setCompletingTask] = useState<string | null>(null)
@@ -29,12 +30,12 @@ export default function WishlistDashboard() {
                 getReferralSettings(),
             ])
 
-            if (statusRes.success) {
-                setUser(statusRes.user)
+            if (statusRes.success && statusRes.user) {
+                setUser(statusRes.user as unknown as Waitlist)
             } else {
                 router.push('/')
             }
-            setSettings(settingsRes)
+            setSettings(settingsRes as unknown as ReferralSetting)
             setIsLoading(false)
         }
 
@@ -98,22 +99,25 @@ export default function WishlistDashboard() {
         textArea.remove()
     }
 
-    const handleTaskCompletion = async (taskSlug: string, type: string) => {
+    const handleTaskCompletion = async (taskSlug: string) => {
         if (completingTask) return
         setCompletingTask(taskSlug)
 
         // Simulate verification delay for effect
         await new Promise(resolve => setTimeout(resolve, 1000))
 
-        const res = await completeTask(user.email, taskSlug)
+        const res = await completeTask(user?.email || '', taskSlug)
 
         if (res.success) {
             // Update local state
-            setUser((prev: any) => ({
-                ...prev,
-                tokens: res.tokens,
-                completedTasks: [...(prev.completedTasks || []), { taskSlug, completedAt: new Date().toISOString() }]
-            }))
+            setUser((prev) => {
+                if (!prev) return null
+                return {
+                    ...prev,
+                    tokens: res.tokens,
+                    completedTasks: [...(prev.completedTasks || []), { taskSlug, completedAt: new Date().toISOString() }]
+                }
+            })
 
             confetti({
                 particleCount: 100,
@@ -134,8 +138,8 @@ export default function WishlistDashboard() {
     }
 
     // Token-based milestones (sorted by tokens required)
-    const milestones = settings?.milestones?.sort((a: any, b: any) => a.tokensRequired - b.tokensRequired) || []
-    const nextMilestone = milestones.find((m: any) => m.tokensRequired > (user?.tokens || 0))
+    const milestones = settings?.milestones?.sort((a: { tokensRequired: number }, b: { tokensRequired: number }) => a.tokensRequired - b.tokensRequired) || []
+    const nextMilestone = milestones.find((m: { tokensRequired: number }) => m.tokensRequired > (user?.tokens || 0))
     const progress = nextMilestone
         ? ((user?.tokens || 0) / nextMilestone.tokensRequired) * 100
         : 100
@@ -215,7 +219,7 @@ export default function WishlistDashboard() {
                                 MILESTONES
                             </h2>
                             <div className="space-y-4">
-                                {milestones.map((milestone: any, index: number) => {
+                                {milestones.map((milestone, index) => {
                                     const isUnlocked = (user?.tokens || 0) >= milestone.tokensRequired
                                     return (
                                         <div
@@ -261,8 +265,8 @@ export default function WishlistDashboard() {
                             </p>
 
                             <div className="space-y-4">
-                                {settings?.tasks?.map((task: any) => {
-                                    const isCompleted = user?.completedTasks?.some((t: any) => t.taskSlug === task.slug)
+                                {settings?.tasks?.map((task) => {
+                                    const isCompleted = user?.completedTasks?.some((t) => t.taskSlug === task.slug)
 
                                     return (
                                         <div
@@ -290,7 +294,7 @@ export default function WishlistDashboard() {
 
                                             {!isCompleted ? (
                                                 <button
-                                                    onClick={() => handleTaskCompletion(task.slug, task.verificationType)}
+                                                    onClick={() => handleTaskCompletion(task.slug)}
                                                     disabled={!!completingTask}
                                                     className="w-full py-3 bg-foreground text-background font-black uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50"
                                                 >
@@ -302,7 +306,7 @@ export default function WishlistDashboard() {
                                                 </button>
                                             ) : (
                                                 <div className="w-full py-3 bg-muted text-foreground font-mono text-center text-sm border-2 border-foreground/10">
-                                                    Completed on {new Date(user.completedTasks.find((t: any) => t.taskSlug === task.slug).completedAt).toLocaleDateString()}
+                                                    Completed on {user?.completedTasks?.find((t) => t.taskSlug === task.slug)?.completedAt ? new Date(user.completedTasks.find((t) => t.taskSlug === task.slug)!.completedAt).toLocaleDateString() : 'N/A'}
                                                 </div>
                                             )}
                                         </div>

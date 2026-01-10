@@ -10,7 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import { Menu, X } from 'lucide-react'
 
-import { TokenTracker } from '@/components/TokenTracker'
+
 
 export const HeaderClient: React.FC = () => {
   /* Storing the value in a useState to avoid hydration errors */

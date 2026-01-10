@@ -553,7 +553,7 @@ export default function AIMentorPage() {
                 </p>
                 <div className="border-l-4 border-secondary pl-4">
                   <p className="font-mono text-sm opacity-70">
-                    Example: "I understand loops but not recursion. Can you explain?"
+                    Example: &quot;I understand loops but not recursion. Can you explain?&quot;
                   </p>
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { cn } from '@/utilities/ui'
 import { getLexicalText } from '@/utilities/readingTime'
 
 interface AccessibilityControlsProps {
-    content: any
+    content: unknown
     onImage?: boolean
 }
 

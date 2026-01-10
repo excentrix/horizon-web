@@ -12,7 +12,7 @@ import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
-import { getLexicalText, calculateReadingTime, formatReadingTime } from '@/utilities/readingTime'
+import { getLexicalText } from '@/utilities/readingTime'
 import type { GenerateDescription, GenerateImage, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {

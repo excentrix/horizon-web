@@ -1,10 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { MessageCircle, Send } from 'lucide-react'
 import { awardTokens } from '@/app/(frontend)/waitlist/actions'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import confetti from 'canvas-confetti'
 
 interface Comment {
@@ -24,11 +22,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    fetchComments()
-  }, [postId])
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`/api/comments?postId=${postId}`)
       if (response.ok) {
@@ -40,11 +34,15 @@ export function CommentSection({ postId }: CommentSectionProps) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [postId])
+
+  useEffect(() => {
+    fetchComments()
+  }, [fetchComments])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const email = localStorage.getItem('waitlist_email')
     if (!email) {
       alert('Please join the waitlist to comment!')
@@ -69,8 +67,8 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
       if (response.ok) {
         // Award tokens
-       const tokenResult = await awardTokens(email, 'comment', postId)
-        
+        const tokenResult = await awardTokens(email, 'comment', postId)
+
         if (tokenResult.success) {
           confetti({
             particleCount: 80,
@@ -127,8 +125,8 @@ export function CommentSection({ postId }: CommentSectionProps) {
           <p className="text-center font-mono opacity-50">No comments yet. Be the first!</p>
         ) : (
           comments.map((comment) => (
-            <div 
-              key={comment.id} 
+            <div
+              key={comment.id}
               className="p-4 border-2 border-foreground bg-secondary/10"
             >
               <div className="flex justify-between items-start mb-2">

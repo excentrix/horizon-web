@@ -49,7 +49,7 @@ export const seed = async ({
       payload.updateGlobal({
         slug: global,
         data: {
-          // @ts-ignore
+          // @ts-expect-error - navItems is not in the type definition but required for seeding
           navItems: [],
         },
         depth: 0,

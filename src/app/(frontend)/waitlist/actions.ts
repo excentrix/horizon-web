@@ -2,9 +2,8 @@
 
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { revalidatePath } from 'next/cache'
 
-export async function joinWaitlist(prevState: any, formData: FormData) {
+export async function joinWaitlist(_prevState: unknown, formData: FormData) {
   const payload = await getPayload({ config: configPromise })
 
   const email = formData.get('email') as string
@@ -119,13 +118,13 @@ export async function completeTask(email: string, taskSlug: string) {
     const user = userQuery.docs[0]
 
     // Check if task already completed
-    if (user.completedTasks?.some((t: any) => t.taskSlug === taskSlug)) {
+    if (user.completedTasks?.some((t: { taskSlug: string }) => t.taskSlug === taskSlug)) {
       return { error: 'Task already completed' }
     }
 
     // Get task reward value
     const settings = await payload.findGlobal({ slug: 'referral-settings' })
-    const task = settings.tasks?.find((t: any) => t.slug === taskSlug)
+    const task = settings.tasks?.find((t: { slug: string }) => t.slug === taskSlug)
     
     if (!task) return { error: 'Task not found' }
 
@@ -251,19 +250,19 @@ export async function awardTokens(
         activityField = 'readPosts'
         timestampField = 'readAt'
         rewardAmount = activityRewards.readBlogPost || 5
-        alreadyRewarded = user.readPosts?.some((p: any) => p.postId === postId) || false
+        alreadyRewarded = user.readPosts?.some((p: { postId: string }) => p.postId === postId) || false
         break
       case 'like':
         activityField = 'likedPosts'
         timestampField = 'likedAt'
         rewardAmount = activityRewards.likeBlogPost || 2
-        alreadyRewarded = user.likedPosts?.some((p: any) => p.postId === postId) || false
+        alreadyRewarded = user.likedPosts?.some((p: { postId: string }) => p.postId === postId) || false
         break
       case 'share':
         activityField = 'sharedPosts'
         timestampField = 'sharedAt'
         rewardAmount = activityRewards.shareBlogPost || 10
-        alreadyRewarded = user.sharedPosts?.some((p: any) => p.postId === postId) || false
+        alreadyRewarded = user.sharedPosts?.some((p: { postId: string }) => p.postId === postId) || false
         break
       case 'comment':
         rewardAmount = activityRewards.commentOnPost || 15
@@ -276,14 +275,14 @@ export async function awardTokens(
     }
 
     // Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       tokens: (user.tokens || 0) + rewardAmount,
     }
 
     // Add activity tracking (except for comments which are in separate collection)
     if (activity !== 'comment' && activityField && timestampField) {
       updateData[activityField] = [
-        ...(user[activityField] || []),
+        ...(((user as unknown as Record<string, unknown[]>)[activityField]) || []),
         { postId, [timestampField]: new Date().toISOString() }
       ]
     }

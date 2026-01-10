@@ -35,12 +35,15 @@ export function formatReadingTime(seconds: number): string {
 /**
  * Extract plain text from Lexical JSON
  */
-export function getLexicalText(node: any): string {
+export function getLexicalText(node: unknown): string {
   if (!node) return ''
   if (typeof node === 'string') return node
   if (Array.isArray(node)) return node.map(getLexicalText).join(' ')
-  if (node.text) return node.text
-  if (node.children) return getLexicalText(node.children)
-  if (node.root) return getLexicalText(node.root)
+  if (typeof node === 'object' && node !== null) {
+     const n = node as Record<string, unknown>
+     if (typeof n.text === 'string') return n.text
+     if (n.children) return getLexicalText(n.children)
+     if (n.root) return getLexicalText(n.root)
+  }
   return ''
 }

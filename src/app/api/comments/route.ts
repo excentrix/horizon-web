@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const payload = await getPayload({ config: configPromise })
     
     // Parse postId if needed
-    let whereQuery: any = { post: { equals: postId } }
+    let whereQuery: Record<string, unknown> = { post: { equals: postId } }
     if (/^\d+$/.test(postId)) {
         whereQuery = { post: { equals: parseInt(postId, 10) } }
     }

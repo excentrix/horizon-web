@@ -2,15 +2,30 @@
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import React from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Category, Media as MediaType } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { calculateReadingTime, formatReadingTime } from '@/utilities/readingTime'
 import { formatDateTime } from '@/utilities/formatDateTime'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title' | 'populatedAuthors' | 'publishedAt' | 'content'>
+export type CardPostData = {
+  slug?: string | null
+  categories?: (number | string | Category | { title?: string | null })[] | null
+  meta?: {
+    title?: string | null
+    description?: string | null
+    image?: string | number | MediaType | null
+  } | null
+  title?: string | null
+  populatedAuthors?: {
+    id?: string | null
+    name?: string | null
+  }[] | null
+  publishedAt?: string | null
+  content?: Record<string, unknown> | null
+}
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -21,7 +36,7 @@ export const Card: React.FC<{
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showCategories, title: titleFromProps } = props
+  const { className, doc, relationTo, title: titleFromProps } = props
 
   const { slug, categories, meta, title, populatedAuthors, publishedAt, content } = doc || {}
   const { description, image: metaImage } = meta || {}
@@ -36,7 +51,7 @@ export const Card: React.FC<{
   const readingTimeString = formatReadingTime(readingTimeSeconds)
 
   const authorName = populatedAuthors?.[0]?.name || 'Anonymous'
-  const authorInitials = authorName ? authorName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'A'
+  const authorInitials = authorName ? authorName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : 'A'
 
   const hasImage = metaImage && typeof metaImage !== 'string'
 

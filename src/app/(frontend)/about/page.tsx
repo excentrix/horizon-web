@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from "react";
+import Link from 'next/link'
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -558,18 +559,18 @@ const Contact = () => {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <a
+            <Link
               href="/"
-              className="w-full sm:w-auto px-6 py-4 border-4 border-foreground bg-background font-black text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_hsl(var(--foreground))] transition-all"
+              className="w-full sm:w-auto px-6 py-4 border-4 border-foreground bg-background font-black text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_hsl(var(--foreground))] transition-all text-center"
             >
               BACK TO PRODUCT
-            </a>
-            <a
+            </Link>
+            <Link
               href="#founders"
               className="w-full sm:w-auto px-6 py-4 border-4 border-foreground bg-foreground text-background font-black text-lg shadow-[8px_8px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_hsl(var(--foreground))] transition-all flex items-center justify-center gap-2"
             >
               MEET US <ArrowUpRight size={18} />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

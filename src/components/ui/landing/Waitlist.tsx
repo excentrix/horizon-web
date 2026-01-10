@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CollegeCombobox } from "@/components/ui/CollegeCombobox";
-import { joinWaitlist, getReferralSettings } from "@/app/(frontend)/waitlist/actions";
+import { joinWaitlist } from "@/app/(frontend)/waitlist/actions";
 import confetti from 'canvas-confetti';
 import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
@@ -100,8 +100,8 @@ const Waitlist = () => {
           router.push('/wishlist');
         }, 1500);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setIsLoading(false);
     }

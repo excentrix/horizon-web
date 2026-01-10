@@ -11,7 +11,7 @@ interface ShareButtonProps {
     postSlug: string
 }
 
-export function ShareButton({ postId, postTitle, postSlug }: ShareButtonProps) {
+export function ShareButton({ postId, postTitle: _postTitle, postSlug }: ShareButtonProps) {
     const [isShared, setIsShared] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showCopied, setShowCopied] = useState(false)
@@ -39,7 +39,7 @@ export function ShareButton({ postId, postTitle, postSlug }: ShareButtonProps) {
             await navigator.clipboard.writeText(shareUrl)
             setShowCopied(true)
             setTimeout(() => setShowCopied(false), 2000)
-        } catch (err) {
+        } catch (_err) {
             // Fallback
             const textArea = document.createElement('textarea')
             textArea.value = shareUrl
