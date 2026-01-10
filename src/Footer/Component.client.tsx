@@ -27,13 +27,14 @@ export function FooterClient({ settings }: FooterClientProps) {
                 {
                     scrollTrigger: {
                         trigger: footerRef.current,
-                        start: 'top 95%',
-                        toggleActions: 'play none none reverse',
+                        start: 'top bottom', // Start when top of footer hits bottom of viewport
+                        toggleActions: 'play none none none', // Play once, don't reverse
                     },
                     y: 0,
                     opacity: 1,
                     duration: 0.8,
                     ease: 'power3.out',
+                    clearProps: 'all' // Clear props after animation to avoid interaction issues
                 }
             )
         }, footerRef)

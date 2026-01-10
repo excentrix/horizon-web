@@ -13,13 +13,18 @@ import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
+import { getCachedGlobal } from '@/utilities/getGlobals'
+import type { Setting } from '@/payload-types'
+
 import "./globals.css"
 import { getServerSideURL } from '@/utilities/getURL'
 
 import Script from 'next/script'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+  const settings = (await getCachedGlobal('settings', 1)()) as Setting
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -64,6 +69,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <Footer />
         </Providers>
+        {settings?.analytics?.googleAnalyticsId && (
+          <GoogleAnalytics gaId={settings.analytics.googleAnalyticsId} />
+        )}
       </body>
     </html>
   )

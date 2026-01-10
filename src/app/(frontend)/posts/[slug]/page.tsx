@@ -71,6 +71,7 @@ export default async function Post({ params: paramsPromise }: Args) {
     image: [ogImage],
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
+    keywords: post.categories?.map((cat) => (typeof cat === 'object' ? cat.title : cat)).join(', '),
     author: post.populatedAuthors?.map((author) => ({
       '@type': 'Person',
       name: author.name || 'Anonymous',
@@ -91,6 +92,29 @@ export default async function Post({ params: paramsPromise }: Args) {
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `${serverUrl}/posts/${post.slug}`,
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: serverUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Blog',
+            item: `${serverUrl}/posts`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: post.title,
+            item: `${serverUrl}/posts/${post.slug}`,
+          },
+        ],
+      },
     }
   }
 
