@@ -1,6 +1,8 @@
 import React from 'react'
 import { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Privacy Policy | Excentrix',
   description: 'Privacy Policy for Excentrix. Compliant with the Digital Personal Data Protection (DPDP) Act, 2023.',
