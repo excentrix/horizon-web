@@ -959,6 +959,10 @@ export interface Waitlist {
         id?: string | null;
       }[]
     | null;
+  status?: string | null;
+  inviteToken?: string | null;
+  inviteSentAt?: string | null;
+  registeredAt?: string | null;
   sharedPosts?:
     | {
         postId: string;
@@ -1716,6 +1720,10 @@ export interface WaitlistSelect<T extends boolean = true> {
         likedAt?: T;
         id?: T;
       };
+  status?: T;
+  inviteToken?: T;
+  inviteSentAt?: T;
+  registeredAt?: T;
   sharedPosts?:
     | T
     | {

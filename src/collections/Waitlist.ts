@@ -4,7 +4,7 @@ export const Waitlist: CollectionConfig = {
   slug: 'waitlist',
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['email', 'referralCount', 'createdAt'],
+    defaultColumns: ['email', 'status', 'referralCount', 'createdAt'],
   },
   access: {
     create: () => true,
@@ -130,6 +130,37 @@ export const Waitlist: CollectionConfig = {
           required: true,
         },
       ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'status',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'inviteToken',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'inviteSentAt',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'registeredAt',
+      type: 'date',
       admin: {
         position: 'sidebar',
         readOnly: true,
