@@ -69,6 +69,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      max: 1, // Crucial for Vercel/serverless to prevent connection exhaustion
     },
   }),
   cors: [getServerSideURL()].filter(Boolean),
