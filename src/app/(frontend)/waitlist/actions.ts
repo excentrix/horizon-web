@@ -8,11 +8,16 @@ export async function joinWaitlist(_prevState: unknown, formData: FormData) {
 
   const email = formData.get('email') as string
   const name = formData.get('name') as string
+  const phone = formData.get('phone') as string
   const college = formData.get('college') as string
   const referralCode = formData.get('referralCode') as string // Code from URL or manual input
 
   if (!email) {
     return { error: 'Email is required' }
+  }
+  
+  if (!phone) {
+    return { error: 'Phone number is required' }
   }
 
   try {
@@ -82,6 +87,7 @@ export async function joinWaitlist(_prevState: unknown, formData: FormData) {
       data: {
         email,
         name,
+        phone,
         college,
         referredBy: referredBy ? referredBy : undefined,
         tokens: 0,

@@ -19,6 +19,7 @@ const Waitlist = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [college, setCollege] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [alreadyJoined, setAlreadyJoined] = useState(false);
@@ -70,6 +71,7 @@ const Waitlist = () => {
 
     const formData = new FormData();
     formData.append('email', email);
+    formData.append('phone', phone);
     formData.append('college', college);
     formData.append('name', email.split('@')[0]); // Fallback name
     if (referralCode) {
@@ -161,6 +163,16 @@ const Waitlist = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your.email@example.com"
+                    required
+                    disabled={isLoading}
+                    className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
+                  />
+
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Your Phone Number"
                     required
                     disabled={isLoading}
                     className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"

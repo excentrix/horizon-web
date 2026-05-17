@@ -22,6 +22,11 @@ export const Waitlist: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'phone',
+      type: 'text',
+      required: true,
+    },
+    {
       name: 'college',
       type: 'text',
       admin: {
