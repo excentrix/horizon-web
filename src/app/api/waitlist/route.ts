@@ -5,7 +5,7 @@ import { Waitlist } from '../../../payload-types'
 
 export const POST = async (req: NextRequest) => {
   const payload = await getPayload({ config: configPromise })
-  const { email, name, college, referrer } = await req.json()
+  const { email, phone, name, college, referrer } = await req.json()
 
   try {
     // Check if email already exists
@@ -60,6 +60,7 @@ export const POST = async (req: NextRequest) => {
       collection: 'waitlist',
       data: {
         email,
+        phone,
         name,
         college,
         referredBy,
