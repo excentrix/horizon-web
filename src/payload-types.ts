@@ -930,6 +930,7 @@ export interface Waitlist {
   id: number;
   email: string;
   name?: string | null;
+  phone: string;
   /**
    * College or University name
    */
@@ -1694,6 +1695,7 @@ export interface ResourcesSelect<T extends boolean = true> {
 export interface WaitlistSelect<T extends boolean = true> {
   email?: T;
   name?: T;
+  phone?: T;
   college?: T;
   referralCode?: T;
   referredBy?: T;
