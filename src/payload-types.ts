@@ -2172,6 +2172,10 @@ export interface ReferralSetting {
         slug: string;
         title: string;
         description?: string | null;
+        /**
+         * URL to open in a new tab when the user clicks the task button (e.g., WhatsApp join link, form URL)
+         */
+        link?: string | null;
         rewardTokens: number;
         verificationType?: ('click' | 'input') | null;
         id?: string | null;
@@ -2302,6 +2306,7 @@ export interface ReferralSettingsSelect<T extends boolean = true> {
         slug?: T;
         title?: T;
         description?: T;
+        link?: T;
         rewardTokens?: T;
         verificationType?: T;
         id?: T;

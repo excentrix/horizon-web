@@ -99,9 +99,14 @@ export default function WishlistDashboard() {
         textArea.remove()
     }
 
-    const handleTaskCompletion = async (taskSlug: string) => {
+    const handleTaskCompletion = async (taskSlug: string, link?: string | null) => {
         if (completingTask) return
         setCompletingTask(taskSlug)
+
+        // If a link is provided, open it immediately in a new tab
+        if (link) {
+            window.open(link, '_blank')
+        }
 
         // Simulate verification delay for effect
         await new Promise(resolve => setTimeout(resolve, 1000))
@@ -294,7 +299,7 @@ export default function WishlistDashboard() {
 
                                             {!isCompleted ? (
                                                 <button
-                                                    onClick={() => handleTaskCompletion(task.slug)}
+                                                    onClick={() => handleTaskCompletion(task.slug, task.link)}
                                                     disabled={!!completingTask}
                                                     className="w-full py-3 bg-foreground text-background font-black uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50"
                                                 >

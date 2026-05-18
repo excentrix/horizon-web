@@ -69,6 +69,9 @@ const Waitlist = () => {
     setIsLoading(true);
     setError(null);
 
+    // Open a blank tab synchronously to bypass popup blockers
+    const whatsappTab = window.open('about:blank', '_blank');
+
     const formData = new FormData();
     formData.append('email', email);
     formData.append('phone', phone);
@@ -97,12 +100,18 @@ const Waitlist = () => {
           colors: ['#FFD700', '#FFA500', '#ffffff'],
         });
 
-        // Redirect to dashboard after brief delay
+        // Redirect the previously opened tab to WhatsApp
+        if (whatsappTab) {
+          whatsappTab.location.href = 'https://chat.whatsapp.com/BfaSjvXcJhBBw7WTBEH7Vg';
+        }
+
+        // Redirect current tab to dashboard after brief delay
         setTimeout(() => {
           router.push('/wishlist');
         }, 1500);
       }
     } catch (err: unknown) {
+      if (whatsappTab) whatsappTab.close();
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setIsLoading(false);

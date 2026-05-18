@@ -119,6 +119,14 @@ export const ReferralSettings: GlobalConfig = {
           type: 'textarea',
         },
         {
+          name: 'link',
+          type: 'text',
+          label: 'Action Link (Optional)',
+          admin: {
+            description: 'URL to open in a new tab when the user clicks the task button (e.g., WhatsApp join link, form URL)',
+          },
+        },
+        {
           name: 'rewardTokens',
           type: 'number',
           required: true,
