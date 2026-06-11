@@ -3,7 +3,6 @@
 import * as React from 'react'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -85,15 +84,15 @@ export function CollegeCombobox({ value, onChange, placeholder = 'Select your co
   return (
     <Popover open={open} onOpenChange={setOpen} >
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
+        <button
+          type="button"
           role="combobox"
           aria-expanded={open}
-          className="field-dark hover:bg-white/10 justify-between text-left font-normal data-[state=open]:border-energy/70"
+          className="field-dark flex items-center justify-between text-left data-[state=open]:border-energy/70"
         >
-          <span className={value ? '' : 'opacity-45'}>{value || placeholder}</span>
+          <span className={value ? 'truncate' : 'truncate opacity-45'}>{value || placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent
         className="w-[--radix-popover-trigger-width] min-w-72 rounded-xl border border-border bg-card p-0 text-card-foreground shadow-xl"
