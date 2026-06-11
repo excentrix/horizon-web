@@ -1,379 +1,88 @@
-import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+'use client'
 
-gsap.registerPlugin(ScrollTrigger);
+import React, { useRef } from 'react'
+import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
+import { useReveal } from '@/utilities/useReveal'
 
-// Solutions Section
+const pillars = [
+  {
+    n: '01',
+    title: 'A plan that plans itself',
+    body: 'Open the app and today’s tasks are already there — generated from your competency profile, your calendar and your last conversation. Learners spend their time learning, not deciding what to learn.',
+    href: '/features/ai-mentor',
+  },
+  {
+    n: '02',
+    title: 'Skip what you already know',
+    body: 'A diagnostic runs before your plan begins. Mastered gradient descent? Those tasks disappear. Already fluent in SQL? That week is gone. You start where you actually are — not where a template assumes.',
+    href: '/features/ai-mentor',
+  },
+  {
+    n: '03',
+    title: 'Remember it for good',
+    body: 'Spaced repetition (the same SM-2 algorithm behind Anki) is built directly into your plan. Five-minute reviews surface precisely when you’re about to forget — so learning stops evaporating.',
+    href: '/features/holistic-grading',
+  },
+  {
+    n: '04',
+    title: 'Proof, not certificates',
+    body: 'Every task ties to real artifacts — projects, repositories, written analyses — verified by AI, scored for quality and published to a portfolio a hiring manager can actually evaluate.',
+    href: '/features/holistic-grading',
+  },
+]
+
 const Solutions = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const footerRef = useRef<HTMLDivElement>(null);
-
-  const solutions = [
-    {
-      number: "01",
-      title: "AI MENTOR",
-      subtitle: "NOT A CHATBOT",
-      description:
-        "Proactive partner that actually gives a damn about your progress.",
-      features: [
-        "Simplifies goals → actionable plans",
-        "Tracks progress & kills slip-ups",
-        "Builds lasting habits (no BS)",
-      ],
-      accent: "secondary",
-    },
-    {
-      number: "02",
-      title: "PERSONALIZED",
-      subtitle: "LEARNING PATH",
-      description:
-        "No content dumps. No fluff. Just what YOU need, when you need it.",
-      features: [
-        "Tailored tasks with reasoning",
-        "Adapts after every attempt",
-        "Industry-aligned practices",
-      ],
-      accent: "accent",
-    },
-    {
-      number: "03",
-      title: "HOLISTIC",
-      subtitle: "GRADING",
-      description:
-        "Show growth, not just grades. Build a portfolio that proves your worth.",
-      features: [
-        "Timestamped artifacts & reflections",
-        "Insights for mentors & employers",
-        "Shareable outcome snapshot",
-      ],
-      accent: "secondary",
-    },
-    {
-      number: "04",
-      title: "REAL",
-      subtitle: "COMMUNITY",
-      description:
-        "Peer learning > solo gamification. Connect with people who get it.",
-      features: [
-        "Safe circles for challenges",
-        "Connect with alumni & experts",
-        "Support when you need it",
-      ],
-      accent: "accent",
-    },
-  ];
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Header animation
-      gsap.fromTo(
-        headerRef.current,
-        {
-          y: 100,
-          opacity: 0,
-          rotation: -5,
-        },
-        {
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 80%",
-            end: "bottom 60%",
-            toggleActions: "play none none reverse",
-          },
-          y: 0,
-          opacity: 1,
-          rotation: 0,
-          duration: 1,
-          ease: "power3.out",
-        }
-      );
-
-      // Card animations
-      cardsRef.current.forEach((card, index) => {
-        if (!card) return;
-
-        const isEven = index % 2 === 0;
-
-        // Main card reveal
-        gsap.fromTo(
-          card,
-          {
-            x: isEven ? -100 : 100,
-            y: 50,
-            opacity: 0,
-            rotation: isEven ? -8 : 8,
-          },
-          {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              end: "bottom 60%",
-              toggleActions: "play none none reverse",
-            },
-            x: 0,
-            y: 0,
-            opacity: 1,
-            rotation: 0,
-            duration: 1.2,
-            ease: "power4.out",
-          }
-        );
-
-        // Number reveal
-        const number = card.querySelector(".solution-number");
-        gsap.fromTo(
-          number,
-          {
-            scale: 0,
-            rotation: 180,
-            opacity: 0,
-          },
-          {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-            scale: 1,
-            rotation: 0,
-            opacity: 0.05,
-            duration: 0.8,
-            delay: 0.3,
-            ease: "back.out(2)",
-          }
-        );
-
-        // Features stagger
-        const features = card.querySelectorAll(".feature-item");
-        gsap.fromTo(
-          features,
-          {
-            x: -30,
-            opacity: 0,
-          },
-          {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 75%",
-              toggleActions: "play none none reverse",
-            },
-            x: 0,
-            opacity: 1,
-            stagger: 0.15,
-            duration: 0.6,
-            delay: 0.5,
-            ease: "power2.out",
-          }
-        );
-
-        // Accent bar
-        const accentBar = card.querySelector(".accent-bar");
-        gsap.fromTo(
-          accentBar,
-          {
-            scaleX: 0,
-          },
-          {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-            scaleX: 1,
-            transformOrigin: "left center",
-            duration: 0.8,
-            delay: 0.4,
-            ease: "power3.inOut",
-          }
-        );
-
-        // Hover micro-interaction
-        card.addEventListener("mouseenter", () => {
-          gsap.to(card, {
-            scale: 1.02,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        });
-
-        card.addEventListener("mouseleave", () => {
-          gsap.to(card, {
-            scale: 1,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        });
-      });
-
-      // Footer animation
-      gsap.fromTo(
-        footerRef.current,
-        {
-          y: 50,
-          opacity: 0,
-        },
-        {
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          },
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useRef<HTMLElement>(null)
+  useReveal(sectionRef)
 
   return (
-    <section
-      id="solution"
-      ref={sectionRef}
-      className="py-24 md:py-32 px-4 bg-muted relative overflow-hidden"
-    >
-      {/* Minimal background elements */}
-      <div className="absolute top-20 right-0 w-px h-full bg-foreground opacity-10" />
-      <div className="absolute top-0 left-1/4 w-px h-full bg-foreground opacity-10" />
-      <div className="absolute top-0 right-1/3 w-px h-full bg-foreground opacity-10" />
-
-      <div className="container mx-auto max-w-6xl relative z-10">
-        {/* Header */}
-        <div ref={headerRef} className="mb-20 md:mb-32">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="w-2 h-24 bg-foreground" />
-            <div>
-              <p className="font-mono text-sm mb-4 tracking-widest">
-                SECTION_02
-              </p>
-              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none mb-6">
-                HOW WE
-                <br />
-                FIX THIS
-              </h2>
-              <p className="text-xl md:text-2xl font-mono max-w-2xl border-l-4 border-foreground pl-6">
-                Four pillars. Zero bullshit.
-                <br />
-                Built for students who want results.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Cards */}
-        <div className="space-y-16 md:space-y-24">
-          {solutions.map((solution, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                if (el) cardsRef.current[index] = el;
-              }}
-              className={`relative ${index % 2 === 0 ? "md:mr-12" : "md:ml-12"
-                }`}
-            >
-              <div className="border-4 border-foreground bg-background p-8 md:p-12 shadow-[12px_12px_0px_hsl(var(--foreground))] relative transition-shadow duration-300 hover:shadow-[16px_16px_0px_hsl(var(--foreground))]">
-                {/* Large number - background */}
-                <div className="solution-number absolute top-0 right-0 text-[200px] md:text-[300px] font-black leading-none opacity-5 select-none pointer-events-none">
-                  {solution.number}
-                </div>
-
-                {/* Content */}
-                <div className="relative z-10">
-                  {/* Header section */}
-                  <div className="mb-8">
-                    <div className="flex items-baseline gap-4 mb-4">
-                      <span className="text-6xl md:text-8xl font-black tracking-tighter">
-                        {solution.number}
-                      </span>
-                      <div>
-                        <h3 className="text-3xl md:text-5xl font-black leading-none mb-1">
-                          {solution.title}
-                        </h3>
-                        <p className="text-xl md:text-2xl font-black opacity-50">
-                          {solution.subtitle}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Accent bar */}
-                    <div
-                      className={`accent-bar h-2 bg-${solution.accent} w-32`}
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-lg md:text-xl font-mono mb-8 max-w-2xl leading-relaxed">
-                    {solution.description}
-                  </p>
-
-                  {/* Features */}
-                  <div className="space-y-4">
-                    {solution.features.map((feature, i) => (
-                      <div
-                        key={i}
-                        className="feature-item flex items-start gap-4"
-                      >
-                        <div className="w-1 h-1 bg-foreground mt-3 flex-shrink-0" />
-                        <p className="text-base md:text-lg font-mono">
-                          {feature}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Corner accent */}
-                <div
-                  className={`absolute bottom-0 right-0 w-16 h-16 bg-${solution.accent} border-4 border-foreground`}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div ref={footerRef} className="mt-24 md:mt-32">
-          <div className="border-4 border-foreground bg-foreground text-background p-8 md:p-12">
-            <p className="font-mono text-xs md:text-sm mb-4 tracking-widest opacity-70">
-              TECH_STACK
+    <section id="solution" ref={sectionRef} className="bg-background py-28 md:py-36" aria-label="What Horizon does">
+      <div className="container">
+        <div className="mb-16 grid gap-6 md:grid-cols-2 md:items-end">
+          <div>
+            <p data-reveal className="eyebrow mb-5 flex items-center gap-2.5">
+              <span className="eyebrow-dot" />
+              what you get
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-              <div>
-                <p className="font-black text-lg mb-1">WEB + WHATSAPP</p>
-                <p className="font-mono text-xs opacity-70">
-                  Platform agnostic
-                </p>
-              </div>
-              <div>
-                <p className="font-black text-lg mb-1">MULTILINGUAL</p>
-                <p className="font-mono text-xs opacity-70">
-                  Your language, your way
-                </p>
-              </div>
-              <div>
-                <p className="font-black text-lg mb-1">PRIVACY-FIRST</p>
-                <p className="font-mono text-xs opacity-70">
-                  Your data stays yours
-                </p>
-              </div>
-              <div>
-                <p className="font-black text-lg mb-1">RED-FLAG DETECT</p>
-                <p className="font-mono text-xs opacity-70">
-                  Mental health matters
-                </p>
-              </div>
-            </div>
+            <h2 data-reveal className="display-lg">
+              One mentor.
+              <br />
+              Four promises.
+            </h2>
           </div>
+          <p data-reveal className="max-w-md text-lg leading-relaxed text-muted-foreground md:justify-self-end">
+            Not a course platform. Not a chatbot. A system that models you, then builds the
+            curriculum around the model — every day, every session, every task.
+          </p>
+        </div>
+
+        <div className="border-t border-border">
+          {pillars.map((p) => (
+            <Link
+              key={p.n}
+              href={p.href}
+              data-reveal
+              className="group grid gap-4 border-b border-border py-9 transition-colors hover:bg-cream/40 md:grid-cols-[6rem_1fr_auto] md:items-start md:gap-8 md:py-11"
+            >
+              <span className="font-mono text-sm text-muted-foreground transition-colors group-hover:text-energy md:pt-2">
+                {p.n}
+              </span>
+              <span>
+                <span className="font-display block text-2xl font-semibold tracking-tight text-ink md:text-[2rem]">
+                  {p.title}
+                </span>
+                <span className="mt-3 block max-w-2xl leading-relaxed text-muted-foreground">
+                  {p.body}
+                </span>
+              </span>
+              <ArrowUpRight className="hidden size-6 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-ink md:mt-2 md:block" />
+            </Link>
+          ))}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Solutions;
+export default Solutions

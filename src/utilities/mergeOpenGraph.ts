@@ -3,14 +3,17 @@ import { getServerSideURL } from './getURL'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  description: 'Building the future of learning with AI-powered study tools and real student insights.',
+  description:
+    'The AI mentor that knows you. A living learning plan that adapts every day — and proof of skill you can show anyone.',
   images: [
     {
-      url: `${getServerSideURL()}/og-image.jpg`,
+      url: `${getServerSideURL()}/api/og?title=${encodeURIComponent('The AI mentor that knows you')}`,
+      width: 1200,
+      height: 630,
     },
   ],
   siteName: 'Horizon',
-  title: 'Horizon',
+  title: 'Horizon — The AI mentor that knows you',
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {

@@ -60,6 +60,12 @@ const config = {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
+        cream: 'hsl(var(--hz-cream))',
+        paper: 'hsl(var(--hz-paper))',
+        charcoal: 'hsl(var(--hz-charcoal))',
+        ink: 'hsl(var(--hz-ink))',
+        indigo: 'hsl(var(--hz-indigo))',
+        energy: 'hsl(var(--hz-energy))',
         background: 'hsl(var(--background))',
         border: 'hsla(var(--border))',
         card: {
@@ -94,8 +100,9 @@ const config = {
         warning: 'hsl(var(--warning))',
       },
       fontFamily: {
-        mono: ['var(--font-geist-mono)'],
-        sans: ['var(--font-geist-sans)'],
+        mono: ['var(--font-geist-mono)', 'ui-monospace', 'monospace'],
+        sans: ['var(--font-body)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-body)', 'ui-sans-serif', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {

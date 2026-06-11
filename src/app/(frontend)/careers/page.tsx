@@ -1,19 +1,18 @@
 import type { Metadata } from 'next'
+import { ComingSoon } from '@/components/marketing/ComingSoon'
 
 export const metadata: Metadata = {
-    title: 'Coming Soon | Horizon',
-    description: 'This feature is currently under development.',
+  title: 'Careers',
+  description: 'Join the team building Horizon — the adaptive AI mentorship platform by Excentrix. Open roles coming soon.',
+  alternates: { canonical: '/careers' },
 }
 
-export default function StubPage() {
-    return (
-        <div className="container py-24 min-h-[60vh] flex flex-col items-center justify-center text-center">
-            <div className="border-4 border-foreground bg-secondary px-8 py-4 rotate-[-2deg] shadow-harsh mb-8">
-                <h1 className="text-4xl md:text-6xl font-black text-foreground">COMING SOON</h1>
-            </div>
-            <p className="text-xl md:text-2xl font-mono max-w-2xl">
-                We are working hard to bring this feature to life. Stay tuned for updates.
-            </p>
-        </div>
-    )
+export default function Page() {
+  return (
+    <ComingSoon
+      eyebrow="careers"
+      title="Help us build the mentor that scales."
+      description="We are a small team obsessed with learning science and craft. Open roles will be posted here — until then, write to hello@excentrix.tech."
+    />
+  )
 }

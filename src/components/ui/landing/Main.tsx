@@ -1,32 +1,29 @@
 'use client'
-// import { getPayload } from 'payload'
-// import config from '@payload-config'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+import Hero from '@/components/ui/landing/Hero'
+import Problem from '@/components/ui/landing/Problem'
 import Solutions from '@/components/ui/landing/Solution'
 import HowItWorks from '@/components/ui/landing/Howitworks'
+import SocialProof from '@/components/ui/landing/SocialProof'
+import Faq from '@/components/ui/landing/Faq'
 import Waitlist from '@/components/ui/landing/Waitlist'
-import Problem from '@/components/ui/landing/Problem'
-import Hero from '@/components/ui/landing/Hero'
 
 gsap.registerPlugin(ScrollTrigger)
-import SocialProof from '@/components/ui/landing/SocialProof'
 
-
-// Main App Component
 function HomePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <main className="bg-background text-foreground">
       <Hero />
       <Problem />
       <Solutions />
       <HowItWorks />
       <SocialProof />
+      <Faq />
       <Waitlist />
-
-    </div>
+    </main>
   )
 }
 

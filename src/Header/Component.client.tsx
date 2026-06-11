@@ -1,80 +1,74 @@
 'use client'
-import { useHeaderTheme } from '@/providers/HeaderTheme'
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-// gsap.registerPlugin(ScrollTrigger)
+import { Menu, X, ArrowUpRight } from 'lucide-react'
 
-import { Menu, X } from 'lucide-react'
+import { HorizonWordmark } from '@/components/Logo/HorizonLogo'
 
+gsap.registerPlugin(ScrollTrigger)
 
+const navItems = [
+  { label: 'ai mentor', href: '/features/ai-mentor' },
+  { label: 'grading', href: '/features/holistic-grading' },
+  { label: 'community', href: '/features/community' },
+  { label: 'blog', href: '/posts' },
+  { label: 'about', href: '/about' },
+]
 
 export const HeaderClient: React.FC = () => {
-  /* Storing the value in a useState to avoid hydration errors */
-  const [theme, setTheme] = useState<string | null>(null)
-  const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
-
-
-  useEffect(() => {
-    setHeaderTheme(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
-
   const [isOpen, setIsOpen] = useState(false)
   const [hasJoined, setHasJoined] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const navRef = useRef<HTMLElement>(null)
-  const logoRef = useRef<HTMLDivElement>(null)
-  const menuItemsRef = useRef<(HTMLAnchorElement | null)[]>([])
+  const overlayRef = useRef<HTMLDivElement>(null)
 
-  // Check if user has joined waitlist
+  // Surface the dashboard link once the visitor is on the waitlist
   useEffect(() => {
-    const email = localStorage.getItem('waitlist_email')
-    setHasJoined(!!email)
+    setHasJoined(!!localStorage.getItem('waitlist_email'))
   }, [])
 
   useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    document.documentElement.style.overflow = isOpen ? 'hidden' : ''
+    if (isOpen && overlayRef.current) {
+      const links = overlayRef.current.querySelectorAll('[data-overlay-link]')
+      gsap.fromTo(
+        links,
+        { y: 48, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.06, duration: 0.6, ease: 'power3.out', delay: 0.1 },
+      )
+    }
+    return () => {
+      document.documentElement.style.overflow = ''
+    }
+  }, [isOpen])
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
-      // Nav fade in on load
       gsap.fromTo(
         navRef.current,
-        {
-          y: -100,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          delay: 0.2,
-        }
+        { y: -72, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.15 },
       )
 
-      // Logo glitch effect
-      const glitchTimeline = gsap.timeline({ repeat: -1, repeatDelay: 5 })
-      glitchTimeline
-        .to(logoRef.current, { x: -2, duration: 0.05 })
-        .to(logoRef.current, { x: 2, duration: 0.05 })
-        .to(logoRef.current, { x: 0, duration: 0.05 })
-
-      // Show/hide nav on scroll
       ScrollTrigger.create({
         start: 'top top',
         end: 'max',
         onUpdate: (self) => {
-          if (self.direction === -1) {
-            gsap.to(navRef.current, { y: 0, duration: 0.3 })
-          } else if (self.progress > 0.05) {
-            gsap.to(navRef.current, { y: -100, duration: 0.3 })
+          setScrolled(self.scroll() > 24)
+          if (self.direction === -1 || self.scroll() < 80) {
+            gsap.to(navRef.current, { y: 0, duration: 0.3, overwrite: 'auto' })
+          } else if (self.progress > 0.02) {
+            gsap.to(navRef.current, { y: -88, duration: 0.3, overwrite: 'auto' })
           }
         },
       })
@@ -83,99 +77,89 @@ export const HeaderClient: React.FC = () => {
     return () => ctx.revert()
   }, [])
 
-  useEffect(() => {
-    if (isOpen) {
-      gsap.fromTo(
-        menuItemsRef.current,
-        {
-          x: 50,
-          opacity: 0,
-        },
-        {
-          x: 0,
-          opacity: 1,
-          stagger: 0.1,
-          duration: 0.5,
-          ease: 'power3.out',
-        }
-      )
-    }
-  }, [isOpen])
-
-  const navItems = [
-    { label: 'AI MENTOR', href: '/features/ai-mentor' },
-    { label: 'GRADING', href: '/features/holistic-grading' },
-    { label: 'COMMUNITY', href: '/features/community' },
-    { label: 'ABOUT', href: '/about' },
-    { label: 'BLOG', href: '/posts' },
-    ...(hasJoined ? [{ label: 'DASHBOARD', href: '/wishlist' }] : []),
-  ]
-
+  const allItems = [...navItems, ...(hasJoined ? [{ label: 'dashboard', href: '/wishlist' }] : [])]
 
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
-        {/* <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
-        </Link>
-        <HeaderNav data={data} /> */}
-        <nav
-          ref={navRef}
-          className="fixed top-0 left-0 right-0 z-50 bg-background border-b-4 border-foreground"
-        >
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              {/* Logo */}
-              <div ref={logoRef} className="flex items-center gap-2">
-                <Link href="/" className="flex items-center">
-                  <div className="border-4 border-foreground bg-secondary px-4 py-2 rotate-[-2deg] shadow-harsh">
-                    <span className="text-2xl font-black">HORIZON</span>
-                  </div>
-                </Link>
-              </div>
+    <header className="relative z-50">
+      <nav
+        ref={navRef}
+        aria-label="Main"
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${
+          scrolled && !isOpen
+            ? 'border-b border-border bg-background/85 backdrop-blur-md'
+            : 'border-b border-transparent bg-transparent'
+        }`}
+      >
+        <div className="container flex h-16 items-center justify-between md:h-[4.5rem]">
+          <Link href="/" aria-label="Horizon — home" className="group relative z-50 text-foreground">
+            <HorizonWordmark markClassName="text-energy transition-transform duration-500 group-hover:-translate-y-0.5" />
+          </Link>
 
-              {/* Desktop Menu */}
-              <div className="hidden md:flex items-center gap-8">
-                {navItems.map((item, index) => (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    className="font-mono text-sm font-bold text-foreground hover:text-accent transition-colors relative group"
-                  >
-                    {item.label}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
-                  </Link>
-                ))}
-              </div>
-
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden w-12 h-12 border-4 border-foreground bg-secondary flex items-center justify-center"
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-7 lg:flex">
+            {allItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-[0.9375rem] font-medium lowercase tracking-tight transition-colors hover:text-ink ${
+                  pathname === item.href ? 'text-ink' : 'text-muted-foreground'
+                }`}
               >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-
-            {/* Mobile Menu */}
-            {isOpen && (
-              <div className="md:hidden mt-4 border-t-4 border-foreground pt-4">
-                {navItems.map((item, index) => (
-                  <Link
-                    key={index}
-                    ref={(el) => { menuItemsRef.current[index] = el }}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className="block py-3 font-mono text-lg font-bold text-foreground hover:bg-accent hover:text-background transition-colors px-4 border-b-2 border-foreground"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            )}
+                {item.label}
+              </Link>
+            ))}
           </div>
-        </nav>
-      </div>
+
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link href={hasJoined ? '/wishlist' : '/#waitlist'} className="btn-primary btn-md">
+              {hasJoined ? 'Your dashboard' : 'Join the waitlist'}
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </div>
+
+          {/* Mobile toggle */}
+          <button
+            type="button"
+            onClick={() => setIsOpen((v) => !v)}
+            aria-expanded={isOpen}
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            className="relative z-50 flex size-11 items-center justify-center rounded-full border border-border bg-background text-foreground lg:hidden"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          ref={overlayRef}
+          className="grain fixed inset-0 z-40 flex flex-col bg-background pt-24 lg:hidden"
+        >
+          <nav aria-label="Mobile" className="container flex flex-1 flex-col gap-1">
+            {allItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-overlay-link
+                className="font-display border-b border-border py-4 text-4xl font-semibold lowercase tracking-tight text-ink"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="container pb-10" data-overlay-link>
+            <Link
+              href={hasJoined ? '/wishlist' : '/#waitlist'}
+              onClick={() => setIsOpen(false)}
+              className="btn-primary btn-lg w-full"
+            >
+              {hasJoined ? 'Your dashboard' : 'Join the waitlist'}
+              <ArrowUpRight className="size-5" />
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

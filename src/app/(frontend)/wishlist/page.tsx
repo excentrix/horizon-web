@@ -4,331 +4,355 @@ import React, { useEffect, useState } from 'react'
 import { getReferralSettings, getWaitlistStatus, completeTask } from '@/app/(frontend)/waitlist/actions'
 import { Waitlist, ReferralSetting } from '@/payload-types'
 import { useRouter } from 'next/navigation'
-import { Loader2, Check, Trophy, Zap, Users, Star } from 'lucide-react'
+import { Loader2, Check, Trophy, Zap, Users, Star, Copy } from 'lucide-react'
 import { Media } from '@/components/Media'
 import confetti from 'canvas-confetti'
 import { cn } from '@/utilities/ui'
 
+const BRAND_CONFETTI = ['#EC5B13', '#5858CC', '#FAEDCD']
+
 export default function WishlistDashboard() {
-    const router = useRouter()
-    const [user, setUser] = useState<Waitlist | null>(null)
-    const [settings, setSettings] = useState<ReferralSetting | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [copied, setCopied] = useState(false)
-    const [completingTask, setCompletingTask] = useState<string | null>(null)
+  const router = useRouter()
+  const [user, setUser] = useState<Waitlist | null>(null)
+  const [settings, setSettings] = useState<ReferralSetting | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
+  const [completingTask, setCompletingTask] = useState<string | null>(null)
 
-    useEffect(() => {
-        const init = async () => {
-            const email = localStorage.getItem('waitlist_email')
-            if (!email) {
-                router.push('/')
-                return
-            }
+  useEffect(() => {
+    const init = async () => {
+      const email = localStorage.getItem('waitlist_email')
+      if (!email) {
+        router.push('/')
+        return
+      }
 
-            const [statusRes, settingsRes] = await Promise.all([
-                getWaitlistStatus(email),
-                getReferralSettings(),
-            ])
+      const [statusRes, settingsRes] = await Promise.all([getWaitlistStatus(email), getReferralSettings()])
 
-            if (statusRes.success && statusRes.user) {
-                setUser(statusRes.user as unknown as Waitlist)
-            } else {
-                router.push('/')
-            }
-            setSettings(settingsRes as unknown as ReferralSetting)
-            setIsLoading(false)
-        }
-
-        init()
-    }, [router])
-
-    const copyToClipboard = () => {
-        if (!user?.referralCode) return
-
-        const origin = typeof window !== 'undefined' ? window.location.origin : ''
-        const textToCopy = `${origin}?ref=${user.referralCode}`
-
-        // Try modern Clipboard API first
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(textToCopy)
-                .then(() => {
-                    setCopied(true)
-                    setTimeout(() => setCopied(false), 2000)
-                    confetti({
-                        particleCount: 30,
-                        spread: 50,
-                        origin: { y: 0.7 },
-                        colors: ['#FFD700', '#FFA500'],
-                    })
-                })
-                .catch(() => {
-                    // Fallback if clipboard API fails
-                    fallbackCopy(textToCopy)
-                })
-        } else {
-            // Fallback for older browsers
-            fallbackCopy(textToCopy)
-        }
+      if (statusRes.success && statusRes.user) {
+        setUser(statusRes.user as unknown as Waitlist)
+      } else {
+        router.push('/')
+      }
+      setSettings(settingsRes as unknown as ReferralSetting)
+      setIsLoading(false)
     }
 
-    const fallbackCopy = (text: string) => {
-        const textArea = document.createElement('textarea')
-        textArea.value = text
-        textArea.style.position = 'fixed'
-        textArea.style.left = '-999999px'
-        textArea.style.top = '-999999px'
-        document.body.appendChild(textArea)
-        textArea.focus()
-        textArea.select()
+    init()
+  }, [router])
 
-        try {
-            document.execCommand('copy')
-            setCopied(true)
-            setTimeout(() => setCopied(false), 2000)
-            confetti({
-                particleCount: 30,
-                spread: 50,
-                origin: { y: 0.7 },
-                colors: ['#FFD700', '#FFA500'],
-            })
-        } catch (err) {
-            console.error('Fallback copy failed:', err)
-            alert('Could not copy to clipboard. Please copy manually: ' + text)
-        }
-
-        textArea.remove()
-    }
-
-    const handleTaskCompletion = async (taskSlug: string, link?: string | null) => {
-        if (completingTask) return
-        setCompletingTask(taskSlug)
-
-        // If a link is provided, open it immediately in a new tab
-        if (link) {
-            window.open(link, '_blank')
-        }
-
-        // Simulate verification delay for effect
-        await new Promise(resolve => setTimeout(resolve, 1000))
-
-        const res = await completeTask(user?.email || '', taskSlug)
-
-        if (res.success) {
-            // Update local state
-            setUser((prev) => {
-                if (!prev) return null
-                return {
-                    ...prev,
-                    tokens: res.tokens,
-                    completedTasks: [...(prev.completedTasks || []), { taskSlug, completedAt: new Date().toISOString() }]
-                }
-            })
-
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-            })
-        }
-
-        setCompletingTask(null)
-    }
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
-                <Loader2 className="h-8 w-8 animate-spin text-foreground" />
-            </div>
-        )
-    }
-
-    // Token-based milestones (sorted by tokens required)
-    const milestones = settings?.milestones?.sort((a: { tokensRequired: number }, b: { tokensRequired: number }) => a.tokensRequired - b.tokensRequired) || []
-    const nextMilestone = milestones.find((m: { tokensRequired: number }) => m.tokensRequired > (user?.tokens || 0))
-    const progress = nextMilestone
-        ? ((user?.tokens || 0) / nextMilestone.tokensRequired) * 100
-        : 100
+  const copyToClipboard = () => {
+    if (!user?.referralCode) return
 
     const origin = typeof window !== 'undefined' ? window.location.origin : ''
-    const referralLink = `${origin}?ref=${user?.referralCode}`
+    const textToCopy = `${origin}?ref=${user.referralCode}`
 
+    // Try modern Clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard
+        .writeText(textToCopy)
+        .then(() => {
+          setCopied(true)
+          setTimeout(() => setCopied(false), 2000)
+          confetti({
+            particleCount: 30,
+            spread: 50,
+            origin: { y: 0.7 },
+            colors: BRAND_CONFETTI,
+          })
+        })
+        .catch(() => {
+          // Fallback if clipboard API fails
+          fallbackCopy(textToCopy)
+        })
+    } else {
+      // Fallback for older browsers
+      fallbackCopy(textToCopy)
+    }
+  }
+
+  const fallbackCopy = (text: string) => {
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'fixed'
+    textArea.style.left = '-999999px'
+    textArea.style.top = '-999999px'
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+
+    try {
+      document.execCommand('copy')
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+      confetti({
+        particleCount: 30,
+        spread: 50,
+        origin: { y: 0.7 },
+        colors: BRAND_CONFETTI,
+      })
+    } catch (err) {
+      console.error('Fallback copy failed:', err)
+      alert('Could not copy to clipboard. Please copy manually: ' + text)
+    }
+
+    textArea.remove()
+  }
+
+  const handleTaskCompletion = async (taskSlug: string, link?: string | null) => {
+    if (completingTask) return
+    setCompletingTask(taskSlug)
+
+    // If a link is provided, open it immediately in a new tab
+    if (link) {
+      window.open(link, '_blank')
+    }
+
+    // Simulate verification delay for effect
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const res = await completeTask(user?.email || '', taskSlug)
+
+    if (res.success) {
+      // Update local state
+      setUser((prev) => {
+        if (!prev) return null
+        return {
+          ...prev,
+          tokens: res.tokens,
+          completedTasks: [
+            ...(prev.completedTasks || []),
+            { taskSlug, completedAt: new Date().toISOString() },
+          ],
+        }
+      })
+
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: BRAND_CONFETTI,
+      })
+    }
+
+    setCompletingTask(null)
+  }
+
+  if (isLoading) {
     return (
-        <div className="min-h-screen bg-background text-foreground pt-24 pb-12 px-4">
-            <div className="container mx-auto max-w-5xl">
-
-                {/* Header Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    <div className="p-6 border-4 border-foreground bg-card shadow-[8px_8px_0px_hsl(var(--foreground))]">
-                        <div className="flex items-center gap-3 mb-2">
-                            <Trophy className="w-6 h-6 text-accent" />
-                            <h3 className="font-mono text-sm tracking-widest uppercase">Total Tokens</h3>
-                        </div>
-                        <p className="text-5xl font-black">{user?.tokens || 0}</p>
-                    </div>
-
-                    <div className="p-6 border-4 border-foreground bg-card shadow-[8px_8px_0px_hsl(var(--foreground))]">
-                        <div className="flex items-center gap-3 mb-2">
-                            <Users className="w-6 h-6 text-accent" />
-                            <h3 className="font-mono text-sm tracking-widest uppercase">Referrals</h3>
-                        </div>
-                        <p className="text-5xl font-black">{user?.referralCount || 0}</p>
-                    </div>
-
-                    <div className="p-6 border-4 border-foreground bg-card shadow-[8px_8px_0px_hsl(var(--foreground))]">
-                        <div className="flex items-center gap-3 mb-2">
-                            <Star className="w-6 h-6 text-accent" />
-                            <h3 className="font-mono text-sm tracking-widest uppercase">Next Reward</h3>
-                        </div>
-                        <p className="text-xl font-bold truncate">{nextMilestone?.reward || 'Max Level Reached'}</p>
-                        {nextMilestone && (
-                            <div className="w-full h-4 border-2 border-foreground bg-muted mt-2 relative">
-                                <div
-                                    className="h-full bg-accent transition-all duration-500"
-                                    style={{ width: `${Math.min(progress, 100)}%` }}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-12">
-
-                    {/* Left Column: Referral Hub */}
-                    <div className="space-y-8">
-                        <section>
-                            <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
-                                <Users className="w-8 h-8" />
-                                INVITE FRIENDS
-                            </h2>
-                            <div className="p-6 border-4 border-foreground bg-secondary/10 relative overflow-hidden">
-                                <p className="text-lg mb-4 font-mono">
-                                    Earn <span className="font-bold text-accent">{settings?.tokenValuePerReferral || 10} tokens</span> for every friend who joins.
-                                </p>
-                                <div className="bg-background p-2 border-4 border-foreground flex items-center gap-2">
-                                    <code className="flex-1 font-mono text-sm overflow-hidden text-ellipsis whitespace-nowrap px-2">
-                                        {referralLink}
-                                    </code>
-                                    <button
-                                        onClick={copyToClipboard}
-                                        className="px-4 py-2 bg-accent text-foreground font-black uppercase hover:brightness-110 transition-all active:scale-95"
-                                    >
-                                        {copied ? "COPIED!" : "COPY"}
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section>
-                            <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
-                                <Trophy className="w-8 h-8" />
-                                MILESTONES
-                            </h2>
-                            <div className="space-y-4">
-                                {milestones.map((milestone, index) => {
-                                    const isUnlocked = (user?.tokens || 0) >= milestone.tokensRequired
-                                    return (
-                                        <div
-                                            key={index}
-                                            className={cn(
-                                                "flex items-center gap-4 p-4 border-4 transition-all",
-                                                isUnlocked
-                                                    ? "border-accent bg-accent/10 shadow-[4px_4px_0px_hsl(var(--accent))]"
-                                                    : "border-foreground/20 opacity-60 grayscale"
-                                            )}
-                                        >
-                                            <div className={cn(
-                                                "w-12 h-12 border-2 border-foreground flex items-center justify-center text-xl font-black shrink-0",
-                                                isUnlocked ? "bg-accent text-foreground" : "bg-transparent text-foreground"
-                                            )}>
-                                                {isUnlocked ? "✓" : index + 1}
-                                            </div>
-                                            <div className="flex-1">
-                                                <h4 className="font-bold text-lg">{milestone.reward}</h4>
-                                                <p className="text-sm font-mono opacity-70">{milestone.tokensRequired} Tokens Required</p>
-                                            </div>
-                                            {milestone.image && typeof milestone.image !== 'string' && (
-                                                <div className="w-16 h-16 border-2 border-foreground overflow-hidden bg-background">
-                                                    <Media resource={milestone.image} imgClassName="object-cover w-full h-full" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </section>
-                    </div>
-
-                    {/* Right Column: Task Board */}
-                    <div className="space-y-8">
-                        <section>
-                            <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
-                                <Zap className="w-8 h-8" />
-                                EARN TOKENS
-                            </h2>
-                            <p className="mb-6 text-lg opacity-80">
-                                Complete tasks to earn tokens. Your referrer gets a <span className="font-bold text-accent">{settings?.referralBonusPercentage || 10}% bonus</span> when you complete these!
-                            </p>
-
-                            <div className="space-y-4">
-                                {settings?.tasks?.map((task) => {
-                                    const isCompleted = user?.completedTasks?.some((t) => t.taskSlug === task.slug)
-
-                                    return (
-                                        <div
-                                            key={task.slug}
-                                            className={cn(
-                                                "p-6 border-4 border-foreground transition-all relative",
-                                                isCompleted ? "bg-muted opacity-80" : "bg-card hover:translate-x-1 hover:-translate-y-1 shadow-[8px_8px_0px_hsl(var(--foreground))]"
-                                            )}
-                                        >
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div>
-                                                    <h3 className="text-xl font-black mb-1">{task.title}</h3>
-                                                    <span className="inline-block px-2 py-1 bg-accent text-foreground text-xs font-black uppercase border-2 border-foreground">
-                                                        +{task.rewardTokens} Tokens
-                                                    </span>
-                                                </div>
-                                                {isCompleted && (
-                                                    <div className="w-8 h-8 bg-green-500 border-2 border-foreground flex items-center justify-center text-white rounded-full">
-                                                        <Check size={16} strokeWidth={4} />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <p className="text-sm mb-6 font-mono opacity-80">{task.description}</p>
-
-                                            {!isCompleted ? (
-                                                <button
-                                                    onClick={() => handleTaskCompletion(task.slug, task.link)}
-                                                    disabled={!!completingTask}
-                                                    className="w-full py-3 bg-foreground text-background font-black uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50"
-                                                >
-                                                    {completingTask === task.slug ? (
-                                                        <Loader2 className="w-5 h-5 animate-spin mx-auto" />
-                                                    ) : (
-                                                        task.verificationType === 'input' ? "Start Task" : "Complete"
-                                                    )}
-                                                </button>
-                                            ) : (
-                                                <div className="w-full py-3 bg-muted text-foreground font-mono text-center text-sm border-2 border-foreground/10">
-                                                    Completed on {user?.completedTasks?.find((t) => t.taskSlug === task.slug)?.completedAt ? new Date(user.completedTasks.find((t) => t.taskSlug === task.slug)!.completedAt).toLocaleDateString() : 'N/A'}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )
-                                })}
-
-                                {(!settings?.tasks || settings.tasks.length === 0) && (
-                                    <div className="p-8 border-4 border-foreground border-dashed text-center opacity-50 font-mono">
-                                        No tasks available right now. Check back later!
-                                    </div>
-                                )}
-                            </div>
-                        </section>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+      <div className="flex min-h-svh items-center justify-center bg-background">
+        <Loader2 className="size-8 animate-spin text-indigo" />
+      </div>
     )
+  }
+
+  // Token-based milestones (sorted by tokens required)
+  const milestones =
+    settings?.milestones?.sort(
+      (a: { tokensRequired: number }, b: { tokensRequired: number }) => a.tokensRequired - b.tokensRequired,
+    ) || []
+  const nextMilestone = milestones.find((m: { tokensRequired: number }) => m.tokensRequired > (user?.tokens || 0))
+  const progress = nextMilestone ? ((user?.tokens || 0) / nextMilestone.tokensRequired) * 100 : 100
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const referralLink = `${origin}?ref=${user?.referralCode}`
+
+  return (
+    <main className="min-h-svh bg-background px-0 pb-20 pt-28 md:pt-36">
+      <div className="container max-w-5xl">
+        {/* Heading */}
+        <div className="mb-12">
+          <p className="eyebrow mb-4 flex items-center gap-2.5">
+            <span className="eyebrow-dot" />
+            waitlist dashboard
+          </p>
+          <h1 className="display-md">
+            Welcome back{user?.name ? `, ${user.name}` : ''}.
+          </h1>
+          <p className="mt-3 max-w-xl text-muted-foreground">
+            Earn tokens, climb the queue and unlock launch rewards.
+          </p>
+        </div>
+
+        {/* Header Stats */}
+        <div className="mb-14 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-3 flex items-center gap-2.5">
+              <Trophy className="size-4 text-energy" />
+              <h2 className="eyebrow">Total tokens</h2>
+            </div>
+            <p className="font-display text-5xl font-semibold tracking-tight text-ink">{user?.tokens || 0}</p>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-3 flex items-center gap-2.5">
+              <Users className="size-4 text-indigo" />
+              <h2 className="eyebrow">Referrals</h2>
+            </div>
+            <p className="font-display text-5xl font-semibold tracking-tight text-ink">{user?.referralCount || 0}</p>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-3 flex items-center gap-2.5">
+              <Star className="size-4 text-energy" />
+              <h2 className="eyebrow">Next reward</h2>
+            </div>
+            <p className="truncate font-display text-xl font-semibold tracking-tight text-ink">
+              {nextMilestone?.reward || 'Max level reached'}
+            </p>
+            {nextMilestone && (
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-indigo to-energy transition-all duration-500"
+                  style={{ width: `${Math.min(progress, 100)}%` }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-14 md:grid-cols-2">
+          {/* Left Column: Referral Hub */}
+          <div className="space-y-12">
+            <section>
+              <h2 className="font-display mb-5 text-2xl font-semibold tracking-tight text-ink">Invite friends</h2>
+              <div className="rounded-2xl border border-border bg-cream/50 p-6">
+                <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+                  Earn{' '}
+                  <span className="font-semibold text-energy">
+                    {settings?.tokenValuePerReferral || 10} tokens
+                  </span>{' '}
+                  for every friend who joins with your link.
+                </p>
+                <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-2">
+                  <code className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap px-2 font-mono text-xs text-muted-foreground">
+                    {referralLink}
+                  </code>
+                  <button onClick={copyToClipboard} className="btn-primary btn-md shrink-0">
+                    {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+                    {copied ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="font-display mb-5 text-2xl font-semibold tracking-tight text-ink">Milestones</h2>
+              <ol className="space-y-3">
+                {milestones.map((milestone, index) => {
+                  const isUnlocked = (user?.tokens || 0) >= milestone.tokensRequired
+                  return (
+                    <li
+                      key={index}
+                      className={cn(
+                        'flex items-center gap-4 rounded-2xl border p-4 transition-all',
+                        isUnlocked ? 'border-energy/40 bg-energy/5' : 'border-border bg-card opacity-70',
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          'flex size-10 shrink-0 items-center justify-center rounded-full font-mono text-sm',
+                          isUnlocked ? 'bg-energy text-white' : 'border border-border text-muted-foreground',
+                        )}
+                      >
+                        {isUnlocked ? <Check className="size-4" strokeWidth={3} /> : index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-ink">{milestone.reward}</h3>
+                        <p className="font-mono text-xs text-muted-foreground">
+                          {milestone.tokensRequired} tokens required
+                        </p>
+                      </div>
+                      {milestone.image && typeof milestone.image !== 'string' && (
+                        <div className="size-14 overflow-hidden rounded-xl border border-border bg-background">
+                          <Media resource={milestone.image} imgClassName="object-cover w-full h-full" />
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+          </div>
+
+          {/* Right Column: Task Board */}
+          <div>
+            <section>
+              <h2 className="font-display mb-2 text-2xl font-semibold tracking-tight text-ink">Earn tokens</h2>
+              <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+                Complete tasks to earn tokens. Your referrer gets a{' '}
+                <span className="font-semibold text-indigo">{settings?.referralBonusPercentage || 10}% bonus</span>{' '}
+                when you do.
+              </p>
+
+              <div className="space-y-4">
+                {settings?.tasks?.map((task) => {
+                  const isCompleted = user?.completedTasks?.some((t) => t.taskSlug === task.slug)
+
+                  return (
+                    <div
+                      key={task.slug}
+                      className={cn(
+                        'rounded-2xl border border-border p-6 transition-all',
+                        isCompleted
+                          ? 'bg-muted/60'
+                          : 'bg-card hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-24px_hsl(var(--hz-ink)/0.25)]',
+                      )}
+                    >
+                      <div className="mb-3 flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="font-display text-lg font-semibold tracking-tight text-ink">{task.title}</h3>
+                          <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-energy/10 px-2.5 py-0.5 font-mono text-xs font-medium text-energy">
+                            <Zap className="size-3" />+{task.rewardTokens} tokens
+                          </span>
+                        </div>
+                        {isCompleted && (
+                          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-energy text-white">
+                            <Check size={14} strokeWidth={3} />
+                          </div>
+                        )}
+                      </div>
+
+                      <p className="mb-5 text-sm leading-relaxed text-muted-foreground">{task.description}</p>
+
+                      {!isCompleted ? (
+                        <button
+                          onClick={() => handleTaskCompletion(task.slug, task.link)}
+                          disabled={!!completingTask}
+                          className="btn-ink btn-md w-full"
+                        >
+                          {completingTask === task.slug ? (
+                            <Loader2 className="size-4 animate-spin" />
+                          ) : task.verificationType === 'input' ? (
+                            'Start task'
+                          ) : (
+                            'Complete'
+                          )}
+                        </button>
+                      ) : (
+                        <div className="w-full rounded-xl bg-background py-2.5 text-center font-mono text-xs text-muted-foreground">
+                          Completed on{' '}
+                          {user?.completedTasks?.find((t) => t.taskSlug === task.slug)?.completedAt
+                            ? new Date(
+                                user.completedTasks.find((t) => t.taskSlug === task.slug)!.completedAt,
+                              ).toLocaleDateString()
+                            : 'N/A'}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+
+                {(!settings?.tasks || settings.tasks.length === 0) && (
+                  <div className="rounded-2xl border border-dashed border-border p-8 text-center font-mono text-sm text-muted-foreground">
+                    No tasks available right now. Check back later!
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
 }

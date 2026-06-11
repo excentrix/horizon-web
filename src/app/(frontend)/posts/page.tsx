@@ -33,7 +33,7 @@ export default async function Page() {
 
   return (
     <>
-      <div className="pt-24 pb-24">
+      <div className="pb-24 pt-32 md:pt-36">
         <PageClient />
 
         {/* Hero Section */}
@@ -41,9 +41,7 @@ export default async function Page() {
           <div className="max-w-4xl mx-auto py-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-border/50">
               <div>
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
-                  Stay curious.
-                </h1>
+                <h1 className="display-lg mb-4">Stay curious.</h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-lg">
                   Real insights from the Horizon community. Written by students, for students.
                 </p>
@@ -87,7 +85,8 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Knowledge Hub | Excentrix`,
-    description: 'Real insights for engineering students. No BS. Just actionable advice from people who&apos;ve been there.',
+    title: 'Blog — Insights on learning, retention and careers',
+    description:
+      'Real insights from the Horizon community on learning science, retention, careers and building proof of skill.',
   }
 }

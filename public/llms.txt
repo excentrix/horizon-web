@@ -1,0 +1,33 @@
+# Horizon
+
+> Horizon is an adaptive AI mentorship platform by Excentrix. It builds a living model of each learner — competencies, goals, schedule, learning style, emotional state — and generates a personalized learning plan that adapts every day. It combines a conversational AI mentor, diagnostic-based content skipping, SM-2 spaced repetition, and AI-verified skill portfolios in one product.
+
+Key facts:
+- Horizon is not a course platform, a chatbot, or a flashcard app. It is a mentor system with persistent memory of the learner.
+- Daily tasks are generated from the learner's competency profile, calendar, and recent conversations — no generic templates.
+- A diagnostic quiz before each plan removes already-mastered content; plans are 20–40% shorter for experienced learners.
+- Spaced repetition (SM-2, the algorithm behind Anki) is built into every plan; learners retain 60–80% of content at 30 days versus 10–20% on standard platforms.
+- Every task ties to verifiable artifacts (projects, repositories, analyses) that are AI-verified, quality-scored, and published to a public skill portfolio.
+- Conversations are routed by intent: academic, career, and wellness questions each get an appropriate mentor persona. Each learning plan also creates a domain-specialised mentor.
+- A "Brain Map" knowledge graph shows learners exactly which concepts they have mastered, which are developing, and which prerequisites are missing.
+- Audiences: students preparing for careers, professionals upskilling or pivoting, and educational institutions.
+- Status: early access via waitlist. Free for students at launch. Referrals and tasks earn tokens that unlock launch rewards.
+
+## Pages
+
+- [Home](/): Product overview, outcomes, FAQ, and waitlist signup
+- [AI Mentor](/features/ai-mentor): The adaptive mentor — intent routing, personas, daily plan generation
+- [Holistic Grading](/features/holistic-grading): Evaluation beyond grades — verified artifacts and competency evidence
+- [Community](/features/community): Learning together on Horizon
+- [For Students](/solutions/students): Career preparation with verifiable portfolios
+- [For Educators](/solutions/educators): Tools that enhance teaching effectiveness
+- [For Institutions](/solutions/institutions): Cohort-level mentorship and measurable outcomes
+- [Pricing](/pricing): Plans and early-access details
+- [About](/about): Mission and team
+- [Blog](/posts): Articles on learning science and product updates
+- [Contact](/contact): Talk to the team
+
+## Contact
+
+- Email: hello@excentrix.tech
+- Company: Excentrix (India)

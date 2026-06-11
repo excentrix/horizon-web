@@ -43,7 +43,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="pt-32 pb-24">
       <PageClient />
 
       <div className="container mb-12 px-4">

@@ -2,13 +2,14 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Horizon | Excentrix',
+    name: 'Horizon — The AI mentor that knows you',
     short_name: 'Horizon',
-    description: 'Building the future of learning with AI-powered study tools and real student insights.',
+    description:
+      'An adaptive AI mentor that builds a living model of how you learn and turns it into a daily plan — with spaced repetition, diagnostic skips and a verified skill portfolio.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#ffffff',
+    background_color: '#FDF8EC',
+    theme_color: '#EC5B13',
     icons: [
       {
         src: '/favicon/web-app-manifest-192x192.png',

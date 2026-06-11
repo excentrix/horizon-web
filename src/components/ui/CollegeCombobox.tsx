@@ -89,19 +89,22 @@ export function CollegeCombobox({ value, onChange, placeholder = 'Select your co
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full h-16 border-4 border-background bg-foreground text-background hover:bg-foreground hover:text-background font-mono text-lg justify-between px-6"
+          className="field-dark hover:bg-white/10 justify-between text-left font-normal data-[state=open]:border-energy/70"
         >
-          {value || placeholder}
+          <span className={value ? '' : 'opacity-45'}>{value || placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 border-4 border-background" align="start">
+      <PopoverContent
+        className="w-[--radix-popover-trigger-width] min-w-72 rounded-xl border border-border bg-card p-0 text-card-foreground shadow-xl"
+        align="start"
+      >
         <Command>
-          <CommandInput 
-            placeholder="Search colleges..." 
+          <CommandInput
+            placeholder="Search colleges..."
             value={searchValue}
             onValueChange={setSearchValue}
-            className="h-12 border-b-2 border-background font-mono"
+            className="h-12"
           />
           <CommandList className="max-h-[300px]">
             <CommandEmpty>
@@ -135,10 +138,7 @@ export function CollegeCombobox({ value, onChange, placeholder = 'Select your co
 
             {/* Add New Option */}
             {showAddOption && !showAddNew && (
-              <CommandItem
-                onSelect={() => setShowAddNew(true)}
-                className="font-mono border-t-2 border-background bg-accent/10"
-              >
+              <CommandItem onSelect={() => setShowAddNew(true)} className="border-t border-border text-indigo">
                 <Plus className="mr-2 h-4 w-4" />
                 Add &quot;{searchValue}&quot;
               </CommandItem>
@@ -146,27 +146,27 @@ export function CollegeCombobox({ value, onChange, placeholder = 'Select your co
 
             {/* Add New Form */}
             {showAddNew && (
-              <div className="p-4 border-t-2 border-background">
+              <div className="border-t border-border p-4">
                 <input
                   type="text"
                   value={newCollegeName}
                   onChange={(e) => setNewCollegeName(e.target.value)}
                   placeholder="Enter college name"
-                  className="w-full px-4 py-2 mb-2 border-2 border-background font-mono focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="mb-2 w-full rounded-lg border border-input bg-background px-4 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   autoFocus
                 />
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={handleAddNewCollege}
-                    className="flex-1 px-4 py-2 bg-accent text-foreground font-bold hover:bg-accent/90"
+                    className="btn-primary btn-md flex-1"
                   >
                     Add
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowAddNew(false)}
-                    className="flex-1 px-4 py-2 border-2 border-background hover:bg-background/10"
+                    className="btn-ghost btn-md flex-1"
                   >
                     Cancel
                   </button>

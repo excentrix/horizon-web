@@ -1,18 +1,21 @@
 import Link from 'next/link'
 import React from 'react'
-
-import { Button } from '@/components/ui/button'
+import { ArrowUpRight } from 'lucide-react'
+import { HorizonMark } from '@/components/Logo/HorizonLogo'
 
 export default function NotFound() {
   return (
-    <div className="container py-28">
-      <div className="prose max-w-none">
-        <h1 style={{ marginBottom: 0 }}>404</h1>
-        <p className="mb-4">This page could not be found.</p>
-      </div>
-      <Button asChild variant="default">
-        <Link href="/">Go home</Link>
-      </Button>
-    </div>
+    <main className="grain relative flex min-h-svh flex-col items-center justify-center bg-background px-4 py-32 text-center">
+      <HorizonMark className="mb-8 size-12 text-energy" />
+      <p className="eyebrow mb-5">404</p>
+      <h1 className="display-lg">Off the map.</h1>
+      <p className="mt-5 max-w-md text-balance text-lg leading-relaxed text-muted-foreground">
+        This page is beyond the horizon — it doesn’t exist, or it moved somewhere new.
+      </p>
+      <Link href="/" className="btn-primary btn-lg mt-10">
+        Back to home
+        <ArrowUpRight className="size-5" />
+      </Link>
+    </main>
   )
 }

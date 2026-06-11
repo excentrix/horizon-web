@@ -1,208 +1,230 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CollegeCombobox } from "@/components/ui/CollegeCombobox";
-import { joinWaitlist } from "@/app/(frontend)/waitlist/actions";
-import confetti from 'canvas-confetti';
-import { useRouter } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { CollegeCombobox } from '@/components/ui/CollegeCombobox'
+import { joinWaitlist } from '@/app/(frontend)/waitlist/actions'
+import confetti from 'canvas-confetti'
+import { useRouter } from 'next/navigation'
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
-// Waitlist Section
 const Waitlist = () => {
-  const router = useRouter();
-  const sectionRef = useRef<HTMLElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [college, setCollege] = useState("");
-  const [referralCode, setReferralCode] = useState("");
-  const [alreadyJoined, setAlreadyJoined] = useState(false);
+  const router = useRouter()
+  const sectionRef = useRef<HTMLElement>(null)
+  const formRef = useRef<HTMLDivElement>(null)
+  const sunRef = useRef<HTMLDivElement>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [college, setCollege] = useState('')
+  const [referralCode, setReferralCode] = useState('')
+  const [alreadyJoined, setAlreadyJoined] = useState(false)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         formRef.current,
+        { y: 48, opacity: 0 },
         {
-          scale: 0.8,
-          opacity: 0,
-        },
-        {
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-          scale: 1,
+          y: 0,
           opacity: 1,
           duration: 1,
-          ease: "back.out(1.7)",
-        }
-      );
-    }, sectionRef);
+          ease: 'power3.out',
+          scrollTrigger: { trigger: formRef.current, start: 'top 82%' },
+        },
+      )
+
+      // The sun rises over the horizon as the section scrolls into view
+      gsap.fromTo(
+        sunRef.current,
+        { yPercent: 88 },
+        {
+          yPercent: 18,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 90%',
+            end: 'center center',
+            scrub: 0.6,
+          },
+        },
+      )
+    }, sectionRef)
 
     // Check if user already signed up
-    const savedEmail = localStorage.getItem('waitlist_email');
+    const savedEmail = localStorage.getItem('waitlist_email')
     if (savedEmail) {
-      setAlreadyJoined(true);
+      setAlreadyJoined(true)
     }
 
     // Check URL for referral code
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const ref = urlParams.get('ref');
+      const urlParams = new URLSearchParams(window.location.search)
+      const ref = urlParams.get('ref')
       if (ref) {
-        setReferralCode(ref);
+        setReferralCode(ref)
       }
     }
 
-    return () => ctx.revert();
-  }, [router]);
+    return () => ctx.revert()
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
 
     // Open a blank tab synchronously to bypass popup blockers
-    const whatsappTab = window.open('about:blank', '_blank');
+    const whatsappTab = window.open('about:blank', '_blank')
 
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('college', college);
-    formData.append('name', email.split('@')[0]); // Fallback name
+    const formData = new FormData()
+    formData.append('email', email)
+    formData.append('phone', phone)
+    formData.append('college', college)
+    formData.append('name', email.split('@')[0]) // Fallback name
     if (referralCode) {
-      formData.append('referralCode', referralCode);
+      formData.append('referralCode', referralCode)
     }
 
     try {
-      const result = await joinWaitlist(null, formData);
+      const result = await joinWaitlist(null, formData)
 
       if (result?.error) {
-        throw new Error(result.error);
+        throw new Error(result.error)
       }
 
       if (result?.success && result.user) {
         // Save to localStorage
-        localStorage.setItem('waitlist_email', result.user.email);
+        localStorage.setItem('waitlist_email', result.user.email)
 
-        // Fire confetti
+        // Fire confetti in brand colors
         confetti({
           particleCount: 150,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#FFD700', '#FFA500', '#ffffff'],
-        });
+          colors: ['#EC5B13', '#5858CC', '#FAEDCD'],
+        })
 
         // Redirect the previously opened tab to WhatsApp
         if (whatsappTab) {
-          whatsappTab.location.href = 'https://chat.whatsapp.com/BfaSjvXcJhBBw7WTBEH7Vg';
+          whatsappTab.location.href = 'https://chat.whatsapp.com/BfaSjvXcJhBBw7WTBEH7Vg'
         }
 
         // Redirect current tab to dashboard after brief delay
         setTimeout(() => {
-          router.push('/wishlist');
-        }, 1500);
+          router.push('/wishlist')
+        }, 1500)
       }
     } catch (err: unknown) {
-      if (whatsappTab) whatsappTab.close();
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+      if (whatsappTab) whatsappTab.close()
+      setError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <section
       id="waitlist"
       ref={sectionRef}
-      className="py-24 md:py-32 px-4 bg-foreground text-background relative overflow-hidden"
+      className="grain relative overflow-hidden bg-ink py-28 text-cream md:py-40"
+      aria-label="Join the Horizon waitlist"
     >
-      {/* Background elements */}
-      <div className="absolute top-10 right-10 w-64 h-64 border-8 border-background opacity-10 rotate-12" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-background opacity-5 -rotate-6" />
+      {/* Sunrise visual */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          ref={sunRef}
+          className="absolute left-1/2 top-[8%] size-[min(110vw,52rem)] -translate-x-1/2 rounded-full opacity-90"
+          style={{
+            background:
+              'radial-gradient(circle at 50% 30%, hsl(32 95% 64% / 0.5) 0%, hsl(var(--hz-energy) / 0.32) 45%, transparent 72%)',
+          }}
+        />
+        <div className="absolute inset-x-0 top-[52%] h-px bg-cream/15" />
+      </div>
 
-      <div className="container mx-auto max-w-4xl relative z-10">
+      <div className="container relative z-10 max-w-3xl">
         <div ref={formRef} className="text-center">
           {alreadyJoined ? (
-            // Already joined state
             <>
-              <div className="w-24 h-24 mx-auto mb-6 border-4 border-background bg-accent flex items-center justify-center text-5xl shadow-[4px_4px_0px_hsl(var(--background))]">
-                ✓
+              <div className="mx-auto mb-8 flex size-16 items-center justify-center rounded-full border border-energy/60 bg-energy/15 text-energy">
+                <Check className="size-7" strokeWidth={2.5} />
               </div>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-none">
-                YOU&apos;RE ALREADY IN!
-              </h2>
-              <p className="text-xl md:text-2xl font-mono mb-8 max-w-2xl mx-auto">
-                You&apos;ve already joined the waitlist. Head to your dashboard to track your progress, earn tokens, and invite friends.
+              <h2 className="display-lg text-cream">You’re already in.</h2>
+              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-cream/70">
+                Head to your dashboard to track your spot, earn tokens and invite friends —
+                referrals move you up the queue.
               </p>
-
-              <button
-                onClick={() => router.push('/wishlist')}
-                className="inline-flex items-center gap-3 h-16 px-12 border-4 border-background bg-accent text-foreground font-black text-lg shadow-[8px_8px_0px_hsl(var(--background))] hover:shadow-[4px_4px_0px_hsl(var(--background))] transition-all active:shadow-none active:translate-x-1 active:translate-y-1"
-              >
-                GO TO DASHBOARD
-                <ArrowRight className="w-6 h-6" />
+              <button onClick={() => router.push('/wishlist')} className="btn-cream btn-lg mt-10 bg-cream text-ink">
+                Go to your dashboard
+                <ArrowRight className="size-5" />
               </button>
             </>
           ) : (
-            // Signup form
             <>
-              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-none">
-                READY TO
+              <p className="eyebrow mb-6 flex items-center justify-center gap-2.5 text-cream/50">
+                <span className="eyebrow-dot" />
+                early access
+              </p>
+              <h2 className="display-lg text-cream">
+                Be first over
                 <br />
-                BREAK FREE?
+                the horizon.
               </h2>
-
-              <p className="text-xl md:text-2xl font-mono mb-12 max-w-2xl mx-auto">
-                Join the waitlist and be among the first to experience learning
-                that actually works.
+              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-cream/70">
+                Join the waitlist for early access — and a mentor who finally knows you.
               </p>
 
-              <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-                <div className="w-full flex flex-col gap-4 mb-8">
+              <form onSubmit={handleSubmit} className="mx-auto mt-12 max-w-xl text-left">
+                <div className="flex flex-col gap-3.5">
+                  <label className="sr-only" htmlFor="waitlist-email">
+                    Email address
+                  </label>
                   <input
+                    id="waitlist-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your.email@example.com"
                     required
                     disabled={isLoading}
-                    className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
+                    className="field-dark"
                   />
 
+                  <label className="sr-only" htmlFor="waitlist-phone">
+                    Phone number
+                  </label>
                   <input
+                    id="waitlist-phone"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Your Phone Number"
+                    placeholder="Phone number"
                     required
                     disabled={isLoading}
-                    className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
+                    className="field-dark"
                   />
 
-                  <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col gap-3.5 md:flex-row">
                     <div className="flex-1">
-                      <CollegeCombobox
-                        value={college}
-                        onChange={setCollege}
-                        placeholder="Select your college"
-                      />
+                      <CollegeCombobox value={college} onChange={setCollege} placeholder="Select your college" />
                     </div>
                     <div className="flex-1">
+                      <label className="sr-only" htmlFor="waitlist-referral">
+                        Referral code (optional)
+                      </label>
                       <input
+                        id="waitlist-referral"
                         type="text"
                         value={referralCode}
                         onChange={(e) => setReferralCode(e.target.value)}
-                        placeholder="Referral Code (Optional)"
+                        placeholder="Referral code (optional)"
                         disabled={isLoading}
-                        className="w-full h-16 px-6 border-4 border-background bg-foreground text-background font-mono text-lg placeholder:text-background placeholder:opacity-50 focus:outline-none focus:ring-4 focus:ring-accent disabled:opacity-50"
+                        className="field-dark"
                       />
                     </div>
                   </div>
@@ -210,16 +232,22 @@ const Waitlist = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="h-16 px-12 border-4 border-background bg-accent text-foreground font-black text-lg shadow-[8px_8px_0px_hsl(var(--background))] hover:shadow-[4px_4px_0px_hsl(var(--background))] transition-all active:shadow-none active:translate-x-1 active:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn mt-2 h-14 bg-energy px-8 text-base font-semibold text-white hover:brightness-110 active:scale-[0.99]"
+                    style={{ boxShadow: '0 12px 32px -12px hsl(var(--hz-energy) / 0.6)' }}
                   >
-                    {isLoading ? "JOINING..." : "JOIN NOW"}
+                    {isLoading ? 'Joining…' : 'Join the waitlist'}
+                    {!isLoading && <ArrowUpRight className="size-5" />}
                   </button>
                 </div>
 
-                {error && <p className="text-red-500 font-mono mb-4">{error}</p>}
+                {error && (
+                  <p role="alert" className="mt-4 text-center text-sm text-red-400">
+                    {error}
+                  </p>
+                )}
 
-                <p className="font-mono text-sm opacity-70">
-                  No spam. No BS. Just updates on launch and early access.
+                <p className="mt-5 text-center font-mono text-xs text-cream/45">
+                  No spam. Just launch updates and early access.
                 </p>
               </form>
             </>
@@ -227,7 +255,7 @@ const Waitlist = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Waitlist;
+export default Waitlist

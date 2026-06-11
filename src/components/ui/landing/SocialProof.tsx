@@ -1,146 +1,103 @@
 'use client'
 
-import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MessageCircle } from "lucide-react";
+import React, { useRef } from 'react'
+import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
+import { useReveal } from '@/utilities/useReveal'
 
-gsap.registerPlugin(ScrollTrigger);
+const audiences = [
+  {
+    title: 'Students',
+    body: 'Stand out from every graduate with the same degree. Build the exact skills your target industry values — with a verifiable portfolio to prove it.',
+    href: '/solutions/students',
+    accent: 'text-energy',
+  },
+  {
+    title: 'Professionals',
+    body: 'Pivot or level up around a real job. Plans shaped to the hours you actually have, with a mentor for the domain you’re moving into.',
+    href: '/solutions/educators',
+    accent: 'text-indigo',
+  },
+  {
+    title: 'Institutions',
+    body: 'Give every student a personal mentor. Holistic evaluation, early-warning signals and outcomes you can measure across the cohort.',
+    href: '/solutions/institutions',
+    accent: 'text-ink',
+  },
+]
+
+const domains = [
+  'software engineering',
+  'data science',
+  'product management',
+  'ux design',
+  'machine learning',
+  'finance',
+  'marketing',
+  'leadership',
+  'career pivots',
+  'interview prep',
+]
 
 const SocialProof = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  const testimonials = [
-    {
-      name: "Rahul K.",
-      college: "IIT Bombay",
-      message: "Finally something that understands I don't want to watch 10h lectures. The AI mentor is legit.",
-      time: "10:42 AM",
-    },
-    {
-      name: "Priya S.",
-      college: "VIT Vellore",
-      message: "The holistic grading helped me land my internship. They looked at my projects, not just CGPA.",
-      time: "2:15 PM",
-    },
-    {
-      name: "Arjun M.",
-      college: "SRM University",
-      message: "Community challenges are addictive. Learned more in 2 weeks than last semester.",
-      time: "9:30 AM",
-    },
-    {
-      name: "Sneha R.",
-      college: "BITS Pilani",
-      message: "Excentrix actually makes engineering fun again. Wish I had this in first year.",
-      time: "4:20 PM",
-    },
-  ];
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Header animation
-      gsap.fromTo(
-        headerRef.current,
-        {
-          y: 50,
-          opacity: 0,
-        },
-        {
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-        }
-      );
-
-      // Cards stagger animation
-      gsap.fromTo(
-        cardsRef.current,
-        {
-          y: 100,
-          opacity: 0,
-        },
-        {
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
-            toggleActions: "play none none reverse",
-          },
-          y: 0,
-          opacity: 1,
-          stagger: 0.2,
-          duration: 0.8,
-          ease: "back.out(1.7)",
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useRef<HTMLElement>(null)
+  useReveal(sectionRef)
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-24 px-4 bg-background relative overflow-hidden border-t-4 border-foreground"
-    >
-      <div className="container mx-auto max-w-6xl relative z-10">
-        <div ref={headerRef} className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black mb-6">
-            DON&apos;T JUST TAKE
-            <br />
-            <span className="bg-accent px-2">OUR WORD</span> FOR IT
-          </h2>
-          <p className="text-xl font-mono text-muted-foreground">
-            Join hundreds of students already transforming their careers.
+    <section ref={sectionRef} className="overflow-hidden bg-background py-28 md:py-36" aria-label="Who Horizon is for">
+      <div className="container">
+        <div className="mb-14 max-w-2xl">
+          <p data-reveal className="eyebrow mb-5 flex items-center gap-2.5">
+            <span className="eyebrow-dot" />
+            built for
           </p>
+          <h2 data-reveal className="display-lg">
+            A mentor in every domain.
+            <br />
+            For everyone climbing.
+          </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {testimonials.map((t, i) => (
-            <div
-              key={i}
-              ref={(el) => {
-                if (el) cardsRef.current[i] = el;
-              }}
-              className="bg-card border-2 border-foreground p-4 rounded-lg shadow-[4px_4px_0px_hsl(var(--foreground))] relative"
+        <div className="grid gap-5 md:grid-cols-3">
+          {audiences.map((a) => (
+            <Link
+              key={a.title}
+              href={a.href}
+              data-reveal
+              className="group flex flex-col justify-between rounded-2xl border border-border bg-card p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_48px_-24px_hsl(var(--hz-ink)/0.25)] md:p-9"
             >
-              {/* WhatsApp style header */}
-              <div className="flex items-center gap-3 mb-3 border-b border-border pb-2">
-                <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center font-bold text-xs">
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-bold text-sm leading-none">{t.name}</p>
-                  <p className="text-[10px] text-muted-foreground">{t.college}</p>
-                </div>
-                <MessageCircle className="ml-auto w-4 h-4 text-green-500" />
+              <div>
+                <h3 className={`font-display text-2xl font-semibold tracking-tight ${a.accent}`}>
+                  {a.title}
+                </h3>
+                <p className="mt-4 leading-relaxed text-muted-foreground">{a.body}</p>
               </div>
+              <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-ink">
+                Explore
+                <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
 
-              {/* Message body */}
-              <div className="bg-muted/50 p-3 rounded-md mb-2 relative">
-                <p className="text-sm leading-relaxed">{t.message}</p>
-                {/* Tail */}
-                <div className="absolute top-0 -left-2 w-0 h-0 border-t-[10px] border-t-muted/50 border-l-[10px] border-l-transparent" />
-              </div>
-
-              {/* Time */}
-              <div className="text-right">
-                <span className="text-[10px] text-muted-foreground">{t.time}</span>
-              </div>
+      {/* Domain marquee */}
+      <div className="mt-20 border-y border-border py-5" aria-hidden="true">
+        <div className="flex w-max animate-marquee gap-0">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="flex shrink-0 items-center">
+              {domains.map((d) => (
+                <span key={`${dup}-${d}`} className="flex items-center font-mono text-sm lowercase tracking-wide text-muted-foreground">
+                  <span className="px-6">{d}</span>
+                  <span className="size-1.5 rounded-full bg-energy/70" />
+                </span>
+              ))}
             </div>
           ))}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default SocialProof;
+export default SocialProof
