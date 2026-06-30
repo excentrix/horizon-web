@@ -18,6 +18,9 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
+import { getCachedGlobal } from '@/utilities/getGlobals'
+import type { Setting } from '@/payload-types'
 
 const displayFont = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -34,6 +37,9 @@ const bodyFont = Instrument_Sans({
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
   const siteUrl = getServerSideURL()
+  const settings = (await getCachedGlobal('settings', 1)()) as Setting
+  const gaId = settings.analytics?.googleAnalyticsId
+  const gtmId = settings.analytics?.googleTagManagerId
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -110,6 +116,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Footer />
         </Providers>
         <Analytics />
+        {gaId && <GoogleAnalytics gaId={gaId} />}
+        {gtmId && <GoogleTagManager gtmId={gtmId} />}
       </body>
     </html>
   )

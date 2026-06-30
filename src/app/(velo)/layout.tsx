@@ -3,6 +3,9 @@ import React from 'react'
 import { GeistMono } from 'geist/font/mono'
 import { Bricolage_Grotesque, Instrument_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
+import { getCachedGlobal } from '@/utilities/getGlobals'
+import type { Setting } from '@/payload-types'
 
 import { cn } from '@/utilities/ui'
 import { Providers } from '@/providers'
@@ -26,7 +29,11 @@ const bodyFont = Instrument_Sans({
   display: 'swap',
 })
 
-export default function VeloLayout({ children }: { children: React.ReactNode }) {
+export default async function VeloLayout({ children }: { children: React.ReactNode }) {
+  const settings = (await getCachedGlobal('settings', 1)()) as Setting
+  const gaId = settings.analytics?.googleAnalyticsId
+  const gtmId = settings.analytics?.googleTagManagerId
+
   return (
     <html
       className={cn(displayFont.variable, bodyFont.variable, GeistMono.variable)}
@@ -43,6 +50,8 @@ export default function VeloLayout({ children }: { children: React.ReactNode }) 
           <VeloFooter />
         </Providers>
         <Analytics />
+        {gaId && <GoogleAnalytics gaId={gaId} />}
+        {gtmId && <GoogleTagManager gtmId={gtmId} />}
       </body>
     </html>
   )
