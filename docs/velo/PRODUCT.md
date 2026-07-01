@@ -108,10 +108,15 @@ Credibility cannot come from authority on day 1. It comes from **transparency**:
 One-line thesis: **VELO is a trustworthy _presenter of evidence_ on day 1, and becomes an
 _authority_ over time as outcome data accumulates.**
 
-## The honest current limitation (must fix to be HR-grade)
+## ✅ The core credibility gap — closed (2026-06-24)
 
-Today the interrogation only sees repo **metadata + an 800-char README + the candidate's
-description** — **it does not read the code.** A smooth talker can defend a project conceptually
-without having built it. To be HR-grade, the interrogation must be **grounded in the actual source**
-(read key files, ask implementation-specific questions). This is the single change that converts
-VELO from novelty to paid product. *(Tracked as P2 in ROADMAP.)*
+The interrogation used to see only repo **metadata + README + the candidate's description** — it
+didn't read the code, so a smooth talker could defend a project conceptually without having built it.
+**This is now fixed:** the engine reads the repo's actual source into a bounded `code_digest` and asks
+**implementation-specific questions that cite real files** (confirmed end-to-end). This was the single
+change that converts VELO from novelty to paid-grade, and it's done.
+
+**Remaining depth (still P2):** multi-dimensional scoring (ownership / judgment / debugging / seniority
+rather than one score) and the full evidence dossier. And the honest ceiling on coverage: the digest
+reads the **default branch of public repos only** (`public_repo` OAuth scope) — private-repo support is
+an open decision (see ROADMAP).

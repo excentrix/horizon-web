@@ -1,0 +1,80 @@
+/*
+  Horizon / VELO design tokens — "first light"
+  CANONICAL MIRROR of src/app/(frontend)/globals.css :root + [data-theme="dark"].
+  The stylesheet in the app is ground truth; if this drifts, the app wins — re-sync it.
+
+  All colours are HSL triples consumed via hsl(var(--token)).
+  Brand hexes: charcoal #414141 · ink #212121 · indigo #5858CC · energy #EC5B13
+               cream #FAEDCD · paper #FDF8EC
+*/
+
+:root {
+  /* Brand */
+  --hz-cream: 43 82% 89%;     /* #FAEDCD */
+  --hz-paper: 42 71% 96%;     /* #FDF8EC — warm near-white derived from cream */
+  --hz-charcoal: 0 0% 25%;    /* #414141 */
+  --hz-ink: 0 0% 13%;         /* #212121 — deep ink for headlines / dark sections */
+  --hz-indigo: 240 53% 57%;   /* #5858CC */
+  --hz-energy: 20 85% 50%;    /* #EC5B13 */
+
+  /* Semantic — light */
+  --background: var(--hz-paper);
+  --foreground: var(--hz-charcoal);
+
+  --card: 0 0% 100%;
+  --card-foreground: var(--hz-charcoal);
+
+  --popover: 0 0% 100%;
+  --popover-foreground: var(--hz-charcoal);
+
+  --primary: var(--hz-indigo);
+  --primary-foreground: 42 71% 96%;
+
+  --secondary: var(--hz-cream);
+  --secondary-foreground: var(--hz-ink);
+
+  --muted: 42 50% 91%;
+  --muted-foreground: 0 0% 42%;
+
+  --accent: var(--hz-energy);
+  --accent-foreground: 42 71% 96%;
+
+  --destructive: 0 72% 45%;
+  --destructive-foreground: 42 71% 96%;
+
+  --border: 38 25% 82%;
+  --input: 38 25% 78%;
+  --ring: var(--hz-indigo);
+
+  --radius: 1rem;
+}
+
+[data-theme='dark'] {
+  --background: 0 0% 10%;
+  --foreground: 43 60% 92%;
+
+  --card: 0 0% 13%;
+  --card-foreground: 43 60% 92%;
+
+  --popover: 0 0% 13%;
+  --popover-foreground: 43 60% 92%;
+
+  --primary: 240 60% 68%;
+  --primary-foreground: 0 0% 10%;
+
+  --secondary: 0 0% 16%;
+  --secondary-foreground: 43 60% 92%;
+
+  --muted: 0 0% 18%;
+  --muted-foreground: 43 15% 65%;
+
+  --accent: 20 85% 55%;
+  --accent-foreground: 0 0% 10%;
+
+  --destructive: 0 62% 40%;
+  --destructive-foreground: 43 60% 92%;
+
+  --border: 0 0% 24%;
+  --input: 0 0% 26%;
+  --ring: 240 60% 68%;
+}

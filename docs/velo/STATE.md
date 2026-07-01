@@ -1,6 +1,7 @@
 # VELO — Current State (what exists vs. broken vs. missing)
 
-_Audited 2026-06-23 against the live codebase. Repos: `backend/`, `frontend/`, `horizon-web/horizon/`._
+_Audited 2026-06-23 against the live codebase; reconciled 2026-07-01 (P0.1–0.4 shipped, code-grounded
+interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`, `horizon-web/horizon/`._
 
 ## ✅ What already exists and works
 
@@ -14,16 +15,17 @@ _Audited 2026-06-23 against the live codebase. Repos: `backend/`, `frontend/`, `
 ### Project verification engine (backend) — the interrogation
 - `ProjectVerificationService` — `backend/apps/audit/services/project_verification_service.py`:
   - `create_or_get(snapshot, project_index, user)` — verification tied to a resume project.
-  - `check_repos()` → GitHub **metadata-only** liveness check + README snippet (does NOT read code).
+  - `check_repos()` → GitHub liveness check + README snippet.
+  - `build_code_digest()` → **reads the repo's actual source** (bounded) into `code_digest`. Code-grounded interrogation is **live** (questions cite real files; confirmed end-to-end 2026-06-24).
   - `_check_audit_doc()` → optional `VELO_AUDIT.md` validation (+0.05).
-  - `generate_first_question` / `generate_next_question` → adaptive LLM interrogation.
+  - `generate_first_question` / `generate_next_question` → adaptive, digest-grounded LLM interrogation.
   - `finalize()` → verdict (`verified`/`suspicious`/`failed`) + `verification_score` + `verdict_summary`.
 - Endpoints: `project-verifications/`, `…/check-repos/`, `…/finalize/`, `interrogations/…`.
 
 ### Frontend UI
 - **`/verify`** (NEW, `frontend/app/(studio)/verify/page.tsx`) — VELO hub: resume intake, projects list, status, opens the interrogation. Doubles as the VELO dashboard.
 - **`ProjectVerificationSheet`** (`frontend/components/mirror/ProjectVerificationSheet.tsx`) — the working interrogation flow (repos → check → adaptive Q&A → verdict).
-- **`velo-profile-tab`** (`frontend/components/mirror/velo-profile-tab.tsx`) — renders the FULL resume analysis (ATS ring, breakdown, projects, skills, gaps, employer view). **Currently mounted only in `/progress`.**
+- **`velo-profile-tab`** (`frontend/components/mirror/velo-profile-tab.tsx`) — renders the FULL resume analysis (ATS ring, breakdown, projects, skills, gaps, employer view) + the Verified Capability overlay. **Now mounted as the "Resume analysis" tab on `/verify`** (decoupled from the disabled `/progress`). Project-only users get a drag-and-drop résumé upload box here.
 - **Add manual project**: `POST /api/mirror/projects/add/` (NEW) + `auditApi.addManualProject` + the "verify a repo directly" form on `/verify`.
 - **Public report page**: `frontend/app/audit/public/[auditId]/page.tsx` (exists).
 - **Institution/cohort dashboards**: `frontend/app/(studio)/institution/*` (skeleton, exists).
@@ -38,29 +40,32 @@ _Audited 2026-06-23 against the live codebase. Repos: `backend/`, `frontend/`, `
 - VELO-first defaults: `velo/chat/intelligence/portfolio/institutions/dashboard/onboarding` ON;
   `plans/roadmap/progress/simulations/gamification/knowledge_graph/semantic_memory` OFF.
 
-## 🔴 What's broken / blocking (P0)
+## ✅ P0 blockers — all resolved (were 🔴, shipped 2026-06-23/24)
 
-1. **Upload silently no-ops without a target role.** `ProfileResumeUploadAPIView` only queues analysis
-   if `target_role` or `job_description` is present. The `/verify` intake sends neither → file stored,
-   `job_id: null`, **no analysis ever runs.** → Fix: analyze on every upload (role optional).
-2. **The full resume analysis UI is dark.** `velo-profile-tab` lives in `/progress`, which is disabled
-   by the `progress` flag. So users see only the ATS number + project list on `/verify`, never the
-   real analysis. → Fix: surface the analysis on `/verify` (decoupled from `/progress`).
-3. **`/verify` has no orientation.** Users land on "Nothing verified yet" with no explanation of what
-   VELO does, the steps, or what they'll get. (Confirmed by the user's own confusion.)
-4. **No post-verification payoff.** After a verdict, `/verify` shows only a badge — no verdict summary,
-   no shareable credential link. The viral loop doesn't exist in the experience.
-5. **Async dependency.** Analysis requires a running **Celery worker** (+ Redis). Production deploy
-   must guarantee this or analysis hangs in "running" forever.
+1. ~~Upload silently no-ops without a target role.~~ **Fixed** — `ProfileResumeUploadAPIView` analyzes on every upload (role optional); `/verify` intake reaches a working analysis. *(P0.1)*
+2. ~~Full resume analysis UI is dark (`/progress`-only).~~ **Fixed** — `velo-profile-tab` is now the "Resume analysis" tab on `/verify`. *(P0.2)*
+3. ~~`/verify` has no orientation.~~ **Fixed** — "How VELO works" strip + explained empty state. *(P0.3)*
+4. ~~No post-verification payoff.~~ **Fixed** — `verdict_summary` + "Copy share link" → public credential; plus the Verified Capability synthesis. *(P0.4)*
+
+## 🔴 Remaining gate to a pilot
+
+- **Not yet run end-to-end on PROD as a fresh account.** All parts pass in isolation (tsc, backend
+  read-path smoke — see `PILOT_QA.md`), but the live signup → upload → analyze → verify → share loop
+  has not been exercised by a stranger. **This is the only thing between us and a pilot.**
+- **Async ops must be guaranteed in prod.** Analysis needs a running **Celery worker** (+ Redis) or it
+  hangs in "running" forever. `docker-compose.prod.yml` has `celery-worker`/`celery-beat` — confirm
+  they're actually draining the queue on the live env, and that this deploy applied migration `0015`.
 
 ## 🟡 What's missing (P2 — the evidence layers)
 
-- **Code-grounded interrogation.** Engine reads metadata + README only, not the actual code. *(The
-  single biggest credibility gap — see PRODUCT.md.)*
-- **Multi-dimensional scoring.** `finalize()` produces one score; we need ownership / judgment /
-  debugging / honesty / communication / seniority dimensions.
+- ✅ **Code-grounded interrogation** — *shipped 2026-06-24* (was the single biggest credibility gap).
+  Engine reads real repo source into `code_digest`; questions cite actual files. No longer missing.
+- **Multi-dimensional scoring.** `finalize()` produces one capability score (+ `hm_score` /
+  `code_signature_score` / `consistency_score`, which are honesty/consistency-flavored). Still no clean
+  ownership / judgment / debugging / communication / seniority breakdown.
 - **The evidence dossier.** Transcript + dimension scores + green/red flags + recommendation, surfaced
-  on the result and the public page. (Partial: `verdict_summary` exists.)
+  on the result and the public page. (Partial: `verdict_summary` + the public credential page exist;
+  the multi-dimensional breakdown does not.)
 - **The verified profile (person layer).** *Reconciliation v1 shipped (2026-06-24, deterministic):*
   `build_verified_profile()` — `backend/apps/audit/services/verified_profile_service.py` — overlays
   `project_verifications` onto `deep_analysis` into a `verified_profile` on `/mirror/latest/` (coverage/
