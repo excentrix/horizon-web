@@ -1,15 +1,11 @@
 import Link from 'next/link'
+import { VeloWordmark } from './VeloWordmark'
 
 export function VeloFooter() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container flex flex-col items-center justify-between gap-4 py-10 sm:flex-row">
-        <div className="flex items-center gap-2.5">
-          <span className="font-display text-lg font-semibold tracking-tight text-ink">VELO</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            by excentrix
-          </span>
-        </div>
+        <VeloWordmark markClassName="size-6 text-energy" textClassName="text-lg" />
 
         <nav className="flex items-center gap-6 font-mono text-xs text-muted-foreground">
           <a href="#how" className="transition-colors hover:text-ink">

@@ -118,5 +118,6 @@ change that converts VELO from novelty to paid-grade, and it's done.
 
 **Remaining depth (still P2):** multi-dimensional scoring (ownership / judgment / debugging / seniority
 rather than one score) and the full evidence dossier. And the honest ceiling on coverage: the digest
-reads the **default branch of public repos only** (`public_repo` OAuth scope) — private-repo support is
-an open decision (see ROADMAP).
+reads the **default branch of public repos only** (`public_repo` OAuth scope). Private-repo support is
+**deferred for the pilot** (decided 2026-07-01) — classic OAuth's only private scope is the too-heavy
+`repo`; a fine-grained read-only GitHub App is the right answer, post-pilot. See ROADMAP.

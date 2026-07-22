@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excentrix x GAT Incubation Proposal</title>
+  <style>
+    @font-face{font-family:'Bricolage';src:url(data:font/woff2;base64,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) format('woff2');font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:'Instrument';src:url(data:font/woff2;base64,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...) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:'GeistMono';src:url(data:font/woff2;base64,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) format('woff2');font-weight:500;font-style:normal;font-display:swap}
+
+    :root{
+      --paper:#FDF8EC;
+      --cream:#FAEDCD;
+      --ink:#212121;
+      --charcoal:#414141;
+      --muted:#6f6a5e;
+      --indigo:#5858CC;
+      --energy:#EC5B13;
+      --line:#E1D7C4;
+      --card:#FFFFFF;
+      --disp:'Bricolage','Segoe UI',system-ui,sans-serif;
+      --body:'Instrument','Segoe UI',system-ui,sans-serif;
+      --mono:'GeistMono',ui-monospace,'SF Mono',monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#efe7d8;color:var(--charcoal)}
+    body{font-family:var(--body);-webkit-font-smoothing:antialiased}
+    .page{
+      width:210mm; min-height:297mm; margin:0 auto 14mm; background:var(--paper);
+      position:relative; overflow:hidden; box-shadow:0 24px 60px rgba(33,33,33,.14);
+      padding:13mm 16mm 22mm;
+    }
+    .page:last-child{margin-bottom:0}
+    .page-break{page-break-after:always}
+    .grain::before{
+      content:""; position:absolute; inset:0; pointer-events:none; opacity:.05; mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .sunrise{
+      position:absolute; inset:auto auto -54mm -44mm; width:108mm; height:108mm; border-radius:999px;
+      background:radial-gradient(circle,var(--energy) 0%, rgba(236,91,19,.18) 34%, rgba(236,91,19,0) 72%);
+      filter:blur(9mm); opacity:.34; pointer-events:none;
+    }
+    .sunflare{
+      position:absolute; top:16mm; right:18mm; width:28mm; height:28mm; border-radius:999px;
+      background:radial-gradient(circle,var(--energy) 0%, rgba(236,91,19,0) 72%);
+      opacity:.22; filter:blur(3mm); pointer-events:none;
+    }
+    .mast{display:flex;justify-content:space-between;align-items:flex-start;gap:12mm;position:relative;z-index:1}
+    .brand{display:flex;align-items:center;gap:3mm}
+    .mark{width:11mm;height:11mm;color:var(--energy);flex:none}
+    .lockup{display:flex;flex-direction:column;gap:1.2mm}
+    .name{font-family:var(--disp);font-size:15pt;font-weight:600;letter-spacing:-.02em;color:var(--ink);line-height:1}
+    .sub{font-family:var(--mono);font-size:8.1pt;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+    .meta{font-family:var(--mono);font-size:8pt;letter-spacing:.16em;text-transform:uppercase;line-height:1.7;text-align:right;color:var(--muted)}
+    .meta b{color:var(--energy);font-weight:500}
+    .rule{height:.3mm;background:var(--line);margin:6mm 0 7mm;position:relative;z-index:1}
+    .eyebrow{display:inline-flex;align-items:center;gap:2mm;font-family:var(--mono);font-size:8pt;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+    .eyebrow-dot{width:1.8mm;height:1.8mm;border-radius:999px;background:var(--energy)}
+    h1,h2,h3{margin:0;font-family:var(--disp);color:var(--ink);letter-spacing:-.03em;line-height:1.05}
+    h1{font-size:26pt;font-weight:600;max-width:138mm}
+    h2{font-size:17pt;font-weight:600}
+    h3{font-size:12.5pt;font-weight:600}
+    .lede{margin-top:4mm;max-width:150mm;font-size:10.7pt;line-height:1.5}
+    .lede strong,.body strong,.tile p strong{color:var(--ink)}
+    .callout{
+      margin-top:6mm; background:var(--cream); border-radius:4mm; padding:4.5mm 5.5mm;
+      display:grid; grid-template-columns:17mm 1fr; gap:4.5mm; align-items:start;
+    }
+    .callout-num{font-family:var(--disp);font-size:28pt;line-height:.9;color:var(--indigo);font-weight:700}
+    .callout p{margin:0;font-size:10pt;line-height:1.48;color:var(--ink)}
+    .section{margin-top:8mm;position:relative;z-index:1}
+    .section-title{font-family:var(--mono);font-size:8.2pt;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo);margin:0 0 2.6mm}
+    .grid-2{display:grid;grid-template-columns:1.05fr .95fr;gap:5mm}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:3.8mm}
+    .tile{
+      border:1px solid var(--line); background:var(--card); border-radius:4mm; padding:3.8mm;
+      display:flex; flex-direction:column; gap:2.1mm;
+    }
+    .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo)}
+    .tile p,.body{margin:0;font-size:9.8pt;line-height:1.44;color:var(--muted)}
+    .chip{margin-top:auto;font-family:var(--mono);font-size:7.5pt;line-height:1.3;padding:1.9mm 2.4mm;background:var(--cream);border-radius:2.2mm;color:var(--ink)}
+    .chip b{color:var(--indigo);font-weight:500}
+    .card{
+      border:1px solid var(--line); border-radius:4mm; padding:4.2mm 4.6mm; background:linear-gradient(180deg,rgba(88,88,204,.04),rgba(88,88,204,0));
+    }
+    .list{margin:0; padding:0; list-style:none; display:grid; gap:3mm}
+    .list li{position:relative; padding-left:4.5mm; font-size:10pt; line-height:1.45}
+    .list li::before{
+      content:""; position:absolute; left:0; top:1.8mm; width:1.8mm; height:1.8mm; border-radius:999px; background:var(--energy);
+    }
+    .venture-grid{display:grid;grid-template-columns:1fr 1fr;gap:4.2mm}
+    .venture{
+      border:1px solid var(--line); border-radius:4mm; padding:4.3mm; background:var(--card);
+      min-height:58mm; display:flex; flex-direction:column; gap:2.4mm;
+    }
+    .venture-head{display:flex;justify-content:space-between;gap:4mm;align-items:flex-start}
+    .venture-name{font-family:var(--disp);font-size:16pt;font-weight:600;color:var(--ink)}
+    .venture-url{font-family:var(--mono);font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--indigo)}
+    .venture-tag{font-family:var(--mono);font-size:7.6pt;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .venture ul{margin:0;padding-left:4.4mm}
+    .venture li{margin:0 0 1.6mm;font-size:9.6pt;line-height:1.42}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:2.6mm 2.8mm;vertical-align:top;text-align:left}
+    thead th{
+      font-family:var(--mono);font-size:7.8pt;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--indigo); border-bottom:1px solid var(--line);
+    }
+    tbody td{font-size:9.4pt;line-height:1.38;border-bottom:1px solid rgba(225,215,196,.8)}
+    tbody tr:last-child td{border-bottom:0}
+    .small{font-size:8.9pt;color:var(--muted)}
+    .footer{
+      position:absolute; left:16mm; right:16mm; bottom:10mm; display:flex; justify-content:space-between; align-items:flex-end; gap:6mm;
+      font-family:var(--mono); font-size:7.5pt; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    }
+    .footer strong{font-weight:500;color:var(--energy)}
+    .signoff{margin-top:8mm;font-size:9.8pt;line-height:1.55}
+    .signoff strong{display:block;font-family:var(--disp);font-size:13pt;color:var(--ink);letter-spacing:-.02em}
+    .page-no{color:var(--muted)}
+    .page--cover h1{font-size:24pt;max-width:132mm}
+    .page--cover .lede{font-size:10.1pt;line-height:1.44;max-width:146mm}
+    .page--cover .callout{margin-top:5mm;padding:4mm 5mm;grid-template-columns:15mm 1fr;gap:4mm}
+    .page--cover .callout-num{font-size:24pt}
+    .page--cover .callout p{font-size:9.4pt;line-height:1.4}
+    .page--cover .section{margin-top:6mm}
+    .page--cover .grid-3{gap:3.2mm}
+    .page--cover .tile{padding:3.2mm;gap:1.8mm}
+    .page--cover h3{font-size:11.4pt}
+    .page--cover .tile p,.page--cover .body{font-size:9.1pt;line-height:1.36}
+    .page--cover .chip{font-size:7.1pt;padding:1.6mm 2mm}
+    .page--cover .card{padding:3.6mm 4mm}
+    .page--overview .section{margin-top:6.5mm}
+    .page--overview .venture-grid{gap:3.4mm}
+    .page--overview .venture{padding:3.8mm;min-height:52mm;gap:2mm}
+    .page--overview .venture-name{font-size:14.5pt}
+    .page--overview .venture-tag,.page--overview .venture-url{font-size:7.1pt}
+    .page--overview .venture .body{font-size:9.2pt;line-height:1.34}
+    .page--overview .venture li{font-size:9pt;line-height:1.3;margin:0 0 1.1mm}
+    .page--overview th,.page--overview td{padding:2.2mm 2.4mm}
+    .page--overview tbody td{font-size:8.9pt;line-height:1.3}
+    .page--overview .grid-2{gap:3.8mm}
+    .page--overview .card{padding:3.6mm 3.8mm}
+    .page--overview .card h3{font-size:11.3pt}
+    .page--overview .card .body{font-size:9pt;line-height:1.34}
+    @media print{
+      @page{size:A4;margin:0}
+      html,body{width:210mm;height:auto;background:#fff}
+      body{background:#fff}
+      .page{margin:0;box-shadow:none;width:210mm;min-height:297mm;page-break-after:always}
+      .page:last-child{page-break-after:auto}
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+  </style>
+</head>
+<body>
+  <section class="page page--cover grain page-break">
+    <div class="sunrise"></div>
+    <div class="sunflare"></div>
+    <header class="mast">
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><mask id="mark-1" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+            <circle cx="50" cy="50" r="46" fill="#fff"/>
+            <path d="M-8 70 Q50 24 108 70 L108 52 Q50 6 -8 52 Z" fill="#000"/>
+          </mask></defs>
+          <rect width="100" height="100" fill="currentColor" mask="url(#mark-1)"/>
+        </svg>
+        <div class="lockup">
+          <div class="name">excentrix</div>
+          <div class="sub">Horizon · VELO · Bangalore</div>
+        </div>
+      </div>
+      <div class="meta">
+        <div><b>Proposal</b></div>
+        <div>Global Academy of Technology</div>
+        <div>July 22, 2026</div>
+      </div>
+    </header>
+
+    <div class="rule"></div>
+
+    <p class="eyebrow"><span class="eyebrow-dot"></span> Incubation and campus collaboration proposal</p>
+    <h1>Request for incubation status, office space, and a student talent pipeline at GAT.</h1>
+    <p class="lede">Excentrix is a Bangalore-based technology venture developing AI-enabled proof-of-work and skill-verification systems for education and industry. Founded by alumni of Global Academy of Technology, we seek formal incubation, dedicated workspace, and a structured internship partnership with GAT to establish a durable industry-academia collaboration on campus.</p>
+
+    <div class="callout">
+      <div class="callout-num">01</div>
+      <p><strong>Founder statement and institutional intent.</strong> As an alumnus of Global Academy of Technology, returning to GAT to incubate Excentrix represents an opportunity to convert alumni experience into institutional value. The aim is to bring live product development, applied AI engineering, and sustained industry engagement back to campus in a form that is visible, practical, and beneficial to students.</p>
+    </div>
+
+    <section class="section">
+      <div class="section-title">Why this matters now</div>
+      <div class="grid-3">
+        <article class="tile">
+          <div class="kicker">Friction 01</div>
+          <h3>Technical learning still lacks credible evidence</h3>
+          <p>Students complete substantial work, yet institutions often lack a dependable method to convert that work into portable and verifiable proof of capability.</p>
+          <div class="chip"><b>Institutional gap:</b> work exists, but evidence remains fragmented.</div>
+        </article>
+        <article class="tile">
+          <div class="kicker">Friction 02</div>
+          <h3>AI has weakened traditional hiring signals</h3>
+          <p>Polished portfolios, resumes, and repositories are now easier to generate at scale. Establishing genuine ownership and applied depth has become materially harder.</p>
+          <div class="chip"><b>Institutional gap:</b> presentation quality no longer confirms capability.</div>
+        </article>
+        <article class="tile">
+          <div class="kicker">Friction 03</div>
+          <h3>Campus-industry integration remains limited</h3>
+          <p>Students benefit most from exposure to real product environments, while institutions increasingly need measurable, industry-linked outcomes.</p>
+          <div class="chip"><b>Institutional gap:</b> stronger continuity is needed between campus and practice.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Founder and alumni context</div>
+      <div class="card body">
+        Siddharth Karthikeyan, Founder &amp; CEO of Excentrix, is a B.E. Artificial Intelligence &amp; Data Science alumnus of Global Academy of Technology. The objective is not merely to operate from campus, but to establish a functional bridge between academic rigor and real-world technology deployment through live products, active engineering work, structured internships, workshops, and an alumni-led innovation presence within GAT.
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Excentrix incubation proposal · <strong>GAT</strong></div>
+      <div class="page-no">Page 1 of 3</div>
+    </div>
+  </section>
+
+  <section class="page page--overview grain page-break">
+    <div class="sunflare"></div>
+    <header class="mast">
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><mask id="mark-2" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+            <circle cx="50" cy="50" r="46" fill="#fff"/>
+            <path d="M-8 70 Q50 24 108 70 L108 52 Q50 6 -8 52 Z" fill="#000"/>
+          </mask></defs>
+          <rect width="100" height="100" fill="currentColor" mask="url(#mark-2)"/>
+        </svg>
+        <div class="lockup">
+          <div class="name">venture overview</div>
+          <div class="sub">Horizon and VELO</div>
+        </div>
+      </div>
+      <div class="meta">
+        <div>For review by</div>
+        <div>Incubation and Innovation Cell</div>
+      </div>
+    </header>
+
+    <div class="rule"></div>
+
+    <section class="section" style="margin-top:0">
+      <div class="section-title">Core technology and product stack</div>
+      <div class="venture-grid">
+        <article class="venture">
+          <div class="venture-head">
+            <div>
+              <div class="venture-name">horizon</div>
+              <div class="venture-url">horizon.excentrix.tech</div>
+            </div>
+            <div class="venture-tag">AI learner operating system</div>
+          </div>
+          <p class="body">An adaptive AI mentorship platform that models how each learner progresses and translates that understanding into a structured daily learning path.</p>
+          <ul>
+            <li>Conversational AI mentor with memory</li>
+            <li>Dynamic learner model and daily plan generation</li>
+            <li>Diagnostic skips and spaced repetition loops</li>
+            <li>Verified skill portfolio and artifact publishing</li>
+          </ul>
+        </article>
+        <article class="venture">
+          <div class="venture-head">
+            <div>
+              <div class="venture-name">VELO</div>
+              <div class="venture-url">excentrix.tech</div>
+            </div>
+            <div class="venture-tag">Truth-as-a-service platform</div>
+          </div>
+          <p class="body">A verification engine that examines real codebases to assess genuine technical competency and strengthen trust in candidate evaluation.</p>
+          <ul>
+            <li>Forensic developer code auditing</li>
+            <li>Interactive logic questioning and truth scoring</li>
+            <li>Evidence-backed recruiter trust protocol</li>
+            <li>Proof-of-work verification for education and hiring</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Support requested from GAT</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:24%">Resource area</th>
+            <th style="width:36%">Specific request</th>
+            <th>Operational requirement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Incubation status</strong></td>
+            <td>Formal incubation under the GAT Innovation and Incubation Cell / TIDE program.</td>
+            <td>Institutional recognition, stronger eligibility for collaborative programs, and formal inclusion within the innovation ecosystem.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Campus office space</strong></td>
+            <td>Dedicated workspace with 4–6 workstation capacity inside the incubation wing.</td>
+            <td>Basic office infrastructure, reliable internet access, and periodic use of meeting facilities.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Student internship pipeline</strong></td>
+            <td>Structured channel to recruit 3rd and 4th-year students across AI&amp;DS, CSE, and ISE.</td>
+            <td>Access to campus talent for AI engineering, software development, and product-oriented roles.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Reciprocal value to Global Academy of Technology</div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Applied engineering exposure for interns</h3>
+          <p class="body" style="margin-top:2.2mm">Student interns would contribute to live software systems spanning modern web engineering, AI workflows, and product development practices aligned with current industry requirements.</p>
+        </div>
+        <div class="card">
+          <h3>Early access to Horizon for campus use</h3>
+          <p class="body" style="margin-top:2.2mm">GAT students may receive early access to Horizon, creating a structured pathway to build demonstrable and verifiable skill profiles beyond conventional resumes.</p>
+        </div>
+        <div class="card">
+          <h3>Alumni mentorship and technical engagements</h3>
+          <p class="body" style="margin-top:2.2mm">The Excentrix team can support workshops, technical reviews, office hours, and focused engagement sessions for student cohorts.</p>
+        </div>
+        <div class="card">
+          <h3>Institutional innovation visibility</h3>
+          <p class="body" style="margin-top:2.2mm">Hosting an active alumni-led venture on campus can strengthen GAT’s innovation, entrepreneurship, and industry-academia narrative across institutional reporting and external positioning.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Excentrix incubation proposal · <strong>venture overview</strong></div>
+      <div class="page-no">Page 2 of 3</div>
+    </div>
+  </section>
+
+  <section class="page grain">
+    <div class="sunrise"></div>
+    <header class="mast">
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><mask id="mark-3" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+            <circle cx="50" cy="50" r="46" fill="#fff"/>
+            <path d="M-8 70 Q50 24 108 70 L108 52 Q50 6 -8 52 Z" fill="#000"/>
+          </mask></defs>
+          <rect width="100" height="100" fill="currentColor" mask="url(#mark-3)"/>
+        </svg>
+        <div class="lockup">
+          <div class="name">next steps</div>
+          <div class="sub">Timeline and committee discussion</div>
+        </div>
+      </div>
+      <div class="meta">
+        <div><b>Alumni ref</b></div>
+        <div>B.E. AI &amp; Data Science</div>
+      </div>
+    </header>
+
+    <div class="rule"></div>
+
+    <section class="section" style="margin-top:0">
+      <div class="section-title">Proposed timeline</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%">Phase</th>
+            <th>Action item</th>
+            <th style="width:24%">Target timeline</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Phase 1</strong></td>
+            <td>Presentation of the venture, proposal, and supporting material before the incubation committee.</td>
+            <td>Within the next 1 to 2 weeks</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 2</strong></td>
+            <td>Formal approval, documentation, and workspace allocation within the incubation centre.</td>
+            <td>Following approval</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 3</strong></td>
+            <td>Initiation of the student internship pipeline and on-campus onboarding process.</td>
+            <td>Immediately following setup</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <div class="section-title">What we would welcome</div>
+      <div class="card">
+        <ul class="list">
+          <li>An opportunity to present the venture, product direction, and proposal before the management and incubation evaluation committee.</li>
+          <li>A discussion on how GAT may serve as an active operating base for an alumni-led AI venture with meaningful student and institutional engagement.</li>
+          <li>A practical pathway toward formal incubation, workspace support, and recurring access to student talent.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Closing note</div>
+      <p class="body">This proposal is submitted with a clear objective: to build meaningful institutional value within the same academic ecosystem that helped shape the founding journey. Excentrix would value the opportunity to grow at GAT not only as a venture, but as a working bridge between students, faculty, and contemporary AI product development.</p>
+    </section>
+
+    <section class="section signoff">
+      <strong>Siddharth Karthikeyan</strong>
+      Founder &amp; CEO, Excentrix<br>
+      Alumnus, B.E. Artificial Intelligence &amp; Data Science | Global Academy of Technology<br>
+      Email: sidkarthik@excentrix.tech | Phone: +91 8147599342<br>
+      Websites: excentrix.tech | horizon.excentrix.tech
+    </section>
+
+    <div class="footer">
+      <div>Excentrix incubation proposal · <strong>closing</strong></div>
+      <div class="page-no">Page 3 of 3</div>
+    </div>
+  </section>
+</body>
+</html>

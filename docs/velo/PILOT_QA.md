@@ -50,6 +50,13 @@ deploy applied migration **`0015`** (verified-profile narrative cache).
 
 ---
 
+## 3b. Found issues (live prod QA — 2026-07-02)
+First real run on `excentrix.tech` surfaced these (all in the *current* deploy, before the verified-profile work is live):
+
+- **#8 GitHub connect fails: "redirect_uri is not associated with this application."** → **Config, not code.** The `redirect_uri` sent is correct (`https://api.excentrix.tech/api/auth/github/oauth/callback/`) and prod's `client_id` is `Ov23liBRZqIFJq52rs7Z` — so the OAuth App with *that* client_id doesn't have the callback registered (likely the callback was set on a different app). **Fix on GitHub dashboard:** ensure the app whose Client ID = `Ov23li…` has that exact callback URL. ⬜ pending user.
+- **#6 Returning user re-onboarded + dropped into mentor kickoff.** → **Fixed 2026-07-02.** The onboarding page never marked completion (relied on the résumé-upload side-effect, `student`-only) and routed to `/chat`. Now it calls `authApi.completeOnboarding()` explicitly and routes to `/verify`.
+- **#4 Onboarding used learning/mentor framing** ("Set up your mentor context", "personalize your learning direction", timeline/constraints fields). → **Fixed 2026-07-02.** Reframed for verification ("Verify the work on your résumé"), dropped the learning-schedule fields, role/company now optional.
+
 ## 4. Pilot script (what we ask a pilot user to do)
 **Candidate (dev):** "Sign up, upload your résumé, and defend one project you're proud
 of. Then send us the `/p/<you>?tab=verified` link." → success = they reach a verdict and share.

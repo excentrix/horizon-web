@@ -1,15 +1,13 @@
 import Link from 'next/link'
 import { veloNav, VERIFY_URL } from '@/lib/veloLinks'
+import { VeloWordmark } from './VeloWordmark'
 
 export function VeloHeader() {
   return (
     <header className="absolute inset-x-0 top-0 z-50">
       <div className="container flex h-20 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="font-display text-xl font-semibold tracking-tight text-ink">VELO</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            by excentrix
-          </span>
+        <Link href="/" aria-label="VELO — home" className="group text-foreground">
+          <VeloWordmark markClassName="text-energy transition-transform duration-500 group-hover:-translate-y-0.5" />
         </Link>
 
         <nav className="flex items-center gap-6">

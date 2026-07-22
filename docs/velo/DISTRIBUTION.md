@@ -67,6 +67,8 @@ at Bangalore colleges (and IITs/NITs/BITS/VIT).
 - Offer the club: free VELO verification for members + a leaderboard of who's verified, before placement season.
 - The club president becomes your unpaid distributor; students adopt because placements are existential.
 - **Action:** visit one Bangalore campus in person; sign one club this month.
+- **Cold-call script + pilot motion:** [OUTREACH_COLLEGES.md](./OUTREACH_COLLEGES.md) — insight-led opener
+  ("we spoke to N students last week…"), yes/no/unsure branches, objections, and the cohort-pilot setup.
 
 ### 3. Cold outbound to CTOs / eng leads (B2B corporate)
 3-line pitch, free-pilot close:
