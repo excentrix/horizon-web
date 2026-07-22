@@ -212,6 +212,15 @@
     color: hsl(43 30% 80% / 0.45);
   }
 
+  .field-dark option {
+    background: hsl(var(--hz-paper));
+    color: hsl(var(--hz-ink));
+  }
+
+  .field-dark option:disabled {
+    color: hsl(var(--hz-charcoal) / 0.68);
+  }
+
   .field-dark:focus {
     border-color: hsl(var(--hz-energy) / 0.7);
     box-shadow: 0 0 0 3px hsl(var(--hz-energy) / 0.2);

@@ -12,7 +12,15 @@ const interestOptions = [
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
-export function PilotSignupForm() {
+export function PilotSignupForm({
+  options = interestOptions,
+  defaultInterest = '',
+  contextPlaceholder = 'What are you trying to verify, teach, hire for, or pilot?',
+}: {
+  options?: string[]
+  defaultInterest?: string
+  contextPlaceholder?: string
+}) {
   const [state, setState] = useState<FormState>('idle')
   const [message, setMessage] = useState('')
 
@@ -110,11 +118,16 @@ export function PilotSignupForm() {
         <span className="font-mono text-xs uppercase tracking-[0.16em] text-cream/55">
           Pilot focus
         </span>
-        <select name="interest" required defaultValue="" className="field-dark appearance-none">
+        <select
+          name="interest"
+          required
+          defaultValue={defaultInterest}
+          className="field-dark appearance-none"
+        >
           <option value="" disabled>
             Choose a pilot
           </option>
-          {interestOptions.map((option) => (
+          {options.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -127,7 +140,7 @@ export function PilotSignupForm() {
         <textarea
           name="context"
           className="field-dark h-32 resize-none py-4 leading-relaxed"
-          placeholder="What are you trying to verify, teach, hire for, or pilot?"
+          placeholder={contextPlaceholder}
         />
       </label>
 

@@ -8,6 +8,7 @@ const columns = [
     links: [
       { label: 'Excentrix', href: 'https://excentrix.tech' },
       { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
+      { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
       { label: 'Blog', href: '/posts' },
       { label: 'Pilot Lab', href: 'https://excentrix.tech/#pilot' },
     ],
@@ -89,7 +90,7 @@ export function VeloFooter() {
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 text-sm text-muted-foreground md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Excentrix ·  Proof of work, not promises.</p>
+          <p>© {new Date().getFullYear()} Excentrix · Proof of work, not promises.</p>
           <div className="flex gap-6">
             <a href={VERIFY_URL} className="transition-colors hover:text-ink">
               Verify

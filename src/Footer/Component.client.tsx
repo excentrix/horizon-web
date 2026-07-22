@@ -20,6 +20,7 @@ const columns = [
       { label: 'AI Mentor', href: '/features/ai-mentor' },
       { label: 'Holistic Grading', href: '/features/holistic-grading' },
       { label: 'Community', href: '/features/community' },
+      { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
       { label: 'Pricing', href: '/pricing' },
     ],
   },
