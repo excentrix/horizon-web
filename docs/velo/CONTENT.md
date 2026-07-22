@@ -157,7 +157,7 @@ what's working — not the likes.
 >
 > *That's* the difference between "can talk about a project" and "built it." VELO catches the gap.
 >
-> Verify your own — free, and you only share it if you're proud of it: excentrix.tech/?ref=li_d10
+> Verify your own — free, and you only share it if you're proud of it: velo.excentrix.tech/?ref=li_d10
 >
 > #proofofwork #AI #developers
 
@@ -190,7 +190,7 @@ what's working — not the likes.
 > There is genuinely **zero downside to trying.** Best case, you get a credential that makes recruiters
 > stop scrolling. Worst case, you privately learn exactly where you're weak.
 >
-> Verify a project free: excentrix.tech/?ref=li_d24
+> Verify a project free: velo.excentrix.tech/?ref=li_d24
 
 ### ⭐ D30 — Recap + ask
 > 30 days building VELO in public. What I learned:
@@ -200,7 +200,7 @@ what's working — not the likes.
 >
 > What's next: [profiles / cohort pilots / the thing you're building next].
 >
-> If you build, get verified — it takes 5 minutes and you keep the credential: excentrix.tech/?ref=li_d30
+> If you build, get verified — it takes 5 minutes and you keep the credential: velo.excentrix.tech/?ref=li_d30
 > If you hire, I'll verify your next 3 candidates free. Reply "pilot."
 
 ---

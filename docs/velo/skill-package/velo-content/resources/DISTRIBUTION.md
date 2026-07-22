@@ -6,7 +6,7 @@
 ## The funnel (what we're optimizing)
 
 ```
-Content / outbound  →  landing (excentrix.tech)  →  signup  →  upload resume
+Content / outbound  →  landing (velo.excentrix.tech)  →  signup  →  upload resume
         →  analysis  →  verify a project  →  verdict + shareable credential
         →  (loop) share → others see → they sign up
         →  (B2B) college cohort pilot / HR free-pilot
@@ -37,10 +37,10 @@ break down by `utm_source` / `ref`. The `velo_credential_viewed` event measures 
 (how many eyeballs each shared credential pulls in).
 
 **Attribution wiring (do this):**
-1. **Tag every link you post** with `?ref=` (e.g. `excentrix.tech/?ref=li_post_03`, `?ref=gdsc_vit`). The
+1. **Tag every link you post** with `?ref=` (e.g. `velo.excentrix.tech/?ref=li_post_03`, `?ref=gdsc_vit`). The
    product app persists the first `ref` it sees and attaches it to all events.
 2. **Keep PostHog `cross_subdomain_cookie` ON** (do NOT disable it) so a person is linked across
-   `excentrix.tech` → `app.excentrix.tech` and initial UTMs carry into signup.
+   `velo.excentrix.tech` → `app.excentrix.tech` and initial UTMs carry into signup.
 3. *(Follow-up)* Marketing CTA should forward `ref`/UTM as query params to the app `/verify` link.
    *(Limitation: Google signups don't fire `velo_signed_up` yet — the funnel can start from
    `velo_resume_uploaded` / `velo_github_connected` until that's added.)*

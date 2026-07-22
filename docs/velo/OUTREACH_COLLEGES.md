@@ -184,7 +184,7 @@ a browser → Print → Save as PDF (both are print-formatted for A4). Give each
 >
 > Sid [Surname]
 > Excentrix · Bangalore
-> [phone] · excentrix.tech/?ref=email_[college]
+> [phone] · velo.excentrix.tech/?ref=email_[college]
 
 ### Follow-up email — after a call (the ④B path)
 > **Subject:** as promised — the free pilot for [College]
@@ -192,13 +192,13 @@ a browser → Print → Save as PDF (both are print-formatted for A4). Give each
 > Hi [Name], thanks for the two minutes earlier. As promised — attached is the one-pager plus a **sample
 > profile report** so you can see what each student gets: career readiness, verified capability, and the
 > knowledge gaps to close. Free tool, before placement season, and I'll run the first batch on campus.
-> Does **[day]** work for a quick 15 minutes? — Sid, [phone], excentrix.tech/?ref=followup_[college]
+> Does **[day]** work for a quick 15 minutes? — Sid, [phone], velo.excentrix.tech/?ref=followup_[college]
 
 ### Follow-up — WhatsApp / text
 > "Hi [Name], Sid here — thanks for the two minutes. As promised: a free tool that interviews your
 > final-years on their own projects and gives you (and them) an honest read on how well they can defend the
 > work — before placement season. I'll run the first batch on campus myself. 15 min this week?
-> excentrix.tech/?ref=wa_[college]"
+> velo.excentrix.tech/?ref=wa_[college]"
 
 ---
 

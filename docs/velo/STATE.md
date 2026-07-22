@@ -35,7 +35,8 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
 
 ### Marketing (horizon-web)
 - VELO landing + 3 audience pages (`/for/developers|hiring|colleges`) + transcript + pricing.
-- Host routing: `excentrix.tech` → VELO, `horizon.excentrix.tech` → Horizon.
+- Company landing for Excentrix at the apex.
+- Host routing: `excentrix.tech` → Excentrix, `velo.excentrix.tech` → VELO, `horizon.excentrix.tech` → Horizon.
 
 ### Feature-flag system
 - Backend source of truth (`backend/config/feature_flags.py`) + `/api/config/features/`.

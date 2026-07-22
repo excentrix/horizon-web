@@ -8,6 +8,12 @@ export function VeloFooter() {
         <VeloWordmark markClassName="size-6 text-energy" textClassName="text-lg" />
 
         <nav className="flex items-center gap-6 font-mono text-xs text-muted-foreground">
+          <a
+            href="https://excentrix.tech"
+            className="transition-colors hover:text-ink"
+          >
+            Excentrix
+          </a>
           <a href="#how" className="transition-colors hover:text-ink">
             How it works
           </a>
