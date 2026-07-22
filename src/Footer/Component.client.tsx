@@ -2,10 +2,12 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Twitter, Linkedin, Instagram, Facebook, Youtube, MessageCircle } from 'lucide-react'
 import type { Setting } from '@/payload-types'
 
 import { HorizonMark } from '@/components/Logo/HorizonLogo'
+import { ExcentrixFooter } from '@/components/excentrix/ExcentrixFooter'
 
 interface FooterClientProps {
   settings: Setting
@@ -50,8 +52,19 @@ const columns = [
 ]
 
 export function FooterClient({ settings }: FooterClientProps) {
+  const pathname = usePathname()
+  const isExcentrixBlog = pathname.startsWith('/posts')
   const socialLinks = settings?.social || {}
   const hasSocialLinks = Object.values(socialLinks).some((link) => link)
+
+  if (isExcentrixBlog) {
+    return (
+      <ExcentrixFooter
+        homeHref="https://excentrix.tech"
+        sectionHrefPrefix="https://excentrix.tech/"
+      />
+    )
+  }
 
   return (
     <footer className="relative mt-auto overflow-hidden border-t border-border bg-background">
@@ -59,7 +72,11 @@ export function FooterClient({ settings }: FooterClientProps) {
         <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-6">
           {/* Brand */}
           <div className="col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2.5 text-foreground" aria-label="Horizon — home">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2.5 text-foreground"
+              aria-label="Horizon — home"
+            >
               <HorizonMark className="size-8 text-energy" />
               <span className="font-display text-2xl font-semibold lowercase tracking-tight text-ink">
                 horizon
@@ -71,12 +88,48 @@ export function FooterClient({ settings }: FooterClientProps) {
             </p>
             {hasSocialLinks && (
               <div className="mt-6 flex gap-2">
-                {socialLinks.twitter && <SocialLink href={socialLinks.twitter} icon={<Twitter size={16} />} label="Twitter" />}
-                {socialLinks.linkedin && <SocialLink href={socialLinks.linkedin} icon={<Linkedin size={16} />} label="LinkedIn" />}
-                {socialLinks.instagram && <SocialLink href={socialLinks.instagram} icon={<Instagram size={16} />} label="Instagram" />}
-                {socialLinks.facebook && <SocialLink href={socialLinks.facebook} icon={<Facebook size={16} />} label="Facebook" />}
-                {socialLinks.youtube && <SocialLink href={socialLinks.youtube} icon={<Youtube size={16} />} label="YouTube" />}
-                {socialLinks.discord && <SocialLink href={socialLinks.discord} icon={<MessageCircle size={16} />} label="Discord" />}
+                {socialLinks.twitter && (
+                  <SocialLink
+                    href={socialLinks.twitter}
+                    icon={<Twitter size={16} />}
+                    label="Twitter"
+                  />
+                )}
+                {socialLinks.linkedin && (
+                  <SocialLink
+                    href={socialLinks.linkedin}
+                    icon={<Linkedin size={16} />}
+                    label="LinkedIn"
+                  />
+                )}
+                {socialLinks.instagram && (
+                  <SocialLink
+                    href={socialLinks.instagram}
+                    icon={<Instagram size={16} />}
+                    label="Instagram"
+                  />
+                )}
+                {socialLinks.facebook && (
+                  <SocialLink
+                    href={socialLinks.facebook}
+                    icon={<Facebook size={16} />}
+                    label="Facebook"
+                  />
+                )}
+                {socialLinks.youtube && (
+                  <SocialLink
+                    href={socialLinks.youtube}
+                    icon={<Youtube size={16} />}
+                    label="YouTube"
+                  />
+                )}
+                {socialLinks.discord && (
+                  <SocialLink
+                    href={socialLinks.discord}
+                    icon={<MessageCircle size={16} />}
+                    label="Discord"
+                  />
+                )}
               </div>
             )}
           </div>

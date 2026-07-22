@@ -8,7 +8,6 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 
-
 export const dynamic = 'force-static'
 export const revalidate = 600
 
@@ -36,19 +35,26 @@ export default async function Page() {
       <div className="pb-24 pt-32 md:pt-36">
         <PageClient />
 
-        {/* Hero Section */}
         <div className="container mb-12 px-4">
           <div className="max-w-4xl mx-auto py-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-border/50">
               <div>
-                <h1 className="display-lg mb-4">Stay curious.</h1>
+                <p className="eyebrow mb-5 flex items-center gap-2.5">
+                  <span className="eyebrow-dot" />
+                  excentrix blog
+                </p>
+                <h1 className="display-lg mb-4">Ideas that make capability visible.</h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-lg">
-                  Real insights from the Horizon community. Written by students, for students.
+                  Notes on verification, learning, hiring, and building evidence systems for the AI
+                  era.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {['Intelligence', 'Studies', 'Career', 'Wellbeing'].map(topic => (
-                  <button key={topic} className="px-5 py-2 rounded-full border border-border hover:border-foreground transition-colors text-sm font-medium">
+                {['Verification', 'Learning', 'Hiring', 'Evidence'].map((topic) => (
+                  <button
+                    key={topic}
+                    className="px-5 py-2 rounded-full border border-border hover:border-foreground transition-colors text-sm font-medium"
+                  >
                     {topic}
                   </button>
                 ))}
@@ -78,15 +84,16 @@ export default async function Page() {
           </div>
         </div>
       </div>
-
     </>
   )
 }
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Blog — Insights on learning, retention and careers',
+    title: {
+      absolute: 'Excentrix Blog — Verification, learning and evidence systems',
+    },
     description:
-      'Real insights from the Horizon community on learning science, retention, careers and building proof of skill.',
+      'Notes from Excentrix on proof-of-work verification, adaptive learning, hiring signal and evidence systems for the AI era.',
   }
 }

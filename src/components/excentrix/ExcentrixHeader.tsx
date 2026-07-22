@@ -6,6 +6,7 @@ const nav = [
   { label: 'What we build', href: '#build' },
   { label: 'What we stand for', href: '#principles' },
   { label: 'Offers', href: '#offers' },
+  { label: 'Blog', href: '/posts' },
 ]
 
 export function ExcentrixHeader() {
@@ -29,7 +30,7 @@ export function ExcentrixHeader() {
               {item.label}
             </a>
           ))}
-          <a href="mailto:hello@excentrix.tech?subject=Excentrix%20pilot" className="btn-cream btn-md">
+          <a href="#pilot" className="btn-cream btn-md">
             Talk to us
             <ArrowUpRight className="size-4" />
           </a>

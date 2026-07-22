@@ -48,8 +48,15 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <div className="container mb-12 px-4">
         <div className="max-w-4xl mx-auto py-12 border-b border-border/50">
+          <p className="eyebrow mb-5 flex items-center gap-2.5">
+            <span className="eyebrow-dot" />
+            excentrix blog
+          </p>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Posts <span className="text-muted-foreground text-2xl ml-2 font-normal">Page {pageNumber}</span>
+            Posts{' '}
+            <span className="text-muted-foreground text-2xl ml-2 font-normal">
+              Page {pageNumber}
+            </span>
           </h1>
         </div>
       </div>
@@ -81,7 +88,9 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
   return {
-    title: `Posts - Page ${pageNumber || ''} | Horizon`,
+    title: {
+      absolute: `Excentrix Blog - Page ${pageNumber || ''}`,
+    },
   }
 }
 

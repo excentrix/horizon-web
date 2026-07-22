@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server'
  *
  * Local preview:
  *   localhost:3000          → Excentrix
+ *   127.0.0.1:3000          → Excentrix
  *   velo.localhost:3000     → VELO
  *   horizon.localhost:3000  → Horizon
  *   all.localhost:3000      → Excentrix
@@ -25,6 +26,7 @@ const EXCENTRIX_HOSTS = new Set([
   'www.excentrix.tech',
   'all.excentrix.tech',
   'localhost',
+  '127.0.0.1',
   'all.localhost',
 ])
 
@@ -37,6 +39,8 @@ const PASSTHROUGH = [
   '/all',
   '/velo',
   '/favicon',
+  '/legal',
+  '/posts',
   '/sitemap',
   '/robots',
 ]

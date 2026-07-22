@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 
 import { HorizonWordmark } from '@/components/Logo/HorizonLogo'
+import { ExcentrixWordmark } from '@/components/excentrix/ExcentrixWordmark'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,8 +21,16 @@ const navItems = [
   { label: 'about', href: '/about' },
 ]
 
+const excentrixBlogNavItems = [
+  { label: 'what we build', href: 'https://excentrix.tech/#build' },
+  { label: 'principles', href: 'https://excentrix.tech/#principles' },
+  { label: 'offers', href: 'https://excentrix.tech/#offers' },
+  { label: 'blog', href: '/posts' },
+]
+
 export const HeaderClient: React.FC = () => {
   const pathname = usePathname()
+  const isExcentrixBlog = pathname.startsWith('/posts')
   const [isOpen, setIsOpen] = useState(false)
   const [hasJoined, setHasJoined] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -77,7 +86,19 @@ export const HeaderClient: React.FC = () => {
     return () => ctx.revert()
   }, [])
 
-  const allItems = [...navItems, ...(hasJoined ? [{ label: 'dashboard', href: '/wishlist' }] : [])]
+  const allItems = isExcentrixBlog
+    ? excentrixBlogNavItems
+    : [...navItems, ...(hasJoined ? [{ label: 'dashboard', href: '/wishlist' }] : [])]
+  const ctaHref = isExcentrixBlog
+    ? 'https://excentrix.tech/#pilot'
+    : hasJoined
+      ? '/wishlist'
+      : '/#waitlist'
+  const ctaLabel = isExcentrixBlog
+    ? 'Start a pilot'
+    : hasJoined
+      ? 'Your dashboard'
+      : 'Join the waitlist'
 
   return (
     <header className="relative z-50">
@@ -91,8 +112,19 @@ export const HeaderClient: React.FC = () => {
         }`}
       >
         <div className="container flex h-16 items-center justify-between md:h-[4.5rem]">
-          <Link href="/" aria-label="Horizon — home" className="group relative z-50 text-foreground">
-            <HorizonWordmark markClassName="text-energy transition-transform duration-500 group-hover:-translate-y-0.5" />
+          <Link
+            href={isExcentrixBlog ? 'https://excentrix.tech' : '/'}
+            aria-label={isExcentrixBlog ? 'Excentrix home' : 'Horizon — home'}
+            className="group relative z-50 text-foreground"
+          >
+            {isExcentrixBlog ? (
+              <ExcentrixWordmark
+                markClassName="text-energy transition-transform duration-500 group-hover:-translate-y-0.5"
+                textClassName="text-ink"
+              />
+            ) : (
+              <HorizonWordmark markClassName="text-energy transition-transform duration-500 group-hover:-translate-y-0.5" />
+            )}
           </Link>
 
           {/* Desktop nav */}
@@ -102,7 +134,10 @@ export const HeaderClient: React.FC = () => {
                 key={item.href}
                 href={item.href}
                 className={`text-[0.9375rem] font-medium lowercase tracking-tight transition-colors hover:text-ink ${
-                  pathname === item.href ? 'text-ink' : 'text-muted-foreground'
+                  pathname === item.href ||
+                  (item.href === '/posts' && pathname.startsWith('/posts'))
+                    ? 'text-ink'
+                    : 'text-muted-foreground'
                 }`}
               >
                 {item.label}
@@ -111,8 +146,8 @@ export const HeaderClient: React.FC = () => {
           </div>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <Link href={hasJoined ? '/wishlist' : '/#waitlist'} className="btn-primary btn-md">
-              {hasJoined ? 'Your dashboard' : 'Join the waitlist'}
+            <Link href={ctaHref} className="btn-primary btn-md">
+              {ctaLabel}
               <ArrowUpRight className="size-4" />
             </Link>
           </div>
@@ -150,11 +185,11 @@ export const HeaderClient: React.FC = () => {
           </nav>
           <div className="container pb-10" data-overlay-link>
             <Link
-              href={hasJoined ? '/wishlist' : '/#waitlist'}
+              href={ctaHref}
               onClick={() => setIsOpen(false)}
               className="btn-primary btn-lg w-full"
             >
-              {hasJoined ? 'Your dashboard' : 'Join the waitlist'}
+              {ctaLabel}
               <ArrowUpRight className="size-5" />
             </Link>
           </div>

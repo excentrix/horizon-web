@@ -57,11 +57,12 @@ export default async function Post({ params: paramsPromise }: Args) {
   if (!post) return <PayloadRedirects url={url} />
 
   const serverUrl = getServerSideURL()
-  const ogImage = post.meta?.image && typeof post.meta.image === 'object' && post.meta.image.url
-    ? post.meta.image.url
-    : (post.heroImage && typeof post.heroImage === 'object' && post.heroImage.url
-      ? post.heroImage.url
-      : `${serverUrl}/api/og?title=${encodeURIComponent(post.title)}`)
+  const ogImage =
+    post.meta?.image && typeof post.meta.image === 'object' && post.meta.image.url
+      ? post.meta.image.url
+      : post.heroImage && typeof post.heroImage === 'object' && post.heroImage.url
+        ? post.heroImage.url
+        : `${serverUrl}/api/og?title=${encodeURIComponent(post.title)}`
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -75,19 +76,23 @@ export default async function Post({ params: paramsPromise }: Args) {
     author: post.populatedAuthors?.map((author) => ({
       '@type': 'Person',
       name: author.name || 'Anonymous',
-      url: author.name ? `${serverUrl}/authors/${author.name.toLowerCase().replace(/\s+/g, '-')}` : serverUrl,
-    })) || [{
-      '@type': 'Organization',
-      name: 'Horizon',
-      url: serverUrl,
-    }],
+      url: author.name
+        ? `${serverUrl}/authors/${author.name.toLowerCase().replace(/\s+/g, '-')}`
+        : serverUrl,
+    })) || [
+      {
+        '@type': 'Organization',
+        name: 'Excentrix',
+        url: serverUrl,
+      },
+    ],
     publisher: {
       '@type': 'Organization',
-      name: 'Horizon',
+      name: 'Excentrix',
       logo: {
         '@type': 'ImageObject',
         url: `${serverUrl}/logo.png`,
-      }
+      },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -115,7 +120,7 @@ export default async function Post({ params: paramsPromise }: Args) {
           },
         ],
       },
-    }
+    },
   }
 
   return (
@@ -132,10 +137,7 @@ export default async function Post({ params: paramsPromise }: Args) {
       {draft && <LivePreviewListener />}
 
       {/* Reading Progress Tracker */}
-      <ReadingTracker
-        postId={post.id.toString()}
-        content={JSON.stringify(post.content)}
-      />
+      <ReadingTracker postId={post.id.toString()} content={JSON.stringify(post.content)} />
 
       <PostHero post={post} />
 
@@ -170,7 +172,23 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const decodedSlug = decodeURIComponent(slug)
   const post = await queryPostBySlug({ slug: decodedSlug })
 
-  return generateMeta({ doc: post })
+  const meta = await generateMeta({ doc: post })
+  const title = `${post?.meta?.title || post?.title || 'Excentrix Blog'} | Excentrix`
+
+  return {
+    ...meta,
+    title: {
+      absolute: title,
+    },
+    openGraph: {
+      ...meta.openGraph,
+      title,
+    },
+    twitter: {
+      ...meta.twitter,
+      title,
+    },
+  }
 }
 
 const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
