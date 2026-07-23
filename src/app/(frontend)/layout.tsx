@@ -14,13 +14,12 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
 import './globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
-
-import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import type { Setting } from '@/payload-types'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { productGraph, siteOrigins } from '@/lib/seo'
 
 const displayFont = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -36,58 +35,9 @@ const bodyFont = Instrument_Sans({
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
-  const siteUrl = getServerSideURL()
   const settings = (await getCachedGlobal('settings', 1)()) as Setting
   const gaId = settings.analytics?.googleAnalyticsId
   const gtmId = settings.analytics?.googleTagManagerId
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${siteUrl}/#organization`,
-        name: 'Horizon',
-        alternateName: 'Horizon by Excentrix',
-        url: siteUrl,
-        logo: `${siteUrl}/favicon/web-app-manifest-512x512.png`,
-        description:
-          'Horizon is an adaptive AI mentorship platform that builds a living model of each learner and generates a personalized, daily-adapting learning plan with verifiable skill portfolios.',
-        sameAs: ['https://twitter.com/excentrix', 'https://linkedin.com/company/excentrix'],
-        contactPoint: {
-          '@type': 'ContactPoint',
-          email: 'hello@excentrix.tech',
-          contactType: 'customer service',
-          areaServed: 'IN',
-          availableLanguage: 'en',
-        },
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${siteUrl}/#website`,
-        url: siteUrl,
-        name: 'Horizon',
-        publisher: { '@id': `${siteUrl}/#organization` },
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: { '@type': 'EntryPoint', urlTemplate: `${siteUrl}/search?q={search_term_string}` },
-          'query-input': 'required name=search_term_string',
-        },
-      },
-      {
-        '@type': 'SoftwareApplication',
-        '@id': `${siteUrl}/#app`,
-        name: 'Horizon',
-        applicationCategory: 'EducationalApplication',
-        operatingSystem: 'Web',
-        url: siteUrl,
-        description:
-          'An AI mentor that knows your gaps, goals, schedule and pace — and turns them into a daily learning plan that adapts every day. Spaced repetition, diagnostic skips, verified artifact portfolios and domain-specialised mentors in one platform.',
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR', description: 'Free early access via waitlist' },
-        publisher: { '@id': `${siteUrl}/#organization` },
-      },
-    ],
-  }
 
   return (
     <html
@@ -97,11 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         <InitTheme />
-        <Script
-          id="json-ld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <JsonLd id="horizon-entity-json-ld" data={productGraph('horizon')} />
       </head>
       <body>
         <Providers>
@@ -124,7 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  metadataBase: new URL(siteOrigins.horizon),
   title: {
     default: 'Horizon — The AI mentor that knows you',
     template: '%s · Horizon',

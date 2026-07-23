@@ -27,12 +27,17 @@ function createColumns(sectionHrefPrefix: string) {
         { label: 'For Developers', href: 'https://velo.excentrix.tech/for/developers' },
         { label: 'For Hiring', href: 'https://velo.excentrix.tech/for/hiring' },
         { label: 'For Colleges', href: 'https://velo.excentrix.tech/for/colleges' },
+        {
+          label: 'Proof of Work',
+          href: 'https://velo.excentrix.tech/use-cases/proof-of-work-verification',
+        },
       ],
     },
     {
       title: 'horizon',
       links: [
         { label: 'AI Mentor', href: 'https://horizon.excentrix.tech/features/ai-mentor' },
+        { label: 'Adaptive Learning', href: 'https://horizon.excentrix.tech/adaptive-learning' },
         {
           label: 'Holistic Grading',
           href: 'https://horizon.excentrix.tech/features/holistic-grading',
@@ -45,6 +50,11 @@ function createColumns(sectionHrefPrefix: string) {
       title: 'company',
       links: [
         { label: 'What we build', href: sectionHref('#build') },
+        { label: 'AI Education', href: 'https://excentrix.tech/ai-education-infrastructure' },
+        {
+          label: 'Capability Infrastructure',
+          href: 'https://excentrix.tech/capability-infrastructure',
+        },
         { label: 'Principles', href: sectionHref('#principles') },
         { label: 'Offers', href: sectionHref('#offers') },
         { label: 'Blog', href: '/posts' },

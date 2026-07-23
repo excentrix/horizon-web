@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 import { AudiencePage, type AudienceContent } from '@/components/velo/AudiencePage'
+import { productMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = productMetadata('velo', {
   title: 'For hiring teams — know who actually built it',
   description:
     'Most engineering resumes in 2026 are AI output the candidate can’t defend. VELO sends your shortlist a five-minute adaptive interrogation and returns a defensibility verdict before you spend an interview.',
-}
+  path: '/for/hiring',
+  keywords: ['technical hiring assessment', 'AI-proof hiring', 'developer screening'],
+})
 
 const content: AudienceContent = {
   eyebrow: 'for hiring teams',

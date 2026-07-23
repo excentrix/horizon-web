@@ -1,14 +1,16 @@
-import type { Metadata } from 'next'
 import VeloHero from '@/components/velo/VeloHero'
 import { VeloTranscript } from '@/components/velo/VeloTranscript'
 import { VeloPricing } from '@/components/velo/VeloPricing'
 import { VeloStart } from '@/components/velo/VeloStart'
 import Link from 'next/link'
+import { productMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Proof of work, not promises',
-  alternates: { canonical: '/' },
-}
+export const metadata = productMetadata('velo', {
+  title: 'VELO — Proof-of-work verification for developers',
+  description:
+    'VELO verifies whether developers can defend the projects they claim to have built, producing proof-of-work credentials for hiring teams, colleges, and builders.',
+  keywords: ['proof-of-work verification', 'developer verification', 'technical hiring assessment'],
+})
 
 const steps = [
   {

@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 import { AudiencePage, type AudienceContent } from '@/components/velo/AudiencePage'
+import { productMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = productMetadata('velo', {
   title: 'For colleges — send graduates out with proof',
   description:
     'Placement season runs on claims employers no longer trust. VELO verifies whole cohorts and gives every student a proof-of-work credential that stands up to scrutiny.',
-}
+  path: '/for/colleges',
+  keywords: ['college placement verification', 'student project verification', 'proof of work colleges'],
+})
 
 const content: AudienceContent = {
   eyebrow: 'for colleges',

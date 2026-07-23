@@ -10,9 +10,10 @@ import type { Setting } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { getServerSideURL } from '@/utilities/getURL'
 import { ExcentrixHeader } from '@/components/excentrix/ExcentrixHeader'
 import { ExcentrixFooter } from '@/components/excentrix/ExcentrixFooter'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { productGraph, siteOrigins } from '@/lib/seo'
 
 import '../(frontend)/globals.css'
 
@@ -41,6 +42,7 @@ export default async function ExcentrixLayout({ children }: { children: React.Re
     >
       <head>
         <InitTheme />
+        <JsonLd id="excentrix-entity-json-ld" data={productGraph('excentrix')} />
       </head>
       <body>
         <Providers>
@@ -57,7 +59,7 @@ export default async function ExcentrixLayout({ children }: { children: React.Re
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  metadataBase: new URL(siteOrigins.excentrix),
   title: {
     default: 'Excentrix — Capability made visible',
     template: '%s · Excentrix',

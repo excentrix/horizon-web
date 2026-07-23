@@ -20,6 +20,8 @@ const columns = [
       { label: 'For Developers', href: '/for/developers' },
       { label: 'For Hiring', href: '/for/hiring' },
       { label: 'For Colleges', href: '/for/colleges' },
+      { label: 'Proof of Work', href: '/use-cases/proof-of-work-verification' },
+      { label: 'Project Verification', href: '/use-cases/project-verification' },
       { label: 'How it works', href: '/#how' },
     ],
   },
@@ -39,6 +41,10 @@ const columns = [
     title: 'company',
     links: [
       { label: 'What we build', href: 'https://excentrix.tech/#build' },
+      {
+        label: 'Capability Infrastructure',
+        href: 'https://excentrix.tech/capability-infrastructure',
+      },
       { label: 'Principles', href: 'https://excentrix.tech/#principles' },
       { label: 'Offers', href: 'https://excentrix.tech/#offers' },
       { label: 'Blog', href: '/posts' },

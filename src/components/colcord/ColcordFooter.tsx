@@ -7,6 +7,7 @@ const columns = [
     title: 'platform',
     links: [
       { label: 'Modules', href: '#modules' },
+      { label: 'Campus OS', href: '/campus-operating-system' },
       { label: 'People', href: '#people' },
       { label: 'Challenge', href: '#challenge' },
       { label: 'Pilot', href: '#pilot', dialog: true },
@@ -88,6 +89,12 @@ export function ColcordFooter() {
           <div className="flex gap-6">
             <a href="https://excentrix.tech" className="transition-colors hover:text-cream">
               Excentrix
+            </a>
+            <a
+              href="https://excentrix.tech/ai-education-infrastructure"
+              className="transition-colors hover:text-cream"
+            >
+              AI education
             </a>
             <a href="mailto:team@colcord.co.in" className="transition-colors hover:text-cream">
               Contact

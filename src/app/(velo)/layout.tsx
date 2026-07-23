@@ -10,9 +10,10 @@ import type { Setting } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { getServerSideURL } from '@/utilities/getURL'
 import { VeloHeader } from '@/components/velo/VeloHeader'
 import { VeloFooter } from '@/components/velo/VeloFooter'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { productGraph, siteOrigins } from '@/lib/seo'
 
 // Reuse the Horizon design system (tokens, utilities) from the same stylesheet.
 import '../(frontend)/globals.css'
@@ -42,6 +43,7 @@ export default async function VeloLayout({ children }: { children: React.ReactNo
     >
       <head>
         <InitTheme />
+        <JsonLd id="velo-entity-json-ld" data={productGraph('velo')} />
       </head>
       <body>
         <Providers>
@@ -58,7 +60,7 @@ export default async function VeloLayout({ children }: { children: React.ReactNo
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  metadataBase: new URL(siteOrigins.velo),
   title: {
     default: 'VELO — Proof of work, not promises',
     template: '%s · VELO',

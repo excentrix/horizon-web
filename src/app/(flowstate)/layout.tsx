@@ -10,9 +10,10 @@ import type { Setting } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { getServerSideURL } from '@/utilities/getURL'
 import { FlowstateHeader } from '@/components/flowstate/FlowstateHeader'
 import { FlowstateFooter } from '@/components/flowstate/FlowstateFooter'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { productGraph, siteOrigins } from '@/lib/seo'
 
 import '../(frontend)/globals.css'
 
@@ -41,6 +42,7 @@ export default async function FlowstateLayout({ children }: { children: React.Re
     >
       <head>
         <InitTheme />
+        <JsonLd id="flowstate-entity-json-ld" data={productGraph('flowstate')} />
       </head>
       <body>
         <Providers>
@@ -57,7 +59,7 @@ export default async function FlowstateLayout({ children }: { children: React.Re
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  metadataBase: new URL(siteOrigins.flowstate),
   title: {
     default: 'Flowstate — Build the deck. Run the room.',
     template: '%s · Flowstate',

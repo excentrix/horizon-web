@@ -10,9 +10,10 @@ import type { Setting } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { getServerSideURL } from '@/utilities/getURL'
 import { ColcordHeader } from '@/components/colcord/ColcordHeader'
 import { ColcordFooter } from '@/components/colcord/ColcordFooter'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { productGraph, siteOrigins } from '@/lib/seo'
 
 import '../(frontend)/globals.css'
 
@@ -41,6 +42,7 @@ export default async function ColcordLayout({ children }: { children: React.Reac
     >
       <head>
         <InitTheme />
+        <JsonLd id="colcord-entity-json-ld" data={productGraph('colcord')} />
       </head>
       <body>
         <Providers>
@@ -57,7 +59,7 @@ export default async function ColcordLayout({ children }: { children: React.Reac
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  metadataBase: new URL(siteOrigins.colcord),
   title: {
     default: 'Colcord — One Platform. One Ecosystem.',
     template: '%s · Colcord',

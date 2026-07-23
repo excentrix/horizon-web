@@ -1,12 +1,15 @@
 import type { Metadata } from 'next'
 import { AudiencePage, type AudienceContent } from '@/components/velo/AudiencePage'
 import { VERIFY_URL } from '@/lib/veloLinks'
+import { productMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = productMetadata('velo', {
   title: 'For developers — prove what you built',
   description:
     'AI can generate the project. It can’t defend it for you. Earn a verifiable proof-of-work credential that shows you actually built — and understand — your work.',
-}
+  path: '/for/developers',
+  keywords: ['developer verification', 'developer proof of work', 'portfolio verification'],
+})
 
 const content: AudienceContent = {
   eyebrow: 'for developers',

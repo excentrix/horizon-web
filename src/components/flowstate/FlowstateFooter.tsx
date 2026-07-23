@@ -17,6 +17,7 @@ const columns = [
     title: 'flowstate',
     links: [
       { label: 'Studio', href: '#surfaces' },
+      { label: 'Educator Software', href: '/presentation-software-for-educators' },
       { label: 'Stage', href: '#surfaces' },
       { label: 'Remote', href: '#surfaces' },
       { label: 'Classroom', href: '#surfaces' },
@@ -29,6 +30,7 @@ const columns = [
       { label: 'Principles', href: 'https://excentrix.tech/#principles' },
       { label: 'Offers', href: 'https://excentrix.tech/#offers' },
       { label: 'Pilot Lab', href: 'https://excentrix.tech/#pilot' },
+      { label: 'AI Education', href: 'https://excentrix.tech/ai-education-infrastructure' },
     ],
   },
   {

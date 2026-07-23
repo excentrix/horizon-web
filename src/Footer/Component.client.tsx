@@ -18,7 +18,9 @@ const columns = [
     title: 'product',
     links: [
       { label: 'AI Mentor', href: '/features/ai-mentor' },
+      { label: 'Adaptive Learning', href: '/adaptive-learning' },
       { label: 'Holistic Grading', href: '/features/holistic-grading' },
+      { label: 'AI Grading', href: '/ai-grading' },
       { label: 'Community', href: '/features/community' },
       { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
       { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
@@ -31,6 +33,7 @@ const columns = [
       { label: 'For Students', href: '/solutions/students' },
       { label: 'For Educators', href: '/solutions/educators' },
       { label: 'For Institutions', href: '/solutions/institutions' },
+      { label: 'VELO Proof of Work', href: 'https://velo.excentrix.tech/use-cases/proof-of-work-verification' },
       { label: 'Case Studies', href: '/case-studies' },
     ],
   },

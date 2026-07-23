@@ -16,5 +16,6 @@ export const veloNav = [
   { href: '/for/developers', label: 'For developers' },
   { href: '/for/hiring', label: 'For hiring teams' },
   { href: '/for/colleges', label: 'For colleges' },
+  { href: '/use-cases/proof-of-work-verification', label: 'Use cases' },
   { href: '/#how', label: 'How it works' },
 ] as const

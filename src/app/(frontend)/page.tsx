@@ -3,7 +3,7 @@ import Script from 'next/script'
 
 import HomePage from '@/components/ui/landing/Main'
 import { faqs } from '@/components/ui/landing/faq-data'
-import { getServerSideURL } from '@/utilities/getURL'
+import { siteOrigins } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Horizon — The AI mentor that knows you',
@@ -23,7 +23,7 @@ export default function Page() {
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    '@id': `${getServerSideURL()}/#faq`,
+    '@id': `${siteOrigins.horizon}/#faq`,
     mainEntity: faqs.map((f) => ({
       '@type': 'Question',
       name: f.q,
