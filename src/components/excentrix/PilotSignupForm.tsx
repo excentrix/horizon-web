@@ -124,11 +124,11 @@ export function PilotSignupForm({
           defaultValue={defaultInterest}
           className="field-dark appearance-none"
         >
-          <option value="" disabled>
+          <option value="" disabled className="bg-ink text-cream">
             Choose a pilot
           </option>
           {options.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={option} className="bg-ink text-cream">
               {option}
             </option>
           ))}

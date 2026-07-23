@@ -9,6 +9,7 @@ const columns = [
       { label: 'Excentrix', href: 'https://excentrix.tech' },
       { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
       { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
+      { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
       { label: 'Blog', href: '/posts' },
       { label: 'Pilot Lab', href: 'https://excentrix.tech/#pilot' },
     ],

@@ -16,6 +16,7 @@ function createColumns(sectionHrefPrefix: string) {
         { label: 'VELO', href: 'https://velo.excentrix.tech' },
         { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
         { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
+        { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
         { label: 'Blog', href: '/posts' },
         { label: 'Pilot Lab', href: sectionHref('#pilot') },
       ],
