@@ -183,10 +183,12 @@ export function softwareJsonLd(product: ProductKey) {
     offers:
       product === 'velo'
         ? {
-            '@type': 'Offer',
-            price: '99',
+            '@type': 'AggregateOffer',
+            lowPrice: '0',
+            highPrice: '99',
             priceCurrency: 'INR',
-            description: 'Developer project verification starts at INR 99 per verification.',
+            description:
+              'VELO includes 3 free developer project verifications, then INR 99 per verification.',
           }
         : {
             '@type': 'Offer',
