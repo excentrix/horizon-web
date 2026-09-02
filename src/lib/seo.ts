@@ -180,12 +180,20 @@ export function softwareJsonLd(product: ProductKey) {
     description: entity.description,
     keywords: entity.keywords.join(', '),
     publisher: { '@id': `${siteOrigins.excentrix}/#organization` },
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-      description: 'Pilot access available through Excentrix.',
-    },
+    offers:
+      product === 'velo'
+        ? {
+            '@type': 'Offer',
+            price: '99',
+            priceCurrency: 'INR',
+            description: 'Developer project verification starts at INR 99 per verification.',
+          }
+        : {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD',
+            description: 'Pilot access available through Excentrix.',
+          },
   }
 }
 

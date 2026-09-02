@@ -3,11 +3,11 @@ import { VERIFY_URL } from '@/lib/veloLinks'
 const tiers = [
   {
     name: 'Developer',
-    price: 'Free',
-    sub: 'then ₹399/mo',
+    price: '₹99',
+    sub: '/ verification',
     tagline: 'Prove what you built.',
     features: [
-      'First verification free',
+      '₹99 per project verification',
       'Shareable proof-of-work credential',
       'Public verification page',
       'Re-verify as you ship more',
