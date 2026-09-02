@@ -22,9 +22,9 @@ const navItems = [
 ]
 
 const excentrixBlogNavItems = [
-  { label: 'what we build', href: 'https://excentrix.tech/#build' },
-  { label: 'principles', href: 'https://excentrix.tech/#principles' },
-  { label: 'offers', href: 'https://excentrix.tech/#offers' },
+  { label: 'what we build', href: 'https://all.excentrix.tech/#build' },
+  { label: 'principles', href: 'https://all.excentrix.tech/#principles' },
+  { label: 'offers', href: 'https://all.excentrix.tech/#offers' },
   { label: 'blog', href: '/posts' },
 ]
 
@@ -90,7 +90,7 @@ export const HeaderClient: React.FC = () => {
     ? excentrixBlogNavItems
     : [...navItems, ...(hasJoined ? [{ label: 'dashboard', href: '/wishlist' }] : [])]
   const ctaHref = isExcentrixBlog
-    ? 'https://excentrix.tech/#pilot'
+    ? 'https://all.excentrix.tech/#pilot'
     : hasJoined
       ? '/wishlist'
       : '/#waitlist'
@@ -113,7 +113,7 @@ export const HeaderClient: React.FC = () => {
       >
         <div className="container flex h-16 items-center justify-between md:h-[4.5rem]">
           <Link
-            href={isExcentrixBlog ? 'https://excentrix.tech' : '/'}
+            href={isExcentrixBlog ? 'https://all.excentrix.tech' : '/'}
             aria-label={isExcentrixBlog ? 'Excentrix home' : 'Horizon — home'}
             className="group relative z-50 text-foreground"
           >

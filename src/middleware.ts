@@ -3,19 +3,19 @@ import { NextRequest, NextResponse } from 'next/server'
 /**
  * Host-based routing — one deployment serves two products:
  *
- *   excentrix.tech          → Excentrix (internal /all route group)
+ *   excentrix.tech          → VELO      (internal /velo route group)
  *   velo.excentrix.tech     → VELO      (internal /velo route group)
+ *   all.excentrix.tech      → Excentrix (internal /all route group)
  *   flowstate.excentrix.tech → Flowstate (internal /flowstate route group)
  *   colcord.excentrix.tech  → Colcord   (internal /colcord route group)
  *   horizon.excentrix.tech  → Horizon   (existing (frontend) site at /)
  *
- * Excentrix lives at the internal path /all so the apex can become the
- * company landing page while VELO keeps the existing route group on its own
- * subdomain. Horizon keeps the root path on its subdomain.
+ * Excentrix lives at the internal path /all. VELO owns the apex and its
+ * existing velo subdomain. Horizon keeps the root path on its subdomain.
  *
  * Local preview:
- *   localhost:3000          → Excentrix
- *   127.0.0.1:3000          → Excentrix
+ *   localhost:3000          → VELO
+ *   127.0.0.1:3000          → VELO
  *   velo.localhost:3000     → VELO
  *   flowstate.localhost:3000 → Flowstate
  *   colcord.localhost:3000  → Colcord
@@ -24,15 +24,18 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 
 const HORIZON_HOSTS = new Set(['horizon.excentrix.tech', 'horizon.localhost'])
-const VELO_HOSTS = new Set(['velo.excentrix.tech', 'velo.localhost'])
+const VELO_HOSTS = new Set([
+  'excentrix.tech',
+  'www.excentrix.tech',
+  'velo.excentrix.tech',
+  'localhost',
+  '127.0.0.1',
+  'velo.localhost',
+])
 const FLOWSTATE_HOSTS = new Set(['flowstate.excentrix.tech', 'flowstate.localhost'])
 const COLCORD_HOSTS = new Set(['colcord.excentrix.tech', 'colcord.localhost'])
 const EXCENTRIX_HOSTS = new Set([
-  'excentrix.tech',
-  'www.excentrix.tech',
   'all.excentrix.tech',
-  'localhost',
-  '127.0.0.1',
   'all.localhost',
 ])
 
@@ -90,7 +93,7 @@ export function middleware(req: NextRequest) {
   }
 
   // VELO host: VELO owns the whole namespace. Map clean URLs onto the
-  // internal /velo route group so visitors see velo.excentrix.tech/for/developers
+  // internal /velo route group so visitors see excentrix.tech/for/developers
   // while files live under (velo)/velo/for/developers.
   if (isVeloHost && !pathname.startsWith('/velo')) {
     const url = req.nextUrl.clone()

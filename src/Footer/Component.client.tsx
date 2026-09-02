@@ -33,7 +33,7 @@ const columns = [
       { label: 'For Students', href: '/solutions/students' },
       { label: 'For Educators', href: '/solutions/educators' },
       { label: 'For Institutions', href: '/solutions/institutions' },
-      { label: 'VELO Proof of Work', href: 'https://velo.excentrix.tech/use-cases/proof-of-work-verification' },
+      { label: 'VELO Proof of Work', href: 'https://excentrix.tech/use-cases/proof-of-work-verification' },
       { label: 'Case Studies', href: '/case-studies' },
     ],
   },
@@ -65,8 +65,8 @@ export function FooterClient({ settings }: FooterClientProps) {
   if (isExcentrixBlog) {
     return (
       <ExcentrixFooter
-        homeHref="https://excentrix.tech"
-        sectionHrefPrefix="https://excentrix.tech/"
+        homeHref="https://all.excentrix.tech"
+        sectionHrefPrefix="https://all.excentrix.tech/"
       />
     )
   }

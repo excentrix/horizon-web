@@ -6,11 +6,11 @@ const columns = [
   {
     title: 'products',
     links: [
-      { label: 'Excentrix', href: 'https://excentrix.tech' },
-      { label: 'VELO', href: 'https://velo.excentrix.tech' },
+      { label: 'Excentrix', href: 'https://all.excentrix.tech' },
+      { label: 'VELO', href: 'https://excentrix.tech' },
       { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
       { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
-      { label: 'Blog', href: 'https://excentrix.tech/posts' },
+      { label: 'Blog', href: 'https://all.excentrix.tech/posts' },
     ],
   },
   {
@@ -26,11 +26,11 @@ const columns = [
   {
     title: 'company',
     links: [
-      { label: 'What we build', href: 'https://excentrix.tech/#build' },
-      { label: 'Principles', href: 'https://excentrix.tech/#principles' },
-      { label: 'Offers', href: 'https://excentrix.tech/#offers' },
-      { label: 'Pilot Lab', href: 'https://excentrix.tech/#pilot' },
-      { label: 'AI Education', href: 'https://excentrix.tech/ai-education-infrastructure' },
+      { label: 'What we build', href: 'https://all.excentrix.tech/#build' },
+      { label: 'Principles', href: 'https://all.excentrix.tech/#principles' },
+      { label: 'Offers', href: 'https://all.excentrix.tech/#offers' },
+      { label: 'Pilot Lab', href: 'https://all.excentrix.tech/#pilot' },
+      { label: 'AI Education', href: 'https://all.excentrix.tech/ai-education-infrastructure' },
     ],
   },
   {
@@ -109,13 +109,13 @@ export function FlowstateFooter() {
           <p>© {new Date().getFullYear()} Excentrix · Bangalore. Presentations with live signal.</p>
           <div className="flex gap-6">
             <a
-              href="https://excentrix.tech/legal/privacy"
+              href="https://all.excentrix.tech/legal/privacy"
               className="transition-colors hover:text-ink"
             >
               Privacy
             </a>
             <a
-              href="https://excentrix.tech/legal/terms"
+              href="https://all.excentrix.tech/legal/terms"
               className="transition-colors hover:text-ink"
             >
               Terms

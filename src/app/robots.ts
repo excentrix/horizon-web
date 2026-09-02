@@ -13,6 +13,5 @@ export default function robots(): MetadataRoute.Robots {
       `${siteOrigins.excentrix}/pages-sitemap.xml`,
       `${siteOrigins.excentrix}/posts-sitemap.xml`,
     ],
-    host: siteOrigins.excentrix,
   }
 }

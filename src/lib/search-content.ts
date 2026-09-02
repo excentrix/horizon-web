@@ -352,7 +352,7 @@ export function excentrixContent(
       },
     ],
     related: [
-      { label: 'VELO', href: 'https://velo.excentrix.tech' },
+      { label: 'VELO', href: 'https://excentrix.tech' },
       { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
       { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
       { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
@@ -404,9 +404,9 @@ export const flowstateCategory: SearchLandingContent = {
     },
   ],
   related: [
-    { label: 'Excentrix', href: 'https://excentrix.tech' },
+    { label: 'Excentrix', href: 'https://all.excentrix.tech' },
     { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
-    { label: 'VELO', href: 'https://velo.excentrix.tech' },
+    { label: 'VELO', href: 'https://excentrix.tech' },
   ],
   schemaId: `${absoluteUrl('flowstate', '/presentation-software-for-educators')}#faq`,
 }
@@ -454,7 +454,7 @@ export const colcordCategory: SearchLandingContent = {
     },
   ],
   related: [
-    { label: 'Excentrix', href: 'https://excentrix.tech' },
+    { label: 'Excentrix', href: 'https://all.excentrix.tech' },
     { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
     { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
   ],

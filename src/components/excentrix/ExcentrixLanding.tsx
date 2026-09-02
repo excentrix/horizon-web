@@ -44,7 +44,7 @@ const offers = [
   {
     name: 'VELO',
     tag: 'Verification engine',
-    href: 'https://velo.excentrix.tech',
+    href: 'https://excentrix.tech',
     Icon: ShieldCheck,
     body: 'Adaptive proof-of-work verification for developers, hiring teams, and colleges.',
   },

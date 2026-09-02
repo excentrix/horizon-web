@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 
 export const siteOrigins = {
-  excentrix: 'https://excentrix.tech',
+  excentrix: 'https://all.excentrix.tech',
   horizon: 'https://horizon.excentrix.tech',
-  velo: 'https://velo.excentrix.tech',
+  velo: 'https://excentrix.tech',
   flowstate: 'https://flowstate.excentrix.tech',
   colcord: 'https://colcord.excentrix.tech',
 } as const

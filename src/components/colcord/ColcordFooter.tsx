@@ -87,11 +87,11 @@ export function ColcordFooter() {
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-cream/10 pt-8 text-sm text-cream/50 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Colcord. One platform for the university ecosystem.</p>
           <div className="flex gap-6">
-            <a href="https://excentrix.tech" className="transition-colors hover:text-cream">
+            <a href="https://all.excentrix.tech" className="transition-colors hover:text-cream">
               Excentrix
             </a>
             <a
-              href="https://excentrix.tech/ai-education-infrastructure"
+              href="https://all.excentrix.tech/ai-education-infrastructure"
               className="transition-colors hover:text-cream"
             >
               AI education

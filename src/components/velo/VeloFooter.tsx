@@ -6,12 +6,12 @@ const columns = [
   {
     title: 'products',
     links: [
-      { label: 'Excentrix', href: 'https://excentrix.tech' },
+      { label: 'Excentrix', href: 'https://all.excentrix.tech' },
       { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
       { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
       { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
-      { label: 'Blog', href: '/posts' },
-      { label: 'Pilot Lab', href: 'https://excentrix.tech/#pilot' },
+      { label: 'Blog', href: 'https://all.excentrix.tech/posts' },
+      { label: 'Pilot Lab', href: 'https://all.excentrix.tech/#pilot' },
     ],
   },
   {
@@ -40,14 +40,14 @@ const columns = [
   {
     title: 'company',
     links: [
-      { label: 'What we build', href: 'https://excentrix.tech/#build' },
+      { label: 'What we build', href: 'https://all.excentrix.tech/#build' },
       {
         label: 'Capability Infrastructure',
-        href: 'https://excentrix.tech/capability-infrastructure',
+        href: 'https://all.excentrix.tech/capability-infrastructure',
       },
-      { label: 'Principles', href: 'https://excentrix.tech/#principles' },
-      { label: 'Offers', href: 'https://excentrix.tech/#offers' },
-      { label: 'Blog', href: '/posts' },
+      { label: 'Principles', href: 'https://all.excentrix.tech/#principles' },
+      { label: 'Offers', href: 'https://all.excentrix.tech/#offers' },
+      { label: 'Blog', href: 'https://all.excentrix.tech/posts' },
     ],
   },
   {

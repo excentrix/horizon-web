@@ -13,7 +13,7 @@ function createColumns(sectionHrefPrefix: string) {
     {
       title: 'products',
       links: [
-        { label: 'VELO', href: 'https://velo.excentrix.tech' },
+        { label: 'VELO', href: 'https://excentrix.tech' },
         { label: 'Horizon', href: 'https://horizon.excentrix.tech' },
         { label: 'Flowstate', href: 'https://flowstate.excentrix.tech' },
         { label: 'Colcord', href: 'https://colcord.excentrix.tech' },
@@ -24,12 +24,12 @@ function createColumns(sectionHrefPrefix: string) {
     {
       title: 'velo',
       links: [
-        { label: 'For Developers', href: 'https://velo.excentrix.tech/for/developers' },
-        { label: 'For Hiring', href: 'https://velo.excentrix.tech/for/hiring' },
-        { label: 'For Colleges', href: 'https://velo.excentrix.tech/for/colleges' },
+        { label: 'For Developers', href: 'https://excentrix.tech/for/developers' },
+        { label: 'For Hiring', href: 'https://excentrix.tech/for/hiring' },
+        { label: 'For Colleges', href: 'https://excentrix.tech/for/colleges' },
         {
           label: 'Proof of Work',
-          href: 'https://velo.excentrix.tech/use-cases/proof-of-work-verification',
+          href: 'https://excentrix.tech/use-cases/proof-of-work-verification',
         },
       ],
     },
@@ -50,10 +50,10 @@ function createColumns(sectionHrefPrefix: string) {
       title: 'company',
       links: [
         { label: 'What we build', href: sectionHref('#build') },
-        { label: 'AI Education', href: 'https://excentrix.tech/ai-education-infrastructure' },
+        { label: 'AI Education', href: 'https://all.excentrix.tech/ai-education-infrastructure' },
         {
           label: 'Capability Infrastructure',
-          href: 'https://excentrix.tech/capability-infrastructure',
+          href: 'https://all.excentrix.tech/capability-infrastructure',
         },
         { label: 'Principles', href: sectionHref('#principles') },
         { label: 'Offers', href: sectionHref('#offers') },
