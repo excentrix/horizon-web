@@ -42,6 +42,7 @@ analysis, picks a project, defends it, and sees a verdict — in production, wit
 ### P0.6 — QA / pilot-readiness pass
 - [x] **QA script + pilot script written** → `PILOT_QA.md` (core-loop checklist, edge cases, per-audience pilot asks). *(2026-07-01)*
 - [x] **Automated backend read-path smoke passes** locally (verified-profile / public-credential / 404). *(2026-07-01)*
+- [x] **Real backend/API full-loop run completed** — used a real uploaded résumé, connected GitHub account, live repo check, code-grounded generated questions, HTTP answer submissions, Celery grading, finalized project credential, public report, and verified profile. Extended to 4 verified projects on the same parsed résumé so the person-level profile reached `coverage=partial`. *(2026-09-02; validates the configured backend/API path, not a full browser-based PROD stranger run.)*
 - [ ] **Manual end-to-end on PROD as a fresh account** — the actual gate. Not yet run. Confirm Celery drains the queue + migration `0015` applied live.
 - [ ] Test with a resume that has 0 projects → "verify a repo directly" path works.
 - [ ] Test a failed/unreadable resume → clear error + retry.
@@ -79,12 +80,16 @@ analysis, picks a project, defends it, and sees a verdict — in production, wit
 - [x] Dimension scores surfaced on the result (`ProjectVerificationSheet`) and public pages (`/audit/public/[auditId]`, `/p/<username>?tab=verified`) — breakdown bars + evidence citations, or compact dots on the multi-project profile view.
 - [x] **Resume claims tested** ✅ (2026-07-15) — `claim_matching_service.py` matches each project's already-extracted resume claims (`ownership_signals`/`impact_metrics`) against the transcript + code, per-claim verdicts (verified/partially_verified/contradicted/not_demonstrated) with the "per-instance, not global" honest-middle nuance. `ProjectVerification.claims_tested`.
 - [x] **Green/red flags + recommendation synthesis** ✅ (2026-07-15, person level) — `seniority_calibration` (junior/mid/senior), `capability_verified`/`knowledge_gaps`, `recommended_next_steps` (apply_now/close_before_senior), `examiner_note` — see P2.3, shipped as part of the case-synthesis extension there.
+- [x] **Skill-level evidence, not declared-stack matching** ✅ (2026-09-02) — see change log. `verified_profile_service` now promotes a skill only when interrogation evidence (`AnswerEvaluation.skills_demonstrated`) actually substantiated it, with a citation; a claimed-but-never-probed skill is surfaced honestly (`claimed_unverified_skills`) instead of silently promoted.
+- [x] **Voice answer input** ✅ (2026-09-03; realtime upgraded 2026-09-03) — `/verify/session` streams 16 kHz PCM mic audio over `ws/audio/transcription/stream/` to Google Cloud Speech-to-Text. Interim/final text fills the existing answer field while the candidate speaks; candidates still review/edit and press Enter/submission before the evidence pipeline records the answer. The Gemini batch transcription endpoint remains as a fallback/dev comparison path.
 - [ ] Sample-size honesty ("1 project — limited sample") — still only at the person layer (`verified_profile_service`), not per-dimension.
 
 ### P2.3 — The verified profile (person layer) *(highest-leverage)*
 - [x] **Reconciliation v1 (deterministic)** — fuse `project_verifications` (evidence) onto `deep_analysis` (claims) into a `verified_profile` overlay. `backend/apps/audit/services/verified_profile_service.py` → exposed on `/mirror/latest/`; surfaced in `VeloProfileTab` as a "Verified Capability" section (coverage/sample-size banner, skills backed by defended work, claim-vs-evidence contradictions) + verified shields on Skill Mastery chips. *(2026-06-24)*
 - [x] **LLM-synthesized narrative** — `_generate_narrative()` in `verified_profile_service.py` turns the reconciled facts into an honest headline + 1-2 sentence capability statement (grounded strictly in defended evidence + interrogation expertise estimate, not resume claims; acknowledges limited sample / contradictions). Cached on `MirrorSnapshot.verified_narrative_cache` keyed by a signature of the reconciled state (one LLM call only when verifications/claims change). Surfaced in `VeloProfileTab` *and* on the `/verify` Defend-tab credential header. *(2026-06-24)*
 - [x] **HR view (assessment of a person)** — public `GET /api/verified-profile/<username>/` (`PublicVerifiedProfileAPIView`, no auth, exposes ONLY verified facts — never the private claim layer / ATS / gaps), surfaced as a **"Verified" tab on `/p/[username]`** (one identity URL; canonical `/p/<username>?tab=verified`). Shared `VerifiedProfileView` component; renders even with no public portfolio (resilient fallback). "Share verified profile" on `/verify`. *(2026-06-24, consolidated into `/p/` — see change log)*
+- [x] **Cross-candidate reference distribution for `seniority_calibration`** ✅ (2026-09-02) — `SeniorityCalibrationSample` + `calibration_stats_service.py`. Backend-only so far (no frontend surfacing yet). See change log.
+- [x] **Golden-set eval harness for the case-synthesis LLM call** ✅ (2026-09-02) — `apps/audit/tests/eval/test_case_synthesis_golden_set.py`, same real-LLM/gated pattern as the interrogation-grading harness. See change log.
 
 ### P2.4 — HR-initiated flow + JD fit *(person-page foundation done; the rest open)*
 - [ ] "Send a candidate a verify link" → HR picks project/JD → gets the dossier back (including failures).
@@ -92,8 +97,23 @@ analysis, picks a project, defends it, and sees a verdict — in production, wit
 - [ ] Identity binding *(page is currently public-by-username with no proof the named person is the applicant — hardening: share tokens + identity binding).*
 
 ### P2.5 — Cohort layer (college / enterprise)
-- [ ] Wire `institution/*` dashboards to real verification data: per-student readiness, cohort distribution, outliers.
-- [ ] Remediation targeting + recruiter showcase + program-quality metrics.
+- [x] **Wired `institution/*` to real defended-evidence data** ✅ (2026-09-02) — see change log. New
+  "Verification" tab in the HQ admin system (`/institution/verification`), org-scoped, superuser-
+  browsable via `?org=`: coverage/seniority distribution, avg dimension scores, and a
+  "claimed, never probed" skill list (the direct remediation-targeting signal). Deliberately kept
+  separate from the pre-existing readiness-score dashboard (`institution_intelligence_service.py`,
+  claim-derived) rather than merging them — different evidentiary weight.
+- [x] **Recruiter showcase — standalone printable/PDF cohort report** ✅ (2026-09-03) — see change log.
+  `/institution/reports/cohort/<id>/print`, matching the shape of the marketing samples
+  (`docs/velo/assets/sample-cohort-report.html`): VELO masthead, a deterministic verdict headline,
+  placement-ready KPI, a named showcase shortlist (verified students to send recruiters, each linking
+  to their live profile), split "train the batch on" / "showcase now" recommendations, print-to-PDF
+  (`window.print()`, same mechanism as the existing per-candidate report). *Program-quality
+  metrics beyond this report: still open.*
+- [x] **Cohort-level analytics & reporting** ✅ (2026-09-03) — see change log. Cohort-scoped VELO
+  verification report (bucketed dimension-score distributions + a deterministic playbook) on
+  `/institution/reports`, plus a per-student CSV export — the same shape/UI convention the existing
+  readiness-score cohort report already established, applied to defended-evidence data.
 
 ---
 
@@ -102,9 +122,181 @@ analysis, picks a project, defends it, and sees a verdict — in production, wit
 - **Verified dashboard (`/verify` ready state) polish** — acceptable now, but could get the same editorial treatment as the public page later. Low priority.
 - **Repo/title mismatch (needs repro)**: user reported the drawer header showed a different project than the repo selected, though questions matched the selected repo. Data ended consistent. Get exact repro (which repo clicked, what the header said).
 - **Multi-branch**: the digest only reads the default branch. If a candidate's work is on another branch, the interrogator now (correctly) asks them to *explain* it rather than requesting a URL — but it can't read that branch. Decision: support a branch selector at verify time, or keep default-branch-only.
+- **Candidate code inspector during the interrogation (PROPOSED — needs decision).** Today the
+  engine reads the repo into `code_digest` and asks questions that cite real files, but the candidate
+  answers **blind** — the examiner has the code open, the person being examined does not. That
+  asymmetry manufactures false negatives: nobody holds file-level detail in their head months later,
+  so a real builder blanks on specifics they could reason about fine if they could see the file.
+  **Proposal:** a read-only, split-view code panel in `/verify/session` showing the *exact commit
+  VELO analysed*, with fuzzy file search + symbol jump + syntax highlight + git-blame. When a
+  question cites a file, auto-open it and highlight the cited lines (don't make them hunt). The
+  examiner knows what file/lines are on screen and can probe it directly. **Why it fits the thesis:**
+  VELO measures *ownership, not authorship* (PRODUCT.md) — a closed-book memory test measures the
+  wrong thing; an architect is allowed to read their own blueprint, and it mirrors the real job
+  ("if I drop this person in my codebase"). **Why it doesn't leak signal:** shift question style from
+  "what does this do" (readable off-screen) to judgment — "why this and not X", "what breaks at 10×",
+  "there's a race here, where", "what would you rip out" — plus response time-boxing and adaptive
+  follow-ups a layer below what's visible. The inspector's *own* telemetry (time-to-locate, search
+  terms, whether they go straight to the right file) becomes evidence in the dossier — a faker
+  fumbles with the repo open. Side-channel (paste into another LLM) is already a risk in the blind
+  format and isn't materially worsened; the real fix is identity binding + proctoring (P2.4).
+  **Scope:** it's a read-only viewer over source we already fetch — no editing, no execution.
+  **Open questions:** (1) scale it to project size (skip for a single-file `app.py`)? (2) a few
+  signposted "close the inspector" pure-recall checkpoints for a baseline, or not? (3) build after
+  identity binding lands, or before?
 - **GitHub OAuth scope is `public_repo`** (see `GitHubOAuthInitView`). The code-grounded digest can only read **public** repos with this scope. **(DECIDED 2026-07-01: public-only for the pilot.)** Rationale: classic OAuth has no read-only-private scope — the only option is `repo` (full read/**write** to ALL private repos), which contradicts the trust pitch. The right long-term answer is a **GitHub App with fine-grained read-only Contents** (user picks repos) — deferred until the pilot proves demand. Shipped now: clear public-only messaging (repo-check failure row explains "public repos only — make it public or pick a public one"; hints on the direct-add form + GitHub picker). *When we do build private support:* the file digest already uses the authenticated API (works for private once scoped) — remaining work is the scope/App, adding the token to `_check_single_repo` liveness check, `visibility=all` on the repo list, and migrating the two `raw.githubusercontent.com` fetches (README snippet, audit doc) to the authenticated contents API.
 
 ## Change log
+- **2026-09-03** — **Bug: résumé analysed without a target role produced an empty `deep_analysis`.**
+  `ResumeAnalysisGraph._node_validate_and_prepare` hard-failed (`__analysis_status: "failed"`,
+  `__analysis_error: "Either target_role or job_description must be provided."`) whenever a job had no
+  `target_role` and no `job_description` — but onboarding made target role **optional** back on
+  2026-07-02, so any such account got a `ready` snapshot with no ATS score, no employer perspective,
+  no skill mastery / gaps, no role matches, and no per-entry experience/project analysis; the
+  `VeloProfileTab` then silently omits every section that reads those keys. (Surfaced by a side-by-side
+  of two accounts on the same résumé — the deployed one had a target role set, the local one didn't.)
+  The wrapper was stricter than the service it wraps (`ResumeDeepAnalysisService.run_full_analysis`
+  already falls back to `resume_payload["current_role"]` → `"the target role"`). Fix: the graph now
+  does the same — derives the role label from `current_role` when no target role / JD is given, and
+  only fails on a genuinely missing `resume_payload`. Existing broken snapshots recover with a
+  Re-analyse. `backend/apps/audit/services/resume_analysis_graph.py`. Also, front-end: the **Re-analyse**
+  button now opens a small prompt asking for a target role (Skip = role-agnostic pass), so users are
+  nudged to give the analysis the one input that unlocks the ATS/role-fit/employer/gap sections —
+  `authApi.reanalyseResume(targetRole?)` now passes `target_role` through to the already-accepting
+  `ProfileResumeReanalyseAPIView`; prompt rendered in the ready/running/failed states of
+  `frontend/components/mirror/velo-profile-tab.tsx`. tsc + eslint clean. *Still open:* a failed/partial
+  `deep_analysis` (`__analysis_status` / `__analysis_failed_components`) is invisible in the UI — the
+  affected sections just vanish with no "analysis didn't finish — re-run" affordance.
+- **2026-09-03** — **`/analysis` (`VeloProfileTab`) surfaces the full `deep_analysis` payload +
+  layout fix.** Was dropping fields the analysis produces (and the PDF already shows):
+  `keyword_optimization` (matched keywords, high-value missing, density), `format_signals.issues`,
+  `role_matches[].{match_reason,present_skills,missing_skills,seniority}` (+ the 5th match, clipped by
+  `slice(0,4)`), `skill_mastery[].{evidence,used_in_projects,used_in_experience}`,
+  `project_analysis[].highlighted_skills`. Now rendered: ATS sidebar gained matched-keyword / density /
+  format-issue rows; Role Fit rows are expandable (reason + have/missing chips + seniority) and show
+  all matches; Skill Mastery gained a "Where it shows up" evidence list; project AI-feedback shows
+  highlighted-skill chips. Also fixed a CSS-grid bug — the sidebar (`col-start-2`, first in DOM) took
+  row 1 and sparse auto-placement bumped the main column (`col-start-1`) to row 2, leaving a full
+  sidebar's height of empty space above it; both children are now pinned to `lg:row-start-1`.
+  Frontend-only (`frontend/components/mirror/velo-profile-tab.tsx`, `types/index.ts` untouched by this
+  — those were the cohort-report change). tsc + eslint clean. `/analysis` and the `/verify` "Resume
+  analysis" tab are the same component (`embedded` only styles) — parity confirmed. The unlinked
+  `/analysis/v2` experimental page is still a stripped subset, left as-is.
+- **2026-09-03** — **Standalone printable/PDF cohort report (P2.5, part 3) — closing the gap between
+  the dashboard and what colleges were actually shown.** Comparing the Part 2 dashboard section
+  against the marketing samples already shown to colleges
+  (`docs/velo/assets/sample-cohort-report.html`/`sample-profile-report.html`) surfaced that those are
+  polished narrative documents (masthead, verdict headline, named recruiter shortlist, print-to-PDF),
+  not dashboards — the per-candidate side already had this (`/p/<username>/report`); the cohort side
+  didn't. New route `/institution/reports/cohort/<id>/print`, structurally mirroring
+  `/p/[username]/report/page.tsx` exactly: `window.print()` + Tailwind `print:` variants (no server
+  PDF generation — deliberately not the WeasyPrint pattern `mirror_export_service.py` uses, to keep
+  one PDF story in the product), `DimensionMeters` reused directly for the cohort dimension breakdown
+  (fed a synthetic `avg_dimension_scores`-derived `DimensionScores` object — no new component needed),
+  one masthead QR (`useLocalQrCode`, reused as-is). Backend additions to
+  `build_verification_cohort_report()` (additive only — the Part 2 dashboard's `playbook` field is
+  untouched): `headline` (deterministic template), `placement_ready_count`/`rate` (mid/senior +
+  actually-defended-something, distinct from the existing `verified_count`), `showcase_shortlist`
+  (senior-first ranked named students — genuinely new, no prior shortlist/showcase feature existed
+  anywhere in the codebase, confirmed via grep), `recommendations.{train_on,showcase_now}` (the
+  existing playbook logic split into the two buckets the sample document uses). Still zero LLM calls
+  anywhere in this path. Also added `username` to the row/shortlist payloads (was missing — needed to
+  link each shortlisted student to their real `/p/<username>?tab=verified`, not just their UUID). A
+  "Print full report" button added to the Part 2 dashboard section linking into the new route. 4 new
+  backend tests (headline/placement-ready math, shortlist ordering/cap, recommendation-bucket
+  correctness); full `apps/audit` suite green except the 2 pre-existing/unrelated failures. tsc +
+  eslint clean on the frontend. *Deliberately out of scope:* per-shortlisted-student QR codes (plain
+  hyperlinks instead — work in print too); a public/anonymous cohort report URL (stays inside the
+  authenticated `/institution/*` boundary — sharing is via the exported PDF file, not a new public
+  route); server-rendered PDF.
+- **2026-09-03** — **`/analysis` (`VeloProfileTab`) now surfaces the full `deep_analysis` payload.** The
+  page was dropping several fields the `ResumeDeepAnalysisService` produces (and that the PDF export
+  already shows): `keyword_optimization` (matched keywords, high-value missing keywords, density
+  score), `ats_breakdown.format_signals.issues` (concrete formatting problems), the ATS-level
+  quantified-bullet count, `role_matches[].{match_reason,present_skills,missing_skills,seniority}`
+  (the 5th role match was also clipped by a `slice(0,4)`), `skill_mastery[].{evidence,used_in_projects,
+  used_in_experience}`, and `project_analysis[].highlighted_skills`. Now rendered: the ATS sidebar
+  panel gained matched-keywords / density / format-issues rows and merges `missing_high_value` into
+  the missing-keywords chips; Role Fit rows are expandable (reason + have/missing skill chips +
+  seniority badge) and show all matches; Skill Mastery gained a "Where it shows up" evidence list for
+  demonstrated skills; project AI-feedback accordions show highlighted-skill chips. Frontend-only
+  (`frontend/components/mirror/velo-profile-tab.tsx`); backend already served all of it raw on
+  `/mirror/latest/`. tsc + eslint clean. *Note:* the unlinked `/analysis/v2` experimental redesign
+  is still a stripped subset — left as-is.
+- **2026-09-03** — **Cohort-level VELO verification analytics & reporting (P2.5, part 2).** Extends
+  the org-level "Verification" tab (below) down to cohort scope, closing the gap it explicitly
+  deferred. Backend: `institution_verification_service.py` refactored so the org-level aggregation
+  logic is shared (`_aggregate_verification`/`_verification_rows_for`, parameterized by a user-id
+  list) rather than duplicated; new `build_verification_cohort_report(cohort)` resolves user ids via
+  `CohortMembership` (the only join available — no FK from any audit model to `Cohort`) and extends
+  the aggregate with `dimension_score_buckets` (5-band, mirrors `EducatorAnalyticsService.build_report`'s
+  `progress_buckets` convention) and a deterministic (no LLM call) `playbook: list[str]` — plain string
+  templates off real aggregate facts (a dominant claimed-but-never-probed skill, students with more
+  claimed than defended projects, a heavily-junior-calibrated cohort). Two new endpoints
+  (`/api/audits/institutions/verification/cohorts/<id>/report/` + `/report/export/`, the latter a CSV
+  mirroring `apps.institutions.views.cohort_export_csv`'s `io.StringIO`/`csv.writer` pattern exactly),
+  gated by a new shared `_resolve_cohort_for_request` (factored out of `apps/institutions/views.py`,
+  which previously duplicated the superuser/org-membership cohort-access check inline across
+  `CohortDashboardView`/`CohortReportView`/`cohort_export_csv` — all three now call the one helper).
+  Frontend: new "VELO Verification" section on the existing `/institution/reports` page (reuses that
+  page's cohort picker/org-scope state rather than adding a second one), with the same two-export-
+  button convention already established there (blob-download CSV for per-student rows, client-built
+  CSV for the aggregate report) and a dimension-score bucket bar chart alongside the existing
+  readiness-score charts. 8 new backend tests (cohort aggregation exclusion, bucket/playbook
+  correctness, cross-org 404, superuser bypass, CSV content) — full `apps/audit` + `apps/institutions`
+  suites green except 3 pre-existing/unrelated failures (2 carried over from Part 1/2, plus a stale
+  `test_invite_csv` expecting a synchronous 200 from an endpoint that's actually async/202 — confirmed
+  untouched by this change). tsc + eslint clean on the frontend.
+- **2026-09-03** — **VELO verification data wired into the HQ admin system (P2.5).** New
+  "Verification" tab in `/institution/*` (`frontend/app/(studio)/institution/verification/`,
+  modeled directly on the existing Pathfinder institution tab), org-scoped and HQ-superuser-
+  browsable via `?org=`. Backend: new `apps/audit/services/institution_verification_service.py` —
+  a deliberate SIBLING to `institution_intelligence_service.py`, not a merge (that service aggregates
+  `AuditReadinessSnapshot`, a resume-analysis/claim-derived "readiness score"; this one aggregates
+  `MirrorSnapshot.verified_profile`/`ProjectVerification.dimension_scores` — DEFENDED evidence.
+  Conflating the two would blur the exact claim-vs-evidence distinction VELO's credibility model is
+  built on). Reuses `build_verified_profile()` per candidate (never blocks on the LLM — `allow_llm=
+  False` throughout) and rolls up: coverage/seniority distribution, org-wide avg dimension scores,
+  top verified skills, and **"claimed, never probed" skills** — students' claimed-but-uninterrogated
+  skills aggregated org-wide, a real remediation-targeting/curriculum-gap signal (see PRODUCT.md's
+  College use cases). Three new endpoints (`/api/audits/institutions/verification/{overview,students,
+  students/<id>}/`), gated by the existing `apps.institutions.permissions.IsOrgEducatorOrAdmin` +
+  `_resolve_org_for_request` (superuser reads `?org=`, org-role users fall back to their own
+  membership) — the exact pattern `apps/pathfinder`'s institution views already established, reused
+  rather than reinvented. **Also fixed the same gap on the pre-existing readiness-score institution
+  views** (`AuditInstitutionOverviewAPIView` and friends) — they were hard-coded to
+  `request.user.org_membership`, so a superuser with no org membership got a 403; now HQ-browsable
+  too, via the identical permission/resolver swap. 14 new backend tests (service-level aggregation +
+  view-level permission/org-resolution, including a superuser-cross-org-browsing case) across
+  `test_institution_verification_service.py`; full `apps/audit` suite green except the 2 pre-existing/
+  unrelated failures. tsc + eslint clean on the frontend. *Deliberately out of scope:* cohort-level
+  (not just org-level) filtering — no FK path from any audit model to `Cohort` exists today (only to
+  `Organization`, resolved via `OrganizationMembership`); a shared `DataTable`/`StatTile` component —
+  none exists anywhere in `institution/*`, so the new tab follows the same hand-rolled `<table>`/`Card`
+  convention as `overview`/`reports`/`pathfinder` rather than introducing one as a side effect.
+- **2026-09-03** — **Voice answer input for VELO interrogation.** Added an authenticated
+  `POST /api/interrogations/<session_id>/transcribe-answer/` endpoint backed by
+  `audio_transcription_service.py`, using the current Gemini Interactions REST audio path with
+  `GEMINI_STT_MODEL` defaulting to the cheapest configured Gemini STT path
+  (`gemini-2.5-flash-lite`). Fixed two dev failures found through `/dev/audio-transcription`:
+  the local SDK rejects `AudioTranscriptionConfig` on `generate_content`, and
+  `gemini-3.5-transcribe-preview` is a stale model alias, so the service now falls through to
+  `gemini-3.5-transcribe`. Frontend `/verify/session` records mic audio from a button or
+  `Ctrl/Cmd+M`, sends the audio for transcription, inserts the transcript into the existing answer
+  box, and leaves final submission on the existing Enter/Submit flow. Scoring, claims matching,
+  dimension evidence, and public transcripts remain text-based and unchanged.
+- **2026-09-03** — **Realtime voice input for VELO interrogation.** Added
+  `google-cloud-speech` plus an authenticated Channels socket at
+  `ws/audio/transcription/stream/`. The browser now streams 16 kHz LINEAR16 PCM chunks while the
+  candidate speaks; Google Cloud Speech-to-Text returns interim/final transcripts that update the
+  answer box immediately. `/dev/audio-transcription` now supports both live Cloud STT streaming
+  (time-metered, not token-metered) and the older batch Gemini comparison path (token usage shown).
+  This avoids Gemini Live API while removing the previous 10–15s file-upload turnaround.
+- **2026-09-02** — **BITSoM pitch: deck build + reality corrections.** Built a 12-slide HTML pitch deck on the "first light" brand system (`scratchpad/velo-pitch-deck.html`, published artifact). Corrections folded into both deck and `PITCH_BITSOM.md`: verification time is **~15 min** (not "5 minutes"); milestone reframed from founder-repo test runs to **3 college pilots running at 50 seats each + institutional MoUs in progress**, with 5×300 as the FY scale-up target; dropped the `app.excentrix.tech/verify` "live at" callouts. Team expanded from 2 to **5** (no "Partner" tag on individual roles): Siddharth Karthikeyan (Technical & AI Systems), Shrisai (GTM & Partnerships), Sidhanti Patil (Growth & Product — 2nd-time founder, Longhash Cohort 9, SIH 2023), Bhargav P Raj (AI & Infrastructure — ex-IBM applied AI), Siri TC (COO & Design — ex-Schneider Electric).
+- **2026-09-02** — **BITSoM Vertex pitch submission revised** — `docs/velo/PITCH_BITSOM.md`. Replaced all fabricated/unsourced problem+market stats with cited real data (Gartner 1-in-4 fake by 2028; LinkedIn 11k apps/min +45%; Greenhouse 2025 report 111%/412%; CodeSignal fraud 16%→35%; StandOut CV 64%; HireRight 75%; Resume Now 62%; Polaris candidate-skills-assessment market USD 2.86B / 11.3% CAGR; India Skills Report 2025 54.81% / eng 71.5%; AICTE 14.9L seats; Unstop 83% without job/internship; Naukri JobSpeak FY26; Mercor/Micro1 valuations). Milestone rewritten around the real end-to-end production runs from STATE.md (Databeast 0.899 + 3-repo multi-project profile) and explicitly flagged as founder/internal repos, not customers. Added competitive row for AI-interviewer cohort (Mercor/Micro1/Karat); added concrete liveness/authenticity mechanism; softened "calibrated" → "rubric-based, calibration post-pilot"; added a working unit-economics table; de-dated the Horizon expansion to "exploratory, post-revenue"; team section reframed as "built multiple products, none commercialised — VELO is the first GTM". Pricing set by founders: hiring teams ₹100–200/verification; colleges annual per-seat credit pack, min 12 verifications/seat/yr @ ₹100–150. SAM built as a practical 3-yr India scale-up (~₹3.5–5 Cr/yr recurring); SOM reframed around the **only committed FY target — 5 college pilots × 300 seats each** (18,000 verifications, ₹18–27 lakh); hiring-team + developer lines relabelled opportunistic/inbound, not staffed sales targets. Roadmap rebuilt as a **3-year growth table** (Year 1 this FY → Year 3) across colleges / hiring teams (HR) / developers, with the flywheel stated explicitly (colleges produce verified-graduate volume → placement cells hand credentials to recruiters → HR adopts then requests VELO → developers self-verify). Trajectory: 5 colleges/1.5k seats → ~40 colleges/12k seats; first inbound HR pilots → ~50 recurring HR accounts; 10k free devs → 4–6k paid. Recurring revenue ₹0.3–0.5 Cr → ₹1.2–1.8 Cr → ₹3.5–5 Cr (Year 3 = the India SAM figure). Only open placeholders now are the demo-video / docs / GitHub links.
+- **2026-09-02** — **Closed three integrity gaps between the "credibility to proven skills" pitch and the actual verification/profile pipeline** (branch `feature/velo-verification-integrity`): (1) **Skill-level evidence, not tech-stack matching** — `verified_profile_service`'s `proven_by_tech` used to promote any resume-claimed skill that appeared in a *verified project's declared tech-stack list*, regardless of whether the interrogation ever asked about it. Question generation now tags a `skills_targeted: list[str]` per question (`_NextQuestion`/`_FirstQuestion`, stored index-aligned as `interrogation_state.question_skills`), and grading now judges `skills_demonstrated: list[str]` per answer (`answer_grading_service.AnswerRubricGrade`, canonicalized against a new `SkillTag` vocabulary — `apps/audit/services/skill_tags.py`, deliberately not reusing `apps.intelligence.Skill` which is a different bounded context). `verified_profile_service` now promotes a skill only with a real evidence citation (which project, which question, what grounded it); a claimed-but-never-probed skill is surfaced honestly as `claimed_unverified_skills` instead of silently promoted, and fed into the case-synthesis prompt so the narrative can call it out. Also centralized three independent `code_digest[:4000]`-style truncations (question generation, answer grading, claim matching) onto one `settings.AUDIT_DIGEST_CONTEXT_CHARS` (raised to 12000). (2) **Cross-candidate reference distribution for `seniority_calibration`** — previously one LLM call judging junior/mid/senior against nothing but its own read of one candidate's facts, no percentile, no baseline (unlike per-answer grading, which has a golden-set eval). New `SeniorityCalibrationSample` (one row per candidate, upserted — not literally append-only, to avoid a repeat-regenerator skewing the pool) + `calibration_stats_service.py` computes percentile buckets + level distribution, cached and refreshed nightly via a new Celery beat task (`refresh_calibration_distribution`, 04:00 UTC). `verified_profile_service` now attaches a deterministic (non-LLM, so it can't hallucinate) `calibration_reference` with a real percentile, and feeds distribution summary stats into the synthesis prompt so the LLM's own judgment is anchored too. Cold-start guarded (`MIN_CALIBRATION_SAMPLES=20`) — flags `insufficient_data` rather than computing a percentile off noise; harmless at current pilot scale until enough profiles exist. (3) **Golden-set eval harness for case synthesis** — extended the exact pattern `test_golden_set.py` already applies to interrogation grading up to the profile level: `apps/audit/tests/eval/fixtures/profile_golden_set.py` (3 hand-authored cases: weak single-project evidence must never read as senior, strong multi-project evidence must be at least mid, a `contradicted` claims_tested entry must surface in the narrative) + `test_case_synthesis_golden_set.py`, same `RUN_VELO_EVAL_HARNESS=1` gate, verified passing against a real Gemini call; `eval-harness.yml` path triggers extended to the newly-touched service files. Migrations `0022`–`0023`. 16 new backend tests across 4 new test files, full `apps/audit` suite green except 2 pre-existing/unrelated failures (a live-LLM-flaky narrative-mode test and a stale fixture string in `test_context_enrichment_service.py`, neither touched by this change). *Deliberately out of scope for this pass:* wiring the VELO-native cohort dashboard (`institution_intelligence_service.py` + the already-existing-but-unused `getInstitutionOverview`/`getInstitutionStudents` frontend client functions) to this new skill-evidence/calibration data — the backend/frontend plumbing already exists, the gap is a missing page, and it deserves its own planning pass.
+- **2026-09-02** — **VELO onboarding & verification demo video rendered (`out/velo-presentation.mp4`)**. Expanded the Remotion presentation (`demo/velo-demo`) to a full 7-scene narrative journey covering: (1) The Reframe / Intro, (2) Intake & Resume Forensic, (3) GitHub AST Connect, (4) 3-Question Adaptive Interrogation, (5) Forensic Audit Report, (6) Unified Portfolio Dashboard, and (7) Altitude Model & CTA. Replaced deprecated icon imports, verified composition timing (`durationInFrames: 1890` @ 30fps = 63s), and rendered the full high-resolution MP4 video artifact.
+- **2026-09-02** — Ran the full VELO backend/API path with real user data instead of seeded DB rows. Account `velo.qa.candidate@example.com` / `velo_qa_candidate` had a real uploaded résumé (`resume_source=async_upload`), completed analysis job `d2baa4a7-7d12-44f5-ae13-4c7a6e469c60`, ready mirror `b0bf71df-0474-4863-ba49-06996ad846d7`, and connected GitHub account `SidKarthik1437`. Started verification for parsed project **Databeast** (`project_index=0`), submitted real repo `https://github.com/excentrix/databeast_server` through `/api/project-verifications/<id>/check-repos/`, repo check passed, VELO generated code-grounded questions citing `app.py`, eight answers were submitted through `/api/interrogations/<session_id>/answer/`, Celery grading completed, `/complete/` returned `audit_status=verified_truth`, and `/finalize/` returned `verified` with score `0.899`. Public credential `/api/audits/2df5d36c-1839-40a7-b3cf-3c8e0355a2fa/public/` exposed transcript/claims/dimensions; public profile `/api/verified-profile/velo_qa_candidate/` returned the verified person layer after background case synthesis. This validates the configured backend/API path with real auth/GitHub/résumé/LLM/Celery, but still does not mark the browser-based production stranger QA gate complete.
 - **2026-07-22** — **Domain split finalized in `horizon-web`: Excentrix now owns the apex.** Host routing now serves the company landing page from `excentrix.tech` (internal `/all` route), moves VELO to `velo.excentrix.tech` (internal `/velo` route), and keeps Horizon on `horizon.excentrix.tech`. VELO funnel/distribution links were updated to point at `velo.excentrix.tech` so campaign traffic lands on the verification product instead of the company page.
 - **2026-07-21** — Added two LinkedIn distribution assets grounded in the shared `first light` brand and VELO thesis/voice docs: **founder profile cover** at `docs/velo/assets/founder-linkedin-cover.{svg,png}` and **VELO page cover** at `docs/velo/assets/velo-linkedin-page-cover.{svg,png}`. The founder cover is sized for personal profiles (`1584×396`) and keeps all critical content in the right-side safe zone to avoid the profile-photo / left-side overlay area; the VELO page cover is sized for LinkedIn Pages (`4200×700`) and uses a wider centered-safe composition. Both follow the auth-panel visual language: dark ink field, cream type, restrained energy glow, and proof-of-work messaging.
 - **2026-07-16** — **VELO frontend redesigned end-to-end as "the examiner's case file" (tangerine-primary).** A prior redesign iteration was reverted by Sid as "bad — too indigo, generic shadcn, confusing"; rebuilt from scratch with an owned design language. **Design decisions:** (1) **Tangerine `#EC5B13` is now `--primary` app-wide** (buttons, links, rings, dock; light+dark) — a deliberate user override of the brand export's indigo-primary rule; indigo is demoted to the evidence scale (`--status-strong/solid/developing/none`, now also defined for dark), so *act* (tangerine) and *evidence strength* (indigo) never share a hue. (2) **Case-file vocabulary** shared across every surface via new CSS primitives (`.stamp` verdict stamps — mono/bordered, never green-red pills; `.cstat` status chips; `.caseline` mono metadata; `.rise-in` first-light entrance): projects are numbered exhibits (EX-01…), the interrogation is "on the record," verdicts are stamps. **Screens:** `/verify` rebuilt as the case-file dashboard — dossier masthead (name/headline, coverage stamp line, ATS + defended + calibrated-level stat tiles) with a **computed single next action** (defend-next → share-profile → re-defend fallback chain, always one tangerine button so the user always knows what to do), tabs Overview (capability-fingerprint radar averaged over decided interrogations + case-synthesis blocks + share) / Defend (exhibit rows with stamp, dimension chips, claims chips, per-credential share) / Resume analysis / Recruiter view; resume-analysis "running" state now renders the live 7-stage pipeline checklist instead of a spinner. **Full-page session** at `/verify/session?snapshot&project&title&repo` (auto-starts, deep-linkable/refresh-safe via idempotent create_or_get; dock + header hidden — full takeover; Evidence → Context → Interrogation → Verdict rail), replacing the drawer for the core flow (`ProjectVerificationSheet` kept only for the playground); verdict screen shows stamp + score, graded dimension meters with evidence citations, **resume-claims-tested**, and the **full transcript pass or fail** (fresh sessions use live turns; reopened ones fetch the stored public record). **Sharing:** one `ShareActions` surface (copy / local QR / WhatsApp / **LinkedIn**) on the dashboard, every verified exhibit, the verdict screen, and the recruiter view. **Public credential** page now renders the transcript + claims-tested (the old "transcript withheld for privacy" copy was factually wrong — the API publishes it) and moved off green/red hexes onto the evidence scale + tokens. **New printable candidate report** at `/p/<username>/report` (public route, print CSS, methodology footer) mirroring the college report assets. `VerifiedProfileView` extended with the case synthesis (seniority calibration, verified capability, gaps, examiner's note) + share block. `VeloProfileTab` fully converted to the evidence scale (all emerald/rose/amber/blue/slate/violet removed) and its verify actions now route to the session page. Onboarding shell rebuilt (VELO lockup, Upload→Defend→Share orientation strip, tangerine CTA); studio header now shows the VELO lockup → `/verify`. New components: `components/velo/{radar-chart,share-actions,verdict-stamp,dimension-meters,claim-chips,transcript-panel,repo-picker,verification-session}.tsx`. Types: `ClaimTested`/`TranscriptTurn` + case-synthesis fields on `VerifiedProfileSummary` (backend already served all of it). tsc + eslint clean. *Not yet done:* live browser pass over the new flows (backend + fresh account needed) — do before calling P0 QA green.

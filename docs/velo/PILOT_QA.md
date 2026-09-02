@@ -15,6 +15,32 @@ Read-path endpoints verified via Django test client against a real verified acco
 - ✅ `GET /api/verified-profile/<unknown>/` → 404
 *(Script: `scratchpad/smoke.py`. This only covers reads — the write/async path below must be run live.)*
 
+## 0b. Real full-loop backend/API run — ✅ 2026-09-02
+Verified through authenticated HTTP endpoints in the configured local backend environment:
+- ✅ Real account login: `velo.qa.candidate@example.com` / `velo_qa_candidate`
+- ✅ Real uploaded résumé already analyzed: job `d2baa4a7-7d12-44f5-ae13-4c7a6e469c60`, mirror `b0bf71df-0474-4863-ba49-06996ad846d7`, 5 parsed projects
+- ✅ Connected GitHub account: `SidKarthik1437`; repo picker API returned 84 repos
+- ✅ Started project verification for parsed project `Databeast`
+- ✅ Submitted real repo `https://github.com/excentrix/databeast_server`; repo check passed
+- ✅ VELO generated code-grounded interrogation questions citing real `app.py` code
+- ✅ Submitted 8 answers via `/api/interrogations/<session_id>/answer/`; adaptive interview stopped itself
+- ✅ `/complete/` returned `audit_status=verified_truth`, `scoring_status=scored`
+- ✅ `/finalize/` returned `verified`, score `0.899`, 8 questions answered
+- ✅ Public credential returned transcript, claims-tested rows, dimensions, and files analyzed
+- ✅ Public verified profile returned coverage `limited`, 1 defended project, and background-generated case synthesis
+- ✅ Extended the same real account through three more parsed projects via the same authenticated HTTP flow:
+  - `QP AI` → repo `https://github.com/excentrix/QB_AI_POC`, session `65cf019b-b9c9-41e5-aebd-64d01f07c618`, audit `43b46126-96c6-4cec-be47-9f18ef2f13c3`, verification `e80ef120-20d7-41e2-ab90-ac38c138505c`, 9 generated questions, final score `0.903`
+  - `Brain Tumor Segmentation` → repo `https://github.com/SidKarthik1437/BrainTumor`, session `900be636-73de-4bc3-99c2-f63a6f6054e3`, audit `2c40bfee-afda-4227-9728-35cd00afcee8`, verification `2ce18724-7c40-4baf-81df-7f56f6f9fee0`, 13 generated questions, final score `0.883`
+  - `Restoman` → repos `https://github.com/SidKarthik1437/restoman` + `https://github.com/SidKarthik1437/restoman-backend`, session `1005fd3e-2fb0-4023-bc7c-9eb8aa583aed`, audit `8ba42544-32df-406b-90d5-bc391d301ffa`, verification `abab1c48-821e-432b-9ac0-1d0ebd1ab0f5`, 13 generated questions, final score `0.886`
+- ✅ Aggregated verified profile updated to `verified_project_count=4`, `coverage=partial`, headline `Verified backend, data, ML development; honest about prototypes`
+
+Artifacts:
+- Project verification: `bbb69965-e1a8-4d63-b084-54317f91b636`
+- Audit/public credential: `2df5d36c-1839-40a7-b3cf-3c8e0355a2fa`
+- Interrogation session: `7c5ed7ee-49d5-472c-ae06-aa51a183f46e`
+
+This proves the configured backend/API path with real auth/GitHub/résumé/LLM/Celery. It is **not** the fresh human PROD signup/upload/browser run in section 1.
+
 ---
 
 ## 1. Core loop — fresh account on PROD (the gate)

@@ -4,11 +4,11 @@ const tiers = [
   {
     name: 'Developer',
     price: 'Free',
-    sub: '3 verifications free',
+    sub: '₹99 per verification later',
     tagline: 'Prove what you built.',
     features: [
       '3 project verifications free',
-      'Then ₹99 per verification',
+      'Free resume analysis',
       'Shareable proof-of-work credential',
       'Public verification page',
     ],

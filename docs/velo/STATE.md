@@ -5,6 +5,14 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
 
 ## ✅ What already exists and works
 
+### Real full-loop QA run (backend/API)
+- **2026-09-02 run**: `velo.qa.candidate@example.com` / `velo_qa_candidate` used a real uploaded résumé (`resume_source=async_upload`), completed analysis job `d2baa4a7-7d12-44f5-ae13-4c7a6e469c60`, ready mirror `b0bf71df-0474-4863-ba49-06996ad846d7`, and connected GitHub account `SidKarthik1437`.
+- Verified real parsed project **Databeast** against real public repo `https://github.com/excentrix/databeast_server` through the same authenticated HTTP endpoints the frontend uses. Repo check passed, VELO generated code-grounded questions from `app.py`, eight answers were submitted through `/api/interrogations/<session_id>/answer/`, Celery graded the answers, and finalize returned `verified` with score `0.899`.
+- Extended the same account to a multi-project profile on 2026-09-02: **QP AI** (`https://github.com/excentrix/QB_AI_POC`) verified at `0.903` after 9 generated questions; **Brain Tumor Segmentation** (`https://github.com/SidKarthik1437/BrainTumor`) verified at `0.883` after 13 generated questions; **Restoman** (`https://github.com/SidKarthik1437/restoman`, `https://github.com/SidKarthik1437/restoman-backend`) verified at `0.886` after 13 generated questions, with strong caveats about prototype/scaffold status.
+- `/api/verified-profile/velo_qa_candidate/` now returns `verified_project_count=4`, `coverage=partial`, headline `Verified backend, data, ML development; honest about prototypes`, and a synthesis that distinguishes strong ownership/debugging from incomplete production hardening and unproven impact metrics.
+- Public report APIs returned complete output: `/api/audits/2df5d36c-1839-40a7-b3cf-3c8e0355a2fa/public/` exposed the transcript, claims-tested rows, dimensions, and files analyzed; `/api/verified-profile/velo_qa_candidate/` returned the person-level verified profile with background-generated case synthesis.
+- This proves the local configured backend/API path with real auth/GitHub/résumé/LLM/Celery. It does **not** replace a browser-based production stranger QA run.
+
 ### Resume analysis pipeline (backend)
 - **Upload**: `ProfileResumeUploadAPIView` — `backend/apps/authentication/views.py` (~L907). Stores file, creates `ResumeAnalysisJob`, dispatches Celery task.
 - **Async analysis**: `process_resume_analysis_job` — `backend/apps/audit/tasks.py:92`. Parses resume (LLM) → deep analysis → builds the snapshot.
@@ -21,6 +29,15 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
   - `generate_first_question` / `generate_next_question` → adaptive, digest-grounded LLM interrogation.
   - `finalize()` → verdict (`verified`/`suspicious`/`failed`) + `verification_score` + `verdict_summary`.
 - Endpoints: `project-verifications/`, `…/check-repos/`, `…/finalize/`, `interrogations/…`.
+- **Voice answer input** — *shipped 2026-09-03; realtime upgraded 2026-09-03:* candidates can
+  answer by voice in `/verify/session`; microphone audio streams as 16 kHz PCM over
+  `ws/audio/transcription/stream/` into Google Cloud Speech-to-Text, so interim/final transcript
+  text appears while the candidate is still speaking. The older Gemini batch endpoint
+  (`POST /api/interrogations/<session_id>/transcribe-answer/`) remains available as a fallback/test
+  path; its Gemini API route uploads WAV and calls the current Interactions REST schema.
+  The transcript is inserted into the existing text answer box for candidate review/editing before
+  submission, so scoring still runs on the durable text transcript and the existing
+  `AnswerEvaluation`/claims/dossier pipeline remains unchanged.
 
 ### Frontend UI — redesigned 2026-07-16 as "the examiner's case file" (see ROADMAP change log)
 - **Tangerine `#EC5B13` is `--primary` app-wide** (user decision; overrides the brand export's indigo-primary). Indigo carries the evidence scale (`--status-*`). Case-file CSS primitives (`.stamp`, `.cstat`, `.caseline`, `.rise-in`) in `frontend/app/globals.css`.
@@ -31,7 +48,23 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
 - **`velo-profile-tab`** (`frontend/components/mirror/velo-profile-tab.tsx`) — renders the FULL resume analysis (ATS ring, breakdown, projects, skills, gaps, employer view) + the Verified Capability overlay. **Now mounted as the "Resume analysis" tab on `/verify`** (decoupled from the disabled `/progress`). Project-only users get a drag-and-drop résumé upload box here.
 - **Add manual project**: `POST /api/mirror/projects/add/` (NEW) + `auditApi.addManualProject` + the "verify a repo directly" form on `/verify`.
 - **Public report page**: `frontend/app/audit/public/[auditId]/page.tsx` (exists).
-- **Institution/cohort dashboards**: `frontend/app/(studio)/institution/*` (skeleton, exists).
+- **Institution/cohort dashboards**: `frontend/app/(studio)/institution/*`. The general HQ admin
+  system (`apps/institutions`) and readiness-score institution views were already real, not skeleton
+  — this entry was stale. As of 2026-09-03, a **"Verification" tab** (`institution/verification/`)
+  wires the HQ admin system to real defended-evidence data (coverage/seniority distribution, avg
+  dimension scores, "claimed, never probed" skills, per-student drill-down) via new
+  `institution_verification_service.py` + `/api/audits/institutions/verification/*`, org-scoped and
+  HQ-superuser-browsable via `?org=`. **Cohort-level analytics & reporting** shipped the same day:
+  a "VELO Verification" section on `/institution/reports` (bucketed dimension-score distributions +
+  a deterministic playbook + CSV export), scoped via `CohortMembership` (`build_verification_cohort_report`),
+  gated by a new shared `_resolve_cohort_for_request` (also de-duplicated 3 existing inline checks in
+  `apps/institutions/views.py`) — see ROADMAP change log. **Standalone printable/PDF cohort report**
+  also shipped 2026-09-03: `/institution/reports/cohort/<id>/print`, matching the shape of the
+  marketing samples (`docs/velo/assets/sample-cohort-report.html`) — masthead, deterministic verdict
+  headline, placement-ready KPI, a named showcase shortlist (verified students to send recruiters,
+  each linking to their live profile), split train-on/showcase-now recommendations, `window.print()`
+  → PDF (same mechanism as `/p/<username>/report`). Nothing left open on the reporting side beyond
+  program-quality metrics.
 
 ### Marketing (horizon-web)
 - VELO landing + 3 audience pages (`/for/developers|hiring|colleges`) + transcript + pricing.
@@ -82,11 +115,19 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
   global" nuance exactly. Called as a best-effort step at the end of `finalize()`; never blocks or changes
   the core verdict on failure. Dimension scores + claims_tested surfaced everywhere `verdict_summary` was —
   `ProjectVerificationSheet`, `/audit/public/[auditId]`, `/p/<username>?tab=verified`.
-- **The verified profile (person layer).** *Reconciliation v1 shipped (2026-06-24, deterministic):*
-  `build_verified_profile()` — `backend/apps/audit/services/verified_profile_service.py` — overlays
-  `project_verifications` onto `deep_analysis` into a `verified_profile` on `/mirror/latest/` (coverage/
-  sample-size honesty, skills backed by defended work, claim-vs-evidence contradictions); rendered as the
-  "Verified Capability" section + verified shields in `VeloProfileTab`. ✅ *Case synthesis shipped
+- **The verified profile (person layer).** *Reconciliation v1 shipped (2026-06-24, deterministic);
+  skill promotion rebuilt on real evidence (2026-09-02):* `build_verified_profile()` —
+  `backend/apps/audit/services/verified_profile_service.py` — overlays `project_verifications` onto
+  `deep_analysis` into a `verified_profile` on `/mirror/latest/` (coverage/sample-size honesty, claim-vs-
+  evidence contradictions); rendered as the "Verified Capability" section + verified shields in
+  `VeloProfileTab`. **Skills are promoted only from `AnswerEvaluation.skills_demonstrated`** (per-answer
+  LLM judgment of what was actually substantiated, canonicalized against a new `SkillTag` vocabulary —
+  `apps/audit/services/skill_tags.py`) — **not** from a verified project's declared tech-stack list
+  (the old `proven_by_tech` behavior, which promoted any claimed skill in scope regardless of whether the
+  interrogation ever asked about it). A claimed-but-never-probed skill is surfaced honestly as
+  `claimed_unverified_skills` instead of silently promoted. Question generation now tags a
+  `skills_targeted` per question (`interrogation_state.question_skills`), feeding grading's
+  `skills_demonstrated` judgment. ✅ *Case synthesis shipped
   (2026-07-15), replacing the 2026-06-24 narrative-only version:* one LLM call (now structured-output via
   `generate_structured_response` + `CaseSynthesis` Pydantic schema — replaced the old ad-hoc
   `call_llm(return_json=True)` + dict-parsing pattern, the same bug class that caused the original
@@ -97,7 +138,17 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
   **`examiner_note`**. Cached on `MirrorSnapshot.verified_narrative_cache` (no migration — same field,
   richer payload), signature now also hashes each defended project's `dimension_scores`/`claims_tested`
   so the cache invalidates on evidence changes, not just coverage-count changes. Surfaced in
-  `VeloProfileTab` + `/verify` + the HR verified-profile view.
+  `VeloProfileTab` + `/verify` + the HR verified-profile view. **`seniority_calibration` now has a
+  cross-candidate reference distribution** (2026-09-02): `SeniorityCalibrationSample` (one row per
+  candidate, upserted) + `apps/audit/services/calibration_stats_service.py` compute percentile buckets +
+  level distribution, cached and refreshed nightly by a Celery beat task; the profile output gains a
+  deterministic (non-LLM) `calibration_reference` with a real percentile, and the synthesis prompt is fed
+  distribution summary stats so the LLM's own junior/mid/senior judgment is anchored instead of made in a
+  vacuum. Cold-start guarded (`MIN_CALIBRATION_SAMPLES=20`) — `insufficient_data` until enough profiles
+  exist; backend-only so far, no frontend surfacing yet. **Golden-set eval harness added for the
+  case-synthesis call itself** (`apps/audit/tests/eval/test_case_synthesis_golden_set.py`), the same
+  real-LLM/gated discipline the interrogation-grading harness already had, verified passing against a real
+  Gemini call.
 - **HR view (assessment of a person).** ✅ *Shipped 2026-06-24:* public `GET /api/verified-profile/<username>/`
   (`PublicVerifiedProfileAPIView`) rendered as a **"Verified" tab on `/p/[username]`** (single identity URL;
   canonical link `/p/<username>?tab=verified`). `VerifiedProfileView` (`components/verified/`) is the shared
@@ -109,7 +160,10 @@ interrogation + verified-profile + HR view live). Repos: `backend/`, `frontend/`
   exists, ranking a pool of them does not.*
 - **HR-initiated flow** — "send a candidate a verify link → get the dossier back." *Still missing.*
 - **Identity binding** — assurance the verified person is the applicant. *Still missing.*
-- **Cohort dashboard wired to real verification data** (institution views are skeleton only).
+- ✅ **Cohort dashboard wired to real verification data** — *shipped 2026-09-03.* Org-level (not yet
+  cohort-level — no FK path from audit models to `Cohort` today) "Verification" tab in the HQ admin
+  system. See the "Institution/cohort dashboards" entry above + ROADMAP change log. *Still open:*
+  cohort-level filtering, recruiter-facing showcase view.
 
 ## Known data/ops facts
 - Resume analysis is LLM-heavy (parse + ~5 analysis calls) — cost & latency live here.
